@@ -15,6 +15,9 @@
 			}
 		},
 		onLoad() {
+			uni.navigateTo({
+			  url: '/pages/video/index'
+			})
 
 		},
 		methods: {
