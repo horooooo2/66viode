@@ -32,7 +32,8 @@
 import { ref, reactive, computed, nextTick } from "vue";
 import { playlist } from "./videos";
 // #ifdef H5
-import { VideoPlayer } from '@videojs-player/vue'	// #endif
+import { VideoPlayer } from '@videojs-player/vue'
+// #endif
 import 'video.js/dist/video-js.css'
 // import { VideoPlayerProps, VideoPlayerState } from "@videojs-player/vue";
 // import videojs from "video.js";
