@@ -9,7 +9,7 @@
 
 "@videojs-player/vue@^1.0.0":
   version "1.0.0"
-  resolved "https://registry.npmmirror.com/@videojs-player/vue/-/vue-1.0.0.tgz#df7db677b43b2d9b6872e71cd0eb2238cc19a8fd"
+  resolved "https://registry.npmjs.org/@videojs-player/vue/-/vue-1.0.0.tgz#df7db677b43b2d9b6872e71cd0eb2238cc19a8fd"
   integrity sha512-WonTezRfKu3fYdQLt/ta+nuKH6gMZUv8l40Jke/j4Lae7IqeO/+lLAmBnh3ni88bwR+vkFXIlZ2Ci7VKInIYJg==
 
 "@videojs/http-streaming@^3.17.0":

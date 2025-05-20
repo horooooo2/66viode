@@ -1,31 +1,64 @@
+
+
 <template>
-	<view class="player-container">
-		<!-- 视频播放器容器 -->
-		<video ref="videoRef" class="video-player" controls playsinline webkit-playsinline x5-playsinline
-			x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="portrait"></video>
+  <view class="video-container">
+  <div>
+    <h1 class="title">{{ playlist.videos[playMediaIndex].title }}</h1>
+  </div>
+  <video-player :class="['player_box', { loading: !state }]" :fluid="true" :sources="config.sources"
+    :poster="config.poster" crossorigin="anonymous" playsinline :playbackRates="[1, 1.5, 2]" :playbackRate="1"
+    :height="210" :loop="false" :volume="0.6" controls @mounted="handleMounted">
+  </video-player>
 
-		<!-- 错误提示 -->
-		<view v-if="error" class="error-message">
-			{{ error }}
-		</view>
 
-		<!-- 加载状态 -->
-		<view v-if="loading" class="loading">
-			视频加载中...
-		</view>
-	</view>
+  <p class="tips">标题文字信息</p>
+  <div class="setTime">
+    <span v-for="item in setTimeList" :key="item.time" @click="setTime(item.val)">{{ item.time }}</span>
+  </div>
+  <button class="btn">保存到桌面 观看更多视频</button>
+
+  <h3 class="recommend_tips">精彩推荐</h3>
+  <div class="recommend">
+    <div class="recommend_item" @click="changePlayer(i)" v-for="(item, i) in playlist.videos" :key="item.id">
+      <img :src="item.image" alt="" srcset="">
+      <p>{{ item.title }}</p>
+    </div>
+    <div class="recommend_item" style="visibility: hidden;" v-if="playlist.videos.length % 2 !== 0"></div>
+  </div>
+  </view>
 </template>
 
-<script setup>
-	import {
-		ref,
-		onMounted,
-		onBeforeUnmount,
-		watch
-	} from 'vue'
-	import Hls from 'hls.js'
+<script setup >
+import { ref, reactive, computed, nextTick } from "vue";
+import { playlist } from "./videos";
+// #ifdef H5
+import { VideoPlayer } from '@videojs-player/vue'	// #endif
+import 'video.js/dist/video-js.css'
+// import { VideoPlayerProps, VideoPlayerState } from "@videojs-player/vue";
+// import videojs from "video.js";
+const player = ref();
+const state = ref();
 
-	const props = defineProps({
+const setTimeList = reactive([
+  {
+    time: '00:10',
+    val: 10,
+  },
+  {
+    time: '00:20',
+    val: 20,
+  },
+  {
+    time: '00:50',
+    val: 50,
+  },
+  {
+    time: '01:10',
+    val: 70,
+  },
+])
+
+const props = defineProps({
 		src: {
 			type: String,
 			required: true
@@ -36,124 +69,123 @@
 		}
 	})
 
-	const videoRef = ref(null)
-	const hls = ref(null)
-	const loading = ref(false)
-	const error = ref(null)
+const setTime = (time) => {
+  console.log("time=", time);
+  nextTick(() => {
+    player.value?.currentTime(time);
+  });
+};
 
-	// 初始化播放器
-	const initPlayer = () => {
-		if (Hls.isSupported()) {
-			destroyPlayer() // 先销毁之前的实例
+const playMediaIndex = ref(0);
+const config = computed(() => ({
+  sources: [
+    {
+      src: playlist.videos[playMediaIndex.value].video,
+      type: playlist.videos[playMediaIndex.value].type || "",
+    },
+  ],
+  poster: playlist.videos[playMediaIndex.value].image,
+}));
 
-			hls.value = new Hls({
-				enableWorker: false, // 在移动端建议关闭worker
-				lowLatencyMode: true,
-				backBufferLength: 90
-			})
+const handleMounted = (payload) => {
+  console.log("player==", payload);
+  state.value = payload.state;
+  player.value = payload.player;
+};
 
-			hls.value.attachMedia(videoRef.value)
-			hls.value.on(Hls.Events.MEDIA_ATTACHED, () => {
-				loading.value = true
-				hls.value.loadSource(props.src)
-			})
-			hls.value.on(Hls.Events.MANIFEST_PARSED, () => {
-				loading.value = false
-				if (props.autoplay) {
-					videoRef.value.play().catch(e => {
-						error.value = '自动播放失败: ' + e.message
-					})
-				}
-			})
-			hls.value.on(Hls.Events.ERROR, (event, data) => {
-				loading.value = false
-				if (data.fatal) {
-					switch (data.type) {
-						case Hls.ErrorTypes.NETWORK_ERROR:
-							error.value = '网络错误，请重试'
-							hls.value.startLoad()
-							break
-						case Hls.ErrorTypes.MEDIA_ERROR:
-							error.value = '视频格式错误'
-							hls.value.recoverMediaError()
-							break
-						default:
-							error.value = '播放错误，请重试'
-							destroyPlayer()
-							initPlayer()
-							break
-					}
-				}
-			})
-		} else if (videoRef.value.canPlayType('application/vnd.apple.mpegurl')) {
-			// 原生支持HLS的浏览器（如Safari）
-			videoRef.value.src = props.src
-			if (props.autoplay) {
-				videoRef.value.play().catch(e => {
-					error.value = '自动播放失败: ' + e.message
-				})
-			}
-		} else {
-			error.value = '您的浏览器不支持播放m3u8视频'
-		}
-	}
-
-	// 销毁播放器
-	const destroyPlayer = () => {
-		if (hls.value) {
-			hls.value.destroy()
-			hls.value = null
-		}
-	}
-
-	// 监听src变化
-	watch(() => props.src, (newVal) => {
-		if (newVal) {
-			initPlayer()
-		}
-	})
-
-	onMounted(() => {
-		initPlayer()
-	})
-
-	onBeforeUnmount(() => {
-		destroyPlayer()
-	})
+const changePlayer = (index) => {
+  playMediaIndex.value = index;
+  nextTick(() => {
+    player.value?.play();
+  });
+};
 </script>
 
-<style scoped>
-	.player-container {
-		width: 100%;
-		max-width: 800px;
-		margin: 0 auto;
-		position: relative;
-	}
+<style  scoped>
+.player_box {
+  margin-top: 10px;
+  width: 100%;
+}
 
-	.video-player {
-		width: 100%;
-		background-color: #000;
-		aspect-ratio: 16/9;
-		/* 保持16:9比例 */
-	}
+.title {
+  background: #262626;
+  color: #eee;
+  padding: 6px 20px;
+  border-radius: 4px;
+  margin: 5px;
+}
 
-	.error-message {
-		color: #f44336;
-		padding: 16px;
-		text-align: center;
-		background-color: #ffebee;
-		margin-top: 10px;
-		border-radius: 4px;
-	}
+.tips {
+  text-align: left;
+  margin-top: 5px;
+  color: #eee;
+  font-size: 13px;
+}
 
-	.loading {
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
-		color: white;
-		background-color: rgba(0, 0, 0, 0.7);
-		padding: 10px 20px;
-		border-radius: 4px;
-	}
+.setTime {
+  margin: 5px 0px;
+  display: flex;
+
+ 
+}
+.setTime    span {
+    width: 62px;
+    height: 31px;
+    line-height: 31px;
+    text-align: center;
+    font-size: 12px;
+    color: #333;
+    border-radius: 25px;
+    background: #00D2BE;
+    margin-right: 2px;
+    cursor: pointer;
+  }
+
+.btn {
+  display: block;
+  width: 80%;
+  height: 35px;
+  line-height: 35px;
+  text-align: center;
+  color: #333;
+  border-radius: 25px;
+  background: #00D2BE;
+  margin: 22px auto;
+}
+
+.recommend {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.recommend_tips {
+  font-size: 13px;
+  margin: 5px;
+  text-align: left;
+  color: #fff;
+}
+
+.recommend_item {
+  width: 49%;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #666;
+  color: #ddd;
+  margin-bottom: 5px;
+  cursor: pointer;
+
+
+}
+
+.recommend_item  img {
+    display: block;
+    width: 100%;
+    height: 60px;
+  }
+  .recommend_item  p {
+    padding: 3px;
+    margin: 0;
+    text-align: left;
+  }
 </style>
