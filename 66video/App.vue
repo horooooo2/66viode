@@ -14,6 +14,10 @@
 
 <style>
 	/*每个页面公共css */
+	.status_bar {
+		height: var(--status-bar-height);
+		width: 100%;
+	}
 	*{
 	  padding: 0;
 	  margin: 0;

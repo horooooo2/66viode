@@ -56,7 +56,13 @@
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"navigationStyle": "custom",
-		"backgroundColor": "#F8F8F8"
+		"backgroundColor": "#F8F8F8",
+		"app-plus": {
+		      "titleView": false,         // 隐藏标题栏（App端）
+		      "statusbar": {
+		        "immersed": true          // 沉浸式状态栏（内容延伸到状态栏下）
+		      }
+		    }
 	},
 	"uniIdRouter": {}
 }

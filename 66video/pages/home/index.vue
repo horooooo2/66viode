@@ -1,13 +1,14 @@
 <template>
-	<div class="home">
-		<div class="header">
-			<div class="logo">66 Video</div>
-			<div class="button">
-				<div class="login">登录</div>
-				<div class="register">注册</div>
-			</div>
-		</div>
-	</div>
+	<view class="home">
+		<view class="status_bar"></view>
+		<view class="header">
+			<view class="logo">66 Video</view>
+			<view class="button">
+				<view class="login">登录</view>
+				<view class="register">注册</view>
+			</view>
+		</view>
+	</view>
 </template>
 
 <script>
