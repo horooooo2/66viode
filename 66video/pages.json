@@ -29,11 +29,12 @@
 				"navigationStyle": "default",
 				"navigationBarTitleText": "详情",
 				"enablePullDownRefresh": false
-				// "app-plus": {
-				// 	"titleNView":{
-				// 		"titleText": "详情"
-				// 	}
-				// }
+			}
+		},
+		{
+			"path": "pages/detail/anime",
+			"style": {
+				"navigationBarTitleText": "详情"
 			}
 		}
 	],

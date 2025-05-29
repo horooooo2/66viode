@@ -20,10 +20,10 @@
 
 <script setup>
 import { ref, defineEmits, defineProps, watchEffect,onMounted } from 'vue'
-import Like from './like.vue'
-import Share from './share.vue'
-import Sponsor from './sponsor.vue'
-import Critique from './critique.vue'
+import Like from './components/like.vue'
+import Share from './components/share.vue'
+import Sponsor from './components/sponsor.vue'
+import Critique from './components/critique.vue'
 const strings = ref('<div><p>富文本数据......</p></div>');
 
 
