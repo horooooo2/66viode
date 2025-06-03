@@ -1,5 +1,8 @@
 <template>
-	<view class="leftIcon"><svg t="1748358950839" fill="currentColor" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1460" width="26" height="26"><path d="M723.4 851L382.7 510.2 723.1 169c14.6-14.6 14.6-38.5 0-53.1-14.6-14.6-38.4-14.6-53 0L306.8 480c-1.4 1-2.7 2.2-3.9 3.4-7.4 7.4-11 17.1-10.9 26.8-0.1 9.7 3.6 19.5 10.9 26.8 1.4 1.4 2.8 2.6 4.3 3.7L670.4 904c14.6 14.6 38.4 14.6 53 0 14.6-14.5 14.6-38.4 0-53z" p-id="1461"></path></svg></view>
+	<view class="leftIcon">
+		<!-- <svg t="1748358950839" fill="currentColor" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1460" width="26" height="26"><path d="M723.4 851L382.7 510.2 723.1 169c14.6-14.6 14.6-38.5 0-53.1-14.6-14.6-38.4-14.6-53 0L306.8 480c-1.4 1-2.7 2.2-3.9 3.4-7.4 7.4-11 17.1-10.9 26.8-0.1 9.7 3.6 19.5 10.9 26.8 1.4 1.4 2.8 2.6 4.3 3.7L670.4 904c14.6 14.6 38.4 14.6 53 0 14.6-14.5 14.6-38.4 0-53z" p-id="1461"></path></svg> -->
+		<uni-icons type="left" size="26" color="#fff"></uni-icons>
+	</view>
 	<view class="detail">
         <view class="d_cont"> 
             <view class="d_img">
@@ -20,7 +23,10 @@
 			<text class="labels_i">#纯爱</text>
 			<text class="labels_i">#纯爱</text>
 		</view>
+	
 		<Like />
+		<List />
+		<Recommend />
 		<Share />
 		<Sponsor />
 		<Critique />
@@ -34,6 +40,8 @@ import Like from './components/like.vue'
 import Share from './components/share.vue'
 import Sponsor from './components/sponsor.vue'
 import Critique from './components/critique.vue'
+import List from './components/list.vue'
+import Recommend from './components/recommend.vue'
 const strings = ref('<div><p>富文本数据......</p></div>');
 
 
@@ -64,6 +72,7 @@ const setUser = ()=>{
 .detail{
 	padding: 120rpx 20rpx 20rpx 20rpx;
     background: #111;
+	color: #fff;
 }
 .d_cont{
 	display: flex;

@@ -34,7 +34,7 @@
 
 <style lang="scss"scoped>
 	.sponsor{
-		margin-top: 20rpx;
+		margin-top: 30rpx;
 		color: #fff;
 		.sponsor_t{
 			font-size: 24rpx;
