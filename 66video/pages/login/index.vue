@@ -119,7 +119,8 @@
 			}
 		}
 		.changeType{
-			margin-top: 50rpx;
+			margin-top: 40rpx;
+			padding: 10rpx 0;
 			text-align: center;
 			color: #DB7FDB;
 			font-size: 24rpx;
@@ -134,6 +135,7 @@
 		}
 		._kf{
 			margin-top: 90rpx;
+			padding: 10rpx 0;
 			font-size: 22rpx;
 			color: #777;
 			text-align: center;

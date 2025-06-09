@@ -42,6 +42,13 @@
 			"style": {
 				"navigationBarTitleText": "登录"
 			}
+		},
+		{
+			"path": "pages/server/index",
+			"style": {
+				"navigationBarTitleText": "服务协议",
+				"navigationStyle": "default"
+			}
 		}
 	],
 	"tabBar": {

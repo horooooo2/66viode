@@ -2,16 +2,22 @@
 	<view class="login_box"> 
 		<uni-easyinput class="r_input"  prefixIcon="person" v-model="params.userName" :inputBorder="false"  :clearable="false"  trim  placeholder="请输入账号" placeholderStyle="color: #777" ></uni-easyinput>
 		<uni-easyinput class="r_input" type="password"  prefixIcon="locked"  v-model="params.password" :inputBorder="false"  :clearable="false"  trim  placeholder="请输入密码" placeholderStyle="color: #777" ></uni-easyinput>
-		
-		<button class="r_submit" :class="isOK ? 'isOK':''">登录</button>
+		<view class="server" @click="changeCheck"> 
+			<checkbox  :checked="checkRef"  backgroundColor="transparent" borderColor="#ddd" activeBackgroundColor="#FA3296" activeBorderColor="#FA3296" color="#fff" style="transform:scale(0.7)" />
+			<view>记住账号</view>
+		</view>
+		<button class="r_submit" @click="submitFun" :class="isOK ? 'isOK':''">登录</button>
 	</view>
-	
+	<DialogVue v-model:isShow="isShow" @dialogConfirm="dialogConfirm"/>
 	
 	
 </template>
 
 <script setup>
-	import { computed,reactive } from 'vue';
+	import { computed,reactive,ref } from 'vue';
+	import DialogVue from './dialog.vue';
+	const checkRef = ref(false);
+	const isShow = ref(false);
 	const params = reactive({
 		userName: '',
 		password:'',
@@ -19,6 +25,17 @@
 	const isOK = computed(()=>{
 		return params.userName && params.password
 	});
+	const changeCheck = ()=>{
+		checkRef.value = !checkRef.value 
+	}
+	const submitFun=()=>{
+		console.log('isShow.value ==',isShow.value )
+		isShow.value = true;
+	}
+	
+	const dialogConfirm = (code)=>{
+		console.log('code ==',code)
+	}
 
 </script>
 
@@ -60,6 +77,18 @@
 	}
 	.isOK{
 		opacity: 1;
+	}
+	.server{
+		margin-top: 25rpx;
+		font-size: 22rpx;
+		color: #666;
+		display: flex;
+		align-items: center;
+		:deep(){
+			.uni-checkbox-input{
+				border-radius: 50%;
+			}
+		}
 	}
 }
 
