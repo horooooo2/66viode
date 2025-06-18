@@ -23,11 +23,11 @@ const props = defineProps({
   },
   haveImport: {
     type: Boolean,
-    default: true
+    default: false
   },
   haveOut: {
     type: Boolean,
-    default: true
+    default: false
   }
 })
 
@@ -152,7 +152,7 @@ function handleOut() {
 .c-toolbar {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
 }
 :deep(.el-transfer__button) {
   display: block;

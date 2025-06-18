@@ -38,7 +38,15 @@ export default {
       meta: { title: "账号详情", icon: "personnel" },
       hidden: true// true不显示在侧边栏
 
-    }
+    },
+
+    {
+      path: "/permission/administrators",
+      component: () => import("@/views/permission/administrators.vue"),
+      name: "administrators",
+      meta: { title: "管理员列表", icon: "user" }
+    },
+    
 
   ]
 }

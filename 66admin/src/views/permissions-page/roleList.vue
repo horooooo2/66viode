@@ -69,7 +69,9 @@ export default {
 
 <template>
   <div class="home-box">
-    <el-form v-show="showSearch" :inline="true" :model="searchForm">
+    
+    <el-card>
+      <el-form v-show="showSearch" :inline="true" :model="searchForm">
       <el-form-item label="角色ID" prop="id">
         <el-input-number v-model="searchForm.id" controls-position="right" :min="0" />
       </el-form-item>
@@ -99,12 +101,11 @@ export default {
       </el-form-item>
     </el-form>
 
-    <right-toolbar
-      v-model:show-search="showSearch" :have-import="false" @query-table="getListData"
-      @on-out-click="onDownTemplate"
-      @on-add-click="onDownTemplate"
-    />
-    <el-card>
+      <right-toolbar
+        v-model:show-search="showSearch" :have-import="false" @query-table="getListData"
+        @on-out-click="onDownTemplate"
+        @on-add-click="onDownTemplate"
+      />
       <el-table
         v-loading="loading"
         :data="tableData"

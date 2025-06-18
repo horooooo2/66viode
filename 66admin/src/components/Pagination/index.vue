@@ -71,12 +71,16 @@ export default {
       if (this.currentPage * val > this.total) {
         this.currentPage = 1
       }
+      this.$emit('update:page', this.currentPage);
+      this.$emit('update:limit', val);
       this.$emit("pagination", { page: this.currentPage, limit: val })
       if (this.autoScroll) {
         scrollTo(0, 800)
       }
     },
     handleCurrentChange(val) {
+      this.$emit('update:page', val);
+      this.$emit('update:limit', this.pageSize);
       this.$emit("pagination", { page: val, limit: this.pageSize })
       if (this.autoScroll) {
         scrollTo(0, 800)

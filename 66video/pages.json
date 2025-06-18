@@ -27,7 +27,7 @@
 			"path": "pages/detail/index",
 			"style": {
 				"navigationStyle": "default",
-				"navigationBarTitleText": "详情",
+				"navigationBarTitleText": "吃瓜详情",
 				"enablePullDownRefresh": false
 			}
 		},
@@ -35,6 +35,12 @@
 			"path": "pages/detail/anime",
 			"style": {
 				"navigationBarTitleText": "详情"
+			}
+		},
+		{
+			"path": "pages/detail/content",
+			"style": {
+				"navigationBarTitleText": "小说漫画内容"
 			}
 		},
 		{
@@ -49,7 +55,13 @@
 				"navigationBarTitleText": "服务协议",
 				"navigationStyle": "default"
 			}
-		}
+		},
+		{
+			"path": "pages/search/index",
+			"style": {
+				"navigationBarTitleText": "搜索"
+			}
+		},
 	],
 	"tabBar": {
 		"color": "#666666",

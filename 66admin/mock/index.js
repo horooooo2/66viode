@@ -145,8 +145,16 @@ export default [
                 type: "2",
                 url: "/account/detail",
                 hidden: true
+              },
+              {
+                id: "1-5",
+                name: "管理员列表",
+                icon: "permission",
+                parent_id: "1",
+                type: "2",
+                url: "/permission/administrators"
 
-              }
+              },
             ]
           },
           {
@@ -408,7 +416,38 @@ export default [
   {
     url: "/adminAuth/adminList",
     method: "post",
-    response: () => {
+    response: ({ body }) => {
+     console.log('body==',body);
+     if( body.page == 2 ){
+      return {
+        status: {
+          error_code: 0,
+          error_msg: "success"
+        },
+        obj: [
+          {
+            id: "11",
+            account: "admin",
+            date: "2023-03-27 13:58:15",
+            avatar: "https://res.lgdsunday.club/default-avatar.jpeg",
+            role_name: "主管"
+          },
+          {
+            id: "12",
+            account: "程序员",
+            date: "2023-01-27 13:58:15",
+            avatar: "https://osstest.eetop.com/bewt365/578d0d88e7ad2f9ae99f10eee8e08d9c.jpg",
+            role_name: "主管"
+          },
+        ],
+        page_info: {
+          cur_page: "2",
+          page_size: "10",
+          total_items: "12"
+        }
+      }
+     }
+        
       return {
         status: {
           error_code: 0,
@@ -470,12 +509,19 @@ export default [
             date: "2022-02-27 13:58:15",
             avatar: "https://res.lgdsunday.club/default-avatar.jpeg",
             role_name: "普通员工"
+          },
+          {
+            id: "11",
+            account: "张三",
+            date: "2022-02-27 13:58:15",
+            avatar: "https://res.lgdsunday.club/default-avatar.jpeg",
+            role_name: "普通员工"
           }
         ],
         page_info: {
           cur_page: "1",
           page_size: "10",
-          total_items: "10"
+          total_items: "12"
         }
       }
     }
@@ -528,6 +574,24 @@ export default [
         }
       }
     }
-  }
+  },
+  {
+    url: '/api/addAdmin',
+    method: 'post',
+    timeout: 1000,
+    statusCode: 200,
+    response: ({ body }) => {
+      // 响应内容
+      return {
+          status: {
+            error_code: 0,
+            error_msg: "success"
+          },
+          code: 200,
+          message: '成功',
+      }
+        
+    },
+  },
 
 ]

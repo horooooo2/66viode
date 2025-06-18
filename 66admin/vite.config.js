@@ -8,7 +8,8 @@ import eslintPlugin from 'vite-plugin-eslint';
 
 // svg-icon插件
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+	return {
 	base: "./", // 打包路径s
 	plugins: [
 		vue(),
@@ -19,12 +20,22 @@ export default defineConfig({
 			symbolId: "icon-[name]"
 		}),
 		viteMockServe({
-			enable: false,
-			logger: true,
-			mockPath: "./mock/",
-			supportTs: false
-
+			ignore: /^_/, // 忽略以下划线`_`开头的文件
+			mockPath: 'mock', // 指定mock目录中的文件全部是mock接口
+			supportTs: false, // mockPath目录中的文件是否支持ts文件，现在我们不使用ts，所以设为false
+			localEnabled: mode === 'mock', // 开发环境是否开启mock功能（可以在package.json的启动命令中指定mode为mock）
+			prodEnabled: mode === 'mock', // 生产环境是否开启mock功能
+			injectCode: `
+			  import { setupProdMockServer } from '../mock/_createProductionServer';
+			  setupProdMockServer();
+			`,
 		}),
+		// viteMockServe({
+		// 	enable: false,
+		// 	logger: true,
+		// 	mockPath: "./mock/",
+		// 	supportTs: false
+		// }),
 		eslintPlugin({
 			include: ['src/**/*.js', 'src/**/*.vue', 'src/*.js', 'src/*.vue'],
 			exclude: ['node_modules/**', 'dist/**'], // 排除不需要检查的文件和目录。
@@ -57,4 +68,4 @@ export default defineConfig({
 
 	}
 
-});
+}});
