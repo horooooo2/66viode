@@ -7,6 +7,11 @@
   resolved "https://registry.npmmirror.com/@babel/runtime/-/runtime-7.27.1.tgz#9fce313d12c9a77507f264de74626e87fd0dc541"
   integrity sha512-1x3D2xEk2fRo3PAhwQwu5UubzgiVWSXTBfWpVd2Mx2AzRqJuDJCsgaDVZ7HB5iGzDW1Hl1sWN2mFyKjmR9uAog==
 
+"@dcloudio/uni-ui@^1.5.7":
+  version "1.5.7"
+  resolved "https://registry.npmmirror.com/@dcloudio/uni-ui/-/uni-ui-1.5.7.tgz#74daef1f537ae2b9320e51f44163fe56bdd19c87"
+  integrity sha512-DugxSIrQrze1FLdUOj9a+JEQ0bHGjnJTcGUK1mN/MivKg7nuKJBRWk5Ipa9sUdoBznX6ndz5h2e7Uao6x1CdCw==
+
 "@videojs-player/vue@^1.0.0":
   version "1.0.0"
   resolved "https://registry.npmjs.org/@videojs-player/vue/-/vue-1.0.0.tgz#df7db677b43b2d9b6872e71cd0eb2238cc19a8fd"
