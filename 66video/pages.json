@@ -61,7 +61,7 @@
 			"style": {
 				"navigationBarTitleText": "搜索"
 			}
-		},
+		}
 	],
 	"tabBar": {
 		"color": "#666666",
