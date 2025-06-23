@@ -17,7 +17,7 @@
 
 		<view class="grid-box">
 			<view class="grid">
-				<view class="grid-item">
+				<view class="grid-item" @click="handleJump('/pages/user/submit')">
 					<image class="image" src="/static/images/mine/wengao.png" mode=""></image>
 					<text>投稿</text>
 				</view>
@@ -115,6 +115,13 @@
 </template>
 
 <script>
+	export default {
+		methods: {
+			handleJump(url) {
+				uni.navigateTo({ url })
+			}
+		}
+	}
 </script>
 
 <style lang="scss" scoped>
