@@ -5,13 +5,11 @@ import { onMounted, ref, watch } from "vue"
 import { useRouter } from "vue-router"
 import { getAdmintorList, getRoleList } from "@/api/api"
 import {  Refresh, Search } from "@element-plus/icons-vue"
-import adminDialog from "./components/adminDialog.vue"
-import adminResetDialog from "./components/adminResetDialog.vue"
+import roleDialog from "./components/roleDialog.vue"
 const router = useRouter()
 
 const showSearch = ref(true)
 const showDialog = ref(false)
-const showResetDialog = ref(false)
 const rowData = ref(null)
 
 // 数据源
@@ -71,13 +69,14 @@ async function getRoleData() {
  */
 function onShowClick(row) {
   showDialog.value = true;
-  rowData.value = row;
+  // rowData.value = row;
+  rowData.value = {
+    id: 1,
+    username: '测试权限',
+    permissions:['1-1',2,3]
+  }
 }
 
-function onShowResetClick (row) {
-  showResetDialog.value = true;
-  rowData.value = row;
-}
 
 /**
  * 删除按钮点击事件
@@ -133,59 +132,35 @@ function resetSearch() {
 // watch([() => paginationData.currentPage, () => paginationData.pageSize], getTableData, { immediate: true })
 </script>
 
-<script>
-export default {
-  name: "AdminList"
-}
-</script>
-
 <template>
   <div class="home-box">
     
     <el-card>
         <el-form v-show="showSearch" :inline="true" :model="searchForm">
-        <el-form-item label="账号" prop="id">
-            <el-input-number v-model="searchForm.id" controls-position="right" :min="0" />
-        </el-form-item>
-        <el-form-item label="姓名">
-            <el-input v-model="searchForm.account" placeholder="姓名" clearable />
-        </el-form-item>
-        <el-form-item label="角色" style="width: 168px;">
-            <el-select v-model="searchForm.role" placeholder="角色" clearable>
-                <el-option
-                    v-for="item in roleList"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                />
-            </el-select>
-        </el-form-item>
-
-        <el-form-item label="操作时间" style="width: 308px;">
-            <el-date-picker
-            v-model="searchForm.date"
-            value-format="YYYY-MM-DD"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            />
-        </el-form-item>
-
-        <el-form-item>
-            <el-button
-            v-auth="'/adminAuth/list'"
-            type="primary"
-            style="margin-left: -16px"
-            :icon="Search"
-            @click="searchEvent"
-            >
-            查询
-            </el-button>
-            <el-button :icon="Refresh" @click="resetSearch">
-                重置
-            </el-button>
-        </el-form-item>
+          <el-form-item label="角色" style="width: 168px;">
+              <el-select v-model="searchForm.role" placeholder="角色" clearable>
+                  <el-option
+                      v-for="item in roleList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                  />
+              </el-select>
+          </el-form-item>
+          <el-form-item>
+              <el-button
+              v-auth="'/adminAuth/list'"
+              type="primary"
+              style="margin-left: -16px"
+              :icon="Search"
+              @click="searchEvent"
+              >
+              搜索
+              </el-button>
+              <el-button :icon="Refresh" @click="resetSearch">
+                  重置
+              </el-button>
+          </el-form-item>
         </el-form>
 
     <right-toolbar
@@ -199,22 +174,15 @@ export default {
         element-loading-text="加载中..."
         border
       >
-        <el-table-column prop="id" label="ID" width="180" />
-        <el-table-column prop="account" label="账号" width="180" />
-        <el-table-column label="角色" width="180">
-          <template #default="{ row }">
-            <el-tag type="danger">
-              {{ row.role_name }}
-            </el-tag>
-          </template>
-        </el-table-column>
+        <el-table-column prop="id" label="角色" width="180" />
+        <el-table-column prop="account" label="描述" width="180" />
+        <el-table-column label="人数" prop="count" width="180" />
         <el-table-column label="状态" width="110">
           <template #default="{ row }">
             <span>{{ row.is_lock == "1" ? "冻结" : "正常" }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="date" label="操作时间" width="160" />
-
         <el-table-column prop="address" label="操作" min-width="180">
           <template #default="{ row }">
             <el-button
@@ -231,7 +199,7 @@ export default {
               size="small"
               @click="onShowResetClick(row)"
             >
-              密码重置
+             成员
             </el-button>
 
             <el-popconfirm width="220" :title="`你确定要删除这行内容吗？`" cancel-button-text="取消"
@@ -257,25 +225,13 @@ export default {
       />
     </el-card>
 
-    <adminDialog v-model:dialogVisible="showDialog"  v-model:datas="rowData" @getListData="getListData" />
-    <adminResetDialog v-model:dialogVisible="showResetDialog"  v-model:datas="rowData" @getListData="getListData" />
+    <roleDialog v-model:dialogVisible="showDialog"  v-model:datas="rowData" @getListData="getListData" />
 
   </div>
 </template>
 
 <style lang="scss" scoped>
 .home-box {
-  .header {
-    margin-bottom: 22px;
-    text-align: right;
-  }
-  ::v-deep .el-tag {
-    margin-right: 6px;
-  }
-  ::v-deep .avatar {
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-  }
+  
 }
 </style>

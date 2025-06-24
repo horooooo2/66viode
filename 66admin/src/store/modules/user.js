@@ -5,6 +5,7 @@ import router, { resetRouter } from "@/router"
 import { setTimeStamp } from "@/utils/auth"
 import { formatPermissionList } from "@/utils/index"
 import { getItem, removeAllItem, setItem } from "@/utils/storage"
+import { cloneDeep } from 'lodash'
 
 export default {
   namespaced: true,
@@ -13,6 +14,8 @@ export default {
     token: getItem(TOKEN) || "",
     userInfo: getItem(USERINFO) || {},
     roles: [],
+    permissionTree: [], // 总权限树
+    eidtPermissionTree: [], //编辑树
     buttons: []
   }),
   mutations: {
@@ -29,7 +32,11 @@ export default {
     },
     setButtons: (state, buttons) => {
       state.buttons = buttons
-    }
+    },
+    setTree: (state, tree) => {
+      state.permissionTree = tree;
+      state.eidtPermissionTree = cloneDeep(tree)
+    },
   },
   actions: {
     login(context, userInfo) {
@@ -76,6 +83,7 @@ export default {
               ElMessage.error("您登录的账号暂无权限！") // 提示错误信息
               this.dispatch("user/logout")
             }
+            this.commit("user/setTree",data.obj);
             this.commit("user/setRoles", role_arr)
             this.commit("user/setButtons", button_arr)
             resolve(info)

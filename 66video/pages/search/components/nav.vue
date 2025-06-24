@@ -2,7 +2,9 @@
 	<view class="nav">
 		<view class="nav_wrap">
 			<view class="nav_list">
-				<view class="nav_item" :class="val.id == navData?.listActive ? 'nav_active':''" v-for="val in (navData?.list || [])" :key="val.name" @click="changeNav('listActive',val)">{{val.name}}</view>
+				<tui-tab sliderHeight="0" backgroundColor="transparent" color="#BBB" selectedColor="#FF1A8C" bold :tabs="tabs"
+					scroll @change="changeTab"></tui-tab>
+				<!-- <view class="nav_item" :class="val.id == navData?.listActive ? 'nav_active':''" v-for="val in (navData?.list || [])" :key="val.name" @click="changeNav('listActive',val)">{{val.name}}</view> -->
 			</view>
 			<view class="filter" :class="isFilter?'openfilter':''"  @click="openFilter">
 				<text>筛选</text>
@@ -22,19 +24,29 @@
 </template>
 
 <script setup>
-	import {ref,reactive,defineProps,defineEmits,onMounted} from 'vue';
+	import {ref,reactive,defineProps,defineEmits,onMounted,computed} from 'vue';
+	const currentTab = ref(0);
 	const props = defineProps({
 	  navData: {
 	    type: Object,
 	    default: null
 	  }
 	})
+	const tabs = computed(()=>{
+		return props.navData?.list?.map(val=>val.name);
+	});
+	const changeTab=(e) =>{
+		currentTab.value = e.index
+		changeNav('listActive',props.navData?.list[e.index]);
+	}
 	const emit = defineEmits(["change"]);
 	const isFilter = ref(false);
 	const openFilter=()=>{
 		isFilter.value = !isFilter.value;
 	}
 	const changeNav = (type,val)=>{
+		console.log('type=',type);
+		console.log('val=',val.id);
 		emit('change',type,val.id);
 	}
 
@@ -81,9 +93,11 @@
 		.filter{
 			flex: 1;
 			text-align: right;
-			padding-top: 10rpx;
 			font-size: 21rpx;
 			color: #ccc;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 			.arrow{
 				margin-left: 4rpx;
 				position: relative;

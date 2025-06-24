@@ -153,7 +153,14 @@ export default [
                 parent_id: "1",
                 type: "2",
                 url: "/permission/administrators"
-
+              },
+              {
+                id: "1-6",
+                name: "角色列表",
+                icon: "permission",
+                parent_id: "1",
+                type: "2",
+                url: "/permission/roleList"
               },
             ]
           },

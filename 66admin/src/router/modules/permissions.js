@@ -46,6 +46,12 @@ export default {
       name: "administrators",
       meta: { title: "管理员列表", icon: "user" }
     },
+    {
+      path: "/permission/roleList",
+      component: () => import("@/views/permission/roleList.vue"),
+      name: "roleList",
+      meta: { title: "角色列表", icon: "user" }
+    },
     
 
   ]
