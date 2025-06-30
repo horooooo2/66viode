@@ -8,8 +8,8 @@
       @closed="closeFun"
       align-center
     >
-      <el-form ref="formRef" :model="formData"  label-width="auto" label-position="right">
-        <el-form-item prop="username" label="用户名">
+      <el-form ref="formRef" :model="formData"  :rules="rules" label-width="auto" label-position="right">
+        <el-form-item prop="username" label="用户名" >
           <el-input v-model="formData.username" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="权限" class="treeFormItem">
@@ -28,10 +28,10 @@
         </el-form-item>
       </el-form>
       <template #footer>
-        <el-button @click="isShow = false">
+        <el-button @click="closeFun()">
           取消
         </el-button>
-        <el-button type="primary" :loading="loading" @click="handleCreateOrUpdate">
+        <el-button type="primary" :loading="loading" @click="handleCreateOrUpdate(formRef)">
           确认
         </el-button>
       </template>
@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-import {ref,watchEffect} from 'vue';
+import {ref,watchEffect,reactive } from 'vue';
 import {addAdmintor} from '@/api/admin'
 import { ElMessage } from "element-plus"
 import { useStore } from "vuex"
@@ -57,6 +57,13 @@ const emit = defineEmits(["update:datas","getListData"]);
 const isShow = ref(false);
 const store = useStore();
 const treeRef = ref(null);
+const formRef  = ref(null);
+
+const rules = reactive({
+  username: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+  ],
+})
 
 const resetData = {
     username:'',
@@ -77,27 +84,33 @@ watchEffect(() => {
 
 const loading = ref(false);
 
-const handleCreateOrUpdate = ()=>{
-    loading.value = true;
+const handleCreateOrUpdate = async(formEl)=>{
+   
     console.log('formData===',formData);
     console.log('tree===',treeRef.value.getCheckedKeys());
-    
-    
-    // addAdmintor(formData.value).then(res=>{
-    //     loading.value = false;
-    //     if(res.code == 200){    
-    //         ElMessage.success("删除成功");
-    //         closeFun();
-    //         emit("getListData");
-    //     }
-    // })
+    if (!formEl) return
+    loading.value = true;
+    let checkForm =  await formEl.validate((valid) => valid);
+    if( !checkForm ){
+      loading.value = false;
+      return;
+    }
+    addAdmintor(formData.value).then(res=>{
+        loading.value = false;
+        if(res.code == 200){    
+            ElMessage.success("成功");
+            closeFun();
+            emit("getListData");
+        }
+    })
 }
 const closeFun = ()=>{
     console.log('closeFun',resetData);
   
     emit("update:datas", null);
     emit("update:dialogVisible", false);
-    formData.value = {...resetData};
+    formRef?.value?.resetFields();
+    // formData.value = {...resetData};
 }
 
 </script>

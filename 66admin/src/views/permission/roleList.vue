@@ -70,10 +70,12 @@ async function getRoleData() {
 function onShowClick(row) {
   showDialog.value = true;
   // rowData.value = row;
-  rowData.value = {
-    id: 1,
-    username: '测试权限',
-    permissions:['1-1',2,3]
+  if( row ){
+    rowData.value = {
+      id: 1,
+      username: '测试权限',
+      permissions:['1-1',2,3]
+    }
   }
 }
 
@@ -106,11 +108,6 @@ function searchEvent() {
 }
 
 
-function onDownTemplate() {
-  showDialog.value = true;
-}
-
-
 // function handleSearch() {
 //   paginationData.currentPage === 1 ? getTableData() : (paginationData.currentPage = 1)
 // }
@@ -128,8 +125,7 @@ function resetSearch() {
     // getListData()
 
 }
-// 监听分页参数的变化
-// watch([() => paginationData.currentPage, () => paginationData.pageSize], getTableData, { immediate: true })
+
 </script>
 
 <template>
@@ -166,7 +162,7 @@ function resetSearch() {
     <right-toolbar
       v-model:show-search="showSearch"
       @query-table="getListData"
-      @on-add-click="onDownTemplate"
+      @on-add-click="onShowClick"
     />
       <el-table
         v-loading="loading"

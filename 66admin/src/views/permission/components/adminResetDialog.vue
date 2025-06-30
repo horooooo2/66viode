@@ -7,7 +7,7 @@
       @closed="closeFun"
       align-center
     >
-      <el-form ref="formRef" :model="formData"  label-width="auto" label-position="right">
+      <el-form ref="formRef" :model="formData" :rules="rules"  label-width="auto" label-position="right">
         <el-form-item prop="username" label="用户名">
           <el-input v-model="formData.username" :disabled="true" placeholder="请输入" />
         </el-form-item>
@@ -19,7 +19,7 @@
         <el-button @click="isShow = false">
           取消
         </el-button>
-        <el-button type="primary" :loading="loading" @click="handleCreateOrUpdate">
+        <el-button type="primary" :loading="loading" @click="handleCreateOrUpdate(formRef)">
           确认
         </el-button>
       </template>
@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import {ref,watchEffect} from 'vue';
+import {ref,watchEffect,reactive } from 'vue';
 import {addAdmintor} from '@/api/admin'
 import { ElMessage } from "element-plus"
 const props = defineProps({
@@ -42,6 +42,14 @@ const props = defineProps({
 })
 const emit = defineEmits(["update:datas","getListData"]);
 const isShow = ref(false);
+const formRef  = ref(null);
+
+const rules = reactive({
+  username: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+  ],
+})
+
 
 const resetData = {
     username:'',
@@ -61,8 +69,15 @@ watchEffect(() => {
 
 const loading = ref(false);
 
-const handleCreateOrUpdate = ()=>{
+const handleCreateOrUpdate = async(formEl)=>{
+    if (!formEl) return
     loading.value = true;
+    let checkForm =  await formEl.validate((valid) => valid);
+    console.log('checkForm==',checkForm);
+    if( !checkForm ){
+      loading.value = false;
+      return;
+    }
     addAdmintor(formData.value).then(res=>{
         loading.value = false;
         if(res.code == 200){    
@@ -74,10 +89,11 @@ const handleCreateOrUpdate = ()=>{
 }
 const closeFun = ()=>{
     console.log('closeFun',resetData);
-  
+   
     emit("update:datas", null);
     emit("update:dialogVisible", false);
-    formData.value = {...resetData};
+    formRef?.value?.resetFields();
+    // formData.value = {...resetData};
 }
 
 </script>

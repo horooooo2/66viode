@@ -157,9 +157,6 @@ export default {
     margin-bottom: 22px;
     text-align: right;
   }
-  ::v-deep .el-tag {
-    margin-right: 6px;
-  }
   .pagination {
     display: flex;
     justify-content: end;

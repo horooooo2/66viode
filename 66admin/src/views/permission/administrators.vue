@@ -71,7 +71,10 @@ async function getRoleData() {
  */
 function onShowClick(row) {
   showDialog.value = true;
-  rowData.value = row;
+  if(row){
+    rowData.value = row;
+  }
+
 }
 
 function onShowResetClick (row) {
@@ -129,15 +132,9 @@ function resetSearch() {
     // getListData()
 
 }
-// 监听分页参数的变化
-// watch([() => paginationData.currentPage, () => paginationData.pageSize], getTableData, { immediate: true })
+
 </script>
 
-<script>
-export default {
-  name: "AdminList"
-}
-</script>
 
 <template>
   <div class="home-box">
@@ -191,7 +188,7 @@ export default {
     <right-toolbar
       v-model:show-search="showSearch"
       @query-table="getListData"
-      @on-add-click="onDownTemplate"
+      @on-add-click="onShowClick"
     />
       <el-table
         v-loading="loading"
