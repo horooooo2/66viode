@@ -5,7 +5,7 @@
 				<view class="avatar">
 					<image class="avatarUrl" src="/static/images/mine/avatar.png" mode=""></image>
 				</view>
-				<view class="userInfo">
+				<view class="userInfo" @click="toLink('/pages/user/info')">
 					<view class="title-box">
 						<view class="username">zackUP主</view>
 						<image class="copy" src="/static/images/mine/edit-icon.png" mode=""></image>
@@ -17,15 +17,15 @@
 
 		<view class="grid-box">
 			<view class="grid">
-				<view class="grid-item" @click="handleJump('/pages/user/submit')">
+				<view class="grid-item" @click="toLink('/pages/user/submit')">
 					<image class="image" src="/static/images/mine/wengao.png" mode=""></image>
 					<text>投稿</text>
 				</view>
-				<view class="grid-item">
+				<view class="grid-item" @click="toLink('/pages/user/collect')">
 					<image class="image" src="/static/images/mine/shoucang.png" mode=""></image>
 					<text>收藏</text>
 				</view>
-				<view class="grid-item">
+				<view class="grid-item" @click="toLink('/pages/user/history')">
 					<image class="image" src="/static/images/mine/history.png" mode=""></image>
 					<text>历史</text>
 				</view>
@@ -45,7 +45,7 @@
 							<text>VIP10</text>
 						</view>
 						<view class="vip-progress">
-							<tui-progress :percent="60" radius="20rpx" width="12"
+							<tui-progress :percent="60" radius="20rpx" :width="12"
 								activeColor="linear-gradient(89deg, #E5C477 0.68%, #FAF1DC 98.8%)"
 								backgroundColor="#980FB1"></tui-progress>
 						</view>
@@ -71,7 +71,7 @@
 					</view>
 					<image class="card-right" src="/static/images/mine/icon-task.png" mode="widthFix"></image>
 				</view>
-				<view class="card-item">
+				<view class="card-item" @click="toLink('/pages/points/index')">
 					<view class="card-left">
 						<view class="card-title">
 							<image class="coin" src="/static/images/mine/icon-coin1.png" mode=""></image>
@@ -95,7 +95,7 @@
 			</view>
 			
 			<view class="cell">
-				<view class="cell-item">
+				<view class="cell-item" @click="toLink('/pages/setting/index')">
 					<image class="icon" src="/static/images/mine/icon-sz.png" mode=""></image>
 					<text>设置</text>
 				</view>
@@ -117,7 +117,7 @@
 <script>
 	export default {
 		methods: {
-			handleJump(url) {
+			toLink(url) {
 				uni.navigateTo({ url })
 			}
 		}

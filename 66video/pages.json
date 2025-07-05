@@ -79,6 +79,84 @@
 			"style": {
 				"navigationBarTitleText": "设置"
 			}
+		},
+		{
+			"path": "pages/setting/password",
+			"style": {
+				"navigationBarTitleText": "修改登录密码"
+			}
+		},
+		{
+			"path": "pages/setting/phone",
+			"style": {
+				"navigationBarTitleText": "手机号"
+			}
+		},
+		{
+			"path": "pages/setting/email",
+			"style": {
+				"navigationBarTitleText": "邮箱"
+			}
+		},
+		{
+			"path": "pages/user/info",
+			"style": {
+				"navigationBarTitleText": "个人资料"
+			}
+		},
+		{
+			"path": "pages/user/nickname",
+			"style": {
+				"navigationBarTitleText": "昵称"
+			}
+		},
+		{
+			"path": "pages/user/avatar",
+			"style": {
+				"navigationBarTitleText": "头像"
+			}
+		},
+		{
+			"path": "pages/user/collect",
+			"style": {
+				"navigationBarTitleText": "收藏"
+			}
+		},
+		{
+			"path": "pages/user/history",
+			"style": {
+				"navigationBarTitleText": "历史"
+			}
+		},
+		{
+			"path": "pages/points/index",
+			"style": {
+				"navigationBarTitleText": "积分兑换"
+			}
+		},
+		{
+			"path": "pages/points/detail",
+			"style": {
+				"navigationBarTitleText": "礼品详情"
+			}
+		},
+		{
+			"path": "pages/address/index",
+			"style": {
+				"navigationBarTitleText": "收货地址"
+			}
+		},
+		{
+			"path": "pages/address/add",
+			"style": {
+				"navigationBarTitleText": "添加收货地址"
+			}
+		},
+		{
+			"path": "pages/order/index",
+			"style": {
+				"navigationBarTitleText": "订单列表"
+			}
 		}
 	],
 	"tabBar": {
