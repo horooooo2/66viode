@@ -3,7 +3,7 @@
 		<!-- <svg t="1748358950839" fill="currentColor" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1460" width="26" height="26"><path d="M723.4 851L382.7 510.2 723.1 169c14.6-14.6 14.6-38.5 0-53.1-14.6-14.6-38.4-14.6-53 0L306.8 480c-1.4 1-2.7 2.2-3.9 3.4-7.4 7.4-11 17.1-10.9 26.8-0.1 9.7 3.6 19.5 10.9 26.8 1.4 1.4 2.8 2.6 4.3 3.7L670.4 904c14.6 14.6 38.4 14.6 53 0 14.6-14.5 14.6-38.4 0-53z" p-id="1461"></path></svg> -->
 		<uni-icons type="left" size="26" color="#fff"></uni-icons>
 	</view>
-	<view class="detail">
+	<view class="anime_detail">
         <view class="d_cont"> 
             <view class="d_img">
 				<image class="d_img_item" mode="aspectFill" src="/static/images/detail/img.png"></image>
@@ -69,51 +69,52 @@ const setUser = ()=>{
 	color: #fff;
 	background: #aaa;
 }
-.detail{
+.anime_detail{
 	padding: 120rpx 20rpx 20rpx 20rpx;
     background: #111;
 	color: #fff;
-}
-.d_cont{
-	display: flex;
-	.d_img{
-		width: 32%;
-		height: 340rpx;
-		.d_img_item{
-			width: 100%;
-			height: 100%;
-			border-radius: 18rpx;
+	.d_cont{
+		display: flex;
+		.d_img{
+			width: 32%;
+			height: 340rpx;
+			.d_img_item{
+				width: 100%;
+				height: 100%;
+				border-radius: 18rpx;
+			}
+		}
+		.d_works{
+			flex: 1;
+			color: #fff;
+			padding-left: 20rpx;
+			.d_name{
+				margin-top: 30rpx;
+				font-size: 32rpx;
+			}
+			.d_time{
+				margin-top: 40rpx;
+				font-size: 21rpx;
+				color: #ccc;
+			}
+			.d_profile{
+				margin-top: 25rpx;
+				font-size: 25rpx;
+				color: #ccc;
+			}
 		}
 	}
-	.d_works{
-		flex: 1;
-		color: #fff;
-		padding-left: 20rpx;
-		.d_name{
-			margin-top: 30rpx;
-			font-size: 32rpx;
-		}
-		.d_time{
-			margin-top: 40rpx;
-			font-size: 21rpx;
-			color: #ccc;
-		}
-		.d_profile{
-			margin-top: 25rpx;
-			font-size: 25rpx;
-			color: #ccc;
+	
+	.labels{
+		margin-top: 20rpx;
+		color: #999;
+		font-size: 21rpx;
+		.labels_i{
+			margin-right: 20rpx;
 		}
 	}
 }
 
-.labels{
-	margin-top: 20rpx;
-	color: #999;
-	font-size: 21rpx;
-	.labels_i{
-		margin-right: 20rpx;
-	}
-}
 
 
 </style>

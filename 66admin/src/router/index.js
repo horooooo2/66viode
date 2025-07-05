@@ -5,19 +5,21 @@ import {
 import layout from "@/layout"
 import { setRouteChange } from "@/hooks/useRouteListener"
 import store from "@/store"
-import cssAnimation from "./modules/cssAnimation"
-import permissions from "./modules/permissions"
-import third from "./modules/third"
-import vueUse from "./modules/vueUse"
+import third from "./modules/third"//富文本
+import benefit from "./modules/benefit"//福利
+import permissions from "./modules/permissions"//权限
+import system from "./modules/system"//系统
+import operation from "./modules/operation"//运营
+import user from "./modules/user"//用户
 
-/**
- * 私有路由表
- */
+/** 私有路由表 */
 export const privateRoutes = [
-  permissions,
   third,
-  cssAnimation,
-  vueUse
+  permissions,
+  benefit,
+  system,
+  operation,
+  user,
 ]
 /**
  * 公开路由表

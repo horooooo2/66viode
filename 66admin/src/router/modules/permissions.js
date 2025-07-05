@@ -13,38 +13,44 @@ export default {
     icon: "permission"
   },
   children: [
-    {
-      path: "/adminAuth/getRoleList",
-      component: () => import("@/views/permissions-page/roleList.vue"),
-      name: "getRoleList",
-      meta: { title: "角色列表", icon: "role" }
-    },
-    {
-      path: "/adminAuth/adminList",
-      component: () => import("@/views/permissions-page/accountList.vue"),
-      name: "adminList",
-      meta: { title: "账号列表", icon: "personnel" }
-    },
-    {
-      path: "/adminAuth/permissionList",
-      component: () => import("@/views/permissions-page/permissionList.vue"),
-      name: "permissionList",
-      meta: { title: "权限列表", icon: "permission" }
-    },
-    {
-      path: "/account/detail",
-      name: "accountDetail",
-      component: () => import("@/views/permissions-page/accountDetail.vue"),
-      meta: { title: "账号详情", icon: "personnel" },
-      hidden: true// true不显示在侧边栏
+    // {
+    //   path: "/adminAuth/getRoleList",
+    //   component: () => import("@/views/permissions-page/roleList.vue"),
+    //   name: "getRoleList",
+    //   meta: { title: "角色列表", icon: "role" }
+    // },
+    // {
+    //   path: "/adminAuth/adminList",
+    //   component: () => import("@/views/permissions-page/accountList.vue"),
+    //   name: "adminList",
+    //   meta: { title: "账号列表", icon: "personnel" }
+    // },
+    // {
+    //   path: "/adminAuth/permissionList",
+    //   component: () => import("@/views/permissions-page/permissionList.vue"),
+    //   name: "permissionList",
+    //   meta: { title: "权限列表", icon: "permission" }
+    // },
+    // {
+    //   path: "/account/detail",
+    //   name: "accountDetail",
+    //   component: () => import("@/views/permissions-page/accountDetail.vue"),
+    //   meta: { title: "账号详情", icon: "personnel" },
+    //   hidden: true// true不显示在侧边栏
 
-    },
+    // },
 
     {
       path: "/permission/administrators",
       component: () => import("@/views/permission/administrators.vue"),
       name: "administrators",
       meta: { title: "管理员列表", icon: "user" }
+    },
+    {
+      path: "/permission/roleList",
+      component: () => import("@/views/permission/roleList.vue"),
+      name: "roleList",
+      meta: { title: "角色列表", icon: "user" }
     },
     
 

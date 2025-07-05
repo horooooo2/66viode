@@ -1,5 +1,5 @@
 <template>
-	<view class="detail">
+	<view class="my_detail">
         <view class="status_bar"></view>
 		
         <view class="d_title"> 
@@ -38,7 +38,7 @@ const setUser = ()=>{
 
 </script>
 <style lang="scss" scoped>
-.detail{
+.my_detail{
 	padding: 20rpx;
     background: #111;
 	.d_title{

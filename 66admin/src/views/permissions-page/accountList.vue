@@ -130,11 +130,7 @@ function onDownTemplate() {
 }
 </script>
 
-<script>
-export default {
-  name: "AdminList"
-}
-</script>
+
 
 <template>
   <div class="home-box">

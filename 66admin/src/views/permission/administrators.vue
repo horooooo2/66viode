@@ -6,11 +6,12 @@ import { useRouter } from "vue-router"
 import { getAdmintorList, getRoleList } from "@/api/api"
 import {  Refresh, Search } from "@element-plus/icons-vue"
 import adminDialog from "./components/adminDialog.vue"
-
+import adminResetDialog from "./components/adminResetDialog.vue"
 const router = useRouter()
 
 const showSearch = ref(true)
 const showDialog = ref(false)
+const showResetDialog = ref(false)
 const rowData = ref(null)
 
 // 数据源
@@ -70,6 +71,14 @@ async function getRoleData() {
  */
 function onShowClick(row) {
   showDialog.value = true;
+  if(row){
+    rowData.value = row;
+  }
+
+}
+
+function onShowResetClick (row) {
+  showResetDialog.value = true;
   rowData.value = row;
 }
 
@@ -123,26 +132,20 @@ function resetSearch() {
     // getListData()
 
 }
-// 监听分页参数的变化
-// watch([() => paginationData.currentPage, () => paginationData.pageSize], getTableData, { immediate: true })
+
 </script>
 
-<script>
-export default {
-  name: "AdminList"
-}
-</script>
 
 <template>
   <div class="home-box">
     
     <el-card>
         <el-form v-show="showSearch" :inline="true" :model="searchForm">
-        <el-form-item label="账号ID" prop="id">
+        <el-form-item label="账号" prop="id">
             <el-input-number v-model="searchForm.id" controls-position="right" :min="0" />
         </el-form-item>
-        <el-form-item label="账号">
-            <el-input v-model="searchForm.account" placeholder="账号" clearable />
+        <el-form-item label="姓名">
+            <el-input v-model="searchForm.account" placeholder="姓名" clearable />
         </el-form-item>
         <el-form-item label="角色" style="width: 168px;">
             <el-select v-model="searchForm.role" placeholder="角色" clearable>
@@ -185,7 +188,7 @@ export default {
     <right-toolbar
       v-model:show-search="showSearch"
       @query-table="getListData"
-      @on-add-click="onDownTemplate"
+      @on-add-click="onShowClick"
     />
       <el-table
         v-loading="loading"
@@ -219,6 +222,14 @@ export default {
             >
               编辑
             </el-button>
+            <el-button
+              v-auth="'/adminAuth/look'"
+              type="primary"
+              size="small"
+              @click="onShowResetClick(row)"
+            >
+              密码重置
+            </el-button>
 
             <el-popconfirm width="220" :title="`你确定要删除这行内容吗？`" cancel-button-text="取消"
                 confirm-button-text="确定"
@@ -244,6 +255,7 @@ export default {
     </el-card>
 
     <adminDialog v-model:dialogVisible="showDialog"  v-model:datas="rowData" @getListData="getListData" />
+    <adminResetDialog v-model:dialogVisible="showResetDialog"  v-model:datas="rowData" @getListData="getListData" />
 
   </div>
 </template>
