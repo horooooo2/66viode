@@ -115,9 +115,7 @@ function onDownTemplate() {
 }
 
 
-// function handleSearch() {
-//   paginationData.currentPage === 1 ? getTableData() : (paginationData.currentPage = 1)
-// }
+
 function resetSearch() {
     //   searchFormRef.value?.resetFields()
     //   handleSearch()
@@ -148,7 +146,7 @@ function resetSearch() {
             <el-input v-model="searchForm.account" placeholder="姓名" clearable />
         </el-form-item>
         <el-form-item label="角色" style="width: 168px;">
-            <el-select v-model="searchForm.role" placeholder="角色" clearable>
+            <el-select v-model="searchForm.role" placeholder="请选择" clearable>
                 <el-option
                     v-for="item in roleList"
                     :key="item.id"

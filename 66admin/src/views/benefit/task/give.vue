@@ -3,7 +3,7 @@ import { ElMessage, ElMessageBox } from "element-plus"
 import { onMounted, ref, watch } from "vue"
 
 import { useRouter } from "vue-router"
-import { getAdmintorList, getRoleList } from "@/api/api"
+import { getAdmintorList } from "@/api/api"
 import {  Refresh, Search } from "@element-plus/icons-vue"
 import roleDialog from "./components/roleDialog.vue"
 const router = useRouter()
@@ -25,11 +25,9 @@ const searchForm = ref({
 const tableData = ref([])
 const total = ref(0)
 const loading = ref(false)
-const roleList = ref([])
 
 onMounted(() => {
   getListData()
-  getRoleData()
 })
 
 /**
@@ -53,18 +51,6 @@ async function getListData(data) {
 }
 
 /**
- * 获取角色列表
- */
-async function getRoleData() {
-  await getRoleList()
-    .then((data) => {
-      roleList.value = data.obj
-    })
-    .catch(() => {
-
-    })
-}
-/**
  * 编辑按钮点击事件
  */
 function onShowClick(row) {
@@ -80,27 +66,6 @@ function onShowClick(row) {
 }
 
 
-/**
- * 删除按钮点击事件
- */
-const onRemoveClick = async(row)=> {
-//   ElMessageBox.confirm(
-//     `确定要删除${row.account}吗`,
-//     { type: "warning" }
-//   ).then(async () => {
-//     // await deleteUser(row._id)
-//     ElMessage.success("删除成功")
-//     // 重新渲染数据
-//     await getListData()
-//   })
-// await deleteUser(row._id)
-ElMessage.success("删除成功")
-    // 重新渲染数据
-    await getListData()
-}
-
-
-
 function searchEvent() {
   console.log(searchForm.value)
   searchForm.value.page = 1
@@ -108,14 +73,6 @@ function searchEvent() {
 }
 
 
-function onDownTemplate() {
-  showDialog.value = true;
-}
-
-
-// function handleSearch() {
-//   paginationData.currentPage === 1 ? getTableData() : (paginationData.currentPage = 1)
-// }
 function resetSearch() {
     //   searchFormRef.value?.resetFields()
     //   handleSearch()
@@ -138,14 +95,28 @@ function resetSearch() {
     
     <el-card>
         <el-form v-show="showSearch" :inline="true" :model="searchForm">
-          <el-form-item label="角色" style="width: 168px;">
-              <el-select v-model="searchForm.role" placeholder="角色" clearable>
-                  <el-option
+          <el-form-item label="任务简称">
+            <el-input v-model="searchForm.id"  placeholder="请输入" />
+          </el-form-item>
+          <el-form-item label="记录ID">
+            <el-input v-model="searchForm.id"  placeholder="请输入" />
+          </el-form-item>
+          <el-form-item label="状态" style="width: 220px;">
+              <el-select v-model="searchForm.role" placeholder="请选择" clearable>
+                  <!-- <el-option
                       v-for="item in roleList"
                       :key="item.id"
                       :label="item.name"
                       :value="item.id"
-                  />
+                  /> -->
+              </el-select>
+          </el-form-item>
+          <el-form-item label="类型" style="width: 220px;">
+              <el-select v-model="searchForm.role" placeholder="请选择" clearable>
+              </el-select>
+          </el-form-item>
+          <el-form-item label="任务活跃" style="width: 220px;">
+              <el-select v-model="searchForm.role" placeholder="请选择" clearable>
               </el-select>
           </el-form-item>
           <el-form-item>
@@ -164,25 +135,22 @@ function resetSearch() {
           </el-form-item>
         </el-form>
 
-    <right-toolbar
-      v-model:show-search="showSearch"
-      @query-table="getListData"
-      @on-add-click="onShowClick"
-    />
       <el-table
         v-loading="loading"
         :data="tableData"
         element-loading-text="加载中..."
         border
       >
-        <el-table-column prop="id" label="角色" width="180" />
-        <el-table-column prop="account" label="描述" width="180" />
-        <el-table-column label="人数" prop="count" width="180" />
+        <el-table-column prop="time" label="申请时间" width="180" />
+        <el-table-column prop="id" label="用户名" width="180" />
+        <el-table-column prop="account" label="类型" width="180" />
+        <el-table-column label="奖励" prop="count" width="180" />
         <el-table-column label="状态" width="110">
           <template #default="{ row }">
             <span>{{ row.is_lock == "1" ? "冻结" : "正常" }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="备注" prop="count" width="180" />
         <el-table-column prop="date" label="操作时间" width="160" />
         <el-table-column prop="address" label="操作" min-width="180">
           <template #default="{ row }">
@@ -194,24 +162,7 @@ function resetSearch() {
             >
               编辑
             </el-button>
-            <el-button
-              v-auth="'/adminAuth/look'"
-              type="primary"
-              size="small"
-              @click="onShowResetClick(row)"
-            >
-             成员
-            </el-button>
 
-            <el-popconfirm width="220" :title="`你确定要删除这行内容吗？`" cancel-button-text="取消"
-                confirm-button-text="确定"
-                icon-color="red"
-                @confirm="onRemoveClick(row)"
-            >
-                <template #reference>
-                    <el-button v-auth="'/adminAuth/del'" size="small" type="danger">删除</el-button>
-                </template>
-            </el-popconfirm>
           </template>
         </el-table-column>
       </el-table>
