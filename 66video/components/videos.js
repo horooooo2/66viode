@@ -3,7 +3,7 @@ export const playlist ={
         {
             "id": "1",
             "title": "标题1",
-            "image": "https://www.haitu.tv/upload/vod/20230429-2/d16d885912160603f7be51844b9c737a.jpg",
+            "image": "/static/images/detail/img.png",
             "video": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8"
         },
         {
