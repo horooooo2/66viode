@@ -1,6 +1,6 @@
 <template>
 	<view class="login_box"> 
-		<uni-easyinput class="r_input"  prefixIcon="person" v-model="params.userName" :inputBorder="false"  :clearable="false"  trim  placeholder="请输入账号" placeholderStyle="color: #777" ></uni-easyinput>
+		<uni-easyinput class="r_input"  prefixIcon="person" v-model="params.username" :inputBorder="false"  :clearable="false"  trim  placeholder="请输入账号" placeholderStyle="color: #777" ></uni-easyinput>
 		<uni-easyinput class="r_input" type="password"  prefixIcon="locked"  v-model="params.password" :inputBorder="false"  :clearable="false"  trim  placeholder="请输入密码" placeholderStyle="color: #777" ></uni-easyinput>
 		<view class="server" @click="changeCheck"> 
 			<checkbox  :checked="checkRef"  backgroundColor="transparent" borderColor="#ddd" activeBackgroundColor="#FA3296" activeBorderColor="#FA3296" color="#fff" style="transform:scale(0.7)" />
@@ -15,15 +15,17 @@
 
 <script setup>
 	import { computed,reactive,ref } from 'vue';
+	import {apiLogin} from '@/common/api/user.js'
 	import DialogVue from './dialog.vue';
+	
 	const checkRef = ref(false);
 	const isShow = ref(false);
 	const params = reactive({
-		userName: '',
+		username: '',
 		password:'',
 	})
 	const isOK = computed(()=>{
-		return params.userName && params.password
+		return params.username && params.password
 	});
 	const changeCheck = ()=>{
 		checkRef.value = !checkRef.value 
@@ -31,6 +33,9 @@
 	const submitFun=()=>{
 		console.log('isShow.value ==',isShow.value )
 		isShow.value = true;
+		apiLogin({...params}).then(res=>{
+			console.log('res==',res);
+		})
 	}
 	
 	const dialogConfirm = (code)=>{

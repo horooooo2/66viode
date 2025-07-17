@@ -1,7 +1,7 @@
 <template>
 	<view class="page_bg">
 		<!-- <button @click="back">返回</button> -->
-		<uni-icons class="close" type="closeempty" size="18" color="#fff"></uni-icons>
+		<uni-icons class="close" @click="back" type="closeempty" size="18" color="#fff"></uni-icons>
 		
 		<view class="title">黑料</view>
 		<view class="no18">
@@ -54,7 +54,13 @@
 		},
 		methods:{
 			back(){
-				uni.navigateBack();
+				// uni.navigateBack();
+				// uni.navigateTo({
+				// 	url: '/pages/home/index'
+				// });
+				uni.switchTab({
+					url: '/pages/home/index'
+				});
 			},
 			changeType(){
 				// uni.navigateTo({
