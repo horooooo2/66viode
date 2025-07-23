@@ -122,6 +122,7 @@ function handleOut() {
           导出
         </el-button>
       </el-col>
+      <slot name="toolbarBtn"></slot>
     </el-row>
 
     <div class="top-right-btn" :style="style">

@@ -3,28 +3,29 @@
   <el-dialog
      v-model="isShow"
      v-if="isShow"
-     :title="formData?.id === undefined ? '新增用户' : '修改用户'"
+     :title="formData?.id === undefined ? '新增' : '编辑'"
      width="40%"
      @closed="closeFun"
      align-center
    >
      <el-form ref="formRef" :model="formData"  :rules="rules" label-width="auto" label-position="right">
-       <el-form-item prop="username" label="用户名" >
-         <el-input v-model="formData.username" placeholder="请输入" />
+       <el-form-item prop="username" label="事件类型" >
+          <el-input v-model="formData.username" placeholder="请输入" />
        </el-form-item>
-       <el-form-item label="权限" class="treeFormItem">
-         <el-tree
-           ref="treeRef"
-           :data="store.state.user.eidtPermissionTree"
-           :props="{
-             children: 'children',
-             label: 'name',
-           }"
-           show-checkbox
-           node-key="id"
-           :default-expand-all="true"
-           :default-checked-keys="formData.permissions"
-         ></el-tree>
+       <el-form-item prop="sort" label="排序" >
+          <el-input v-model="formData.sort" placeholder="请输入" />
+       </el-form-item>
+       <el-form-item prop="status" label="状态" >
+            <el-select v-model="formData.status" placeholder="请选择" clearable>
+              <el-option label="启用" :value="1" /> 
+              <el-option label="禁用" :value="2" /> 
+                  <!-- <el-option
+                      v-for="item in roleList"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
+                  /> -->
+            </el-select>
        </el-form-item>
      </el-form>
      <template #footer>
@@ -56,7 +57,6 @@ const props = defineProps({
 const emit = defineEmits(["update:datas","getListData"]);
 const isShow = ref(false);
 const store = useStore();
-const treeRef = ref(null);
 const formRef  = ref(null);
 
 const rules = reactive({
@@ -87,7 +87,6 @@ const loading = ref(false);
 const handleCreateOrUpdate = async(formEl)=>{
   
    console.log('formData===',formData);
-   console.log('tree===',treeRef.value.getCheckedKeys());
    if (!formEl) return
    loading.value = true;
    let checkForm =  await formEl.validate((valid) => valid);
@@ -116,8 +115,5 @@ const closeFun = ()=>{
 </script>
 
 <style lang="scss" scoped>
- .treeFormItem{
-   max-height: 500px;
-   overflow: auto;
- }
+
 </style>

@@ -8,7 +8,6 @@ import {  Refresh, Search } from "@element-plus/icons-vue"
 import roleDialog from "./components/roleDialog.vue"
 const router = useRouter()
 
-const showSearch = ref(true)
 const showDialog = ref(false)
 const rowData = ref(null)
 
@@ -113,9 +112,7 @@ function onDownTemplate() {
 }
 
 
-// function handleSearch() {
-//   paginationData.currentPage === 1 ? getTableData() : (paginationData.currentPage = 1)
-// }
+
 function resetSearch() {
     //   searchFormRef.value?.resetFields()
     //   handleSearch()
@@ -137,9 +134,9 @@ function resetSearch() {
   <div class="home-box">
     
     <el-card>
-        <el-form v-show="showSearch" :inline="true" :model="searchForm">
+        <el-form :inline="true" :model="searchForm">
           <el-form-item label="角色" style="width: 168px;">
-              <el-select v-model="searchForm.role" placeholder="角色" clearable>
+              <el-select v-model="searchForm.role" placeholder="请选择" clearable>
                   <el-option
                       v-for="item in roleList"
                       :key="item.id"
@@ -164,11 +161,6 @@ function resetSearch() {
           </el-form-item>
         </el-form>
 
-    <right-toolbar
-      v-model:show-search="showSearch"
-      @query-table="getListData"
-      @on-add-click="onShowClick"
-    />
       <el-table
         v-loading="loading"
         :data="tableData"
