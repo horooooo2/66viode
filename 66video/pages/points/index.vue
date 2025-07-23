@@ -4,10 +4,7 @@
 		<view class="header">
 			<image class="logo" src="/static/images/points/CHIGUALOGO.png" mode="widthFix"></image>
 			<view class="right">
-				<view class="panel">
-					<view>997.16</view>
-					<image class="icon-add" src="/static/images/points/icon-add.png"></image>
-				</view>
+				<Surplus></Surplus>
 				<view class="avatar"></view>
 			</view>
 		</view>
@@ -52,7 +49,11 @@
 </template>
 
 <script>
+	import Surplus from "@/components/Surplus/index.vue"
 	export default {
+		components: {
+			Surplus,
+		},
 		methods: {
 			toLink(url) {
 				uni.navigateTo({
@@ -91,26 +92,6 @@
 			.right {
 				display: flex;
 				gap: 20rpx;
-
-				.panel {
-					display: flex;
-					align-items: center;
-					padding: 16rpx 18rpx;
-					box-sizing: border-box;
-					border-radius: 32rpx;
-					border: 2rpx solid #DE21D4;
-					background: #1C1C1C;
-					color: #fff;
-					font-size: 26rpx;
-					font-weight: 700;
-					gap: 46rpx;
-
-					.icon-add {
-						flex-shrink: 0;
-						width: 28rpx;
-						height: 28rpx;
-					}
-				}
 
 				.avatar {
 					width: 64rpx;

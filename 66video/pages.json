@@ -157,6 +157,48 @@
 			"style": {
 				"navigationBarTitleText": "订单列表"
 			}
+		},
+		{
+			"path": "pages/friends/index",
+			"style": {
+				"navigationBarTitleText": "邀请好友"
+			}
+		},
+		{
+			"path": "pages/club/index",
+			"style": {
+				"navigationBarTitleText": "VIP俱乐部"
+			}
+		},
+		{
+			"path": "pages/activity/index",
+			"style": {
+				"navigationBarTitleText": "活动"
+			}
+		},
+		{
+			"path": "pages/media/index",
+			"style": {
+				"navigationBarTitleText": "官方媒体"
+			}
+		},
+		{
+			"path": "pages/app/index",
+			"style": {
+				"navigationBarTitleText": "APP下载"
+			}
+		},
+		{
+			"path": "pages/version/index",
+			"style": {
+				"navigationBarTitleText": "关于/应用版本"
+			}
+		},
+		{
+			"path": "pages/task/index",
+			"style": {
+				"navigationBarTitleText": "任务记录"
+			}
 		}
 	],
 	"tabBar": {

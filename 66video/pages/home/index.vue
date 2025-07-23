@@ -2,7 +2,7 @@
 	<view class="home">
 		<view class="status_bar"></view>
 		<view class="header">
-			<view class="logo">66 Video</view>
+			<view class="logo" @click="onClick">66 Video</view>
 			<view class="button">
 				<view class="login">登录</view>
 				<view class="register">注册</view>
@@ -81,11 +81,17 @@
 				</tui-radio-group>
 			</view>
 		</tui-bottom-popup>
+		
+		<Sidebar ref="sidebarRef"></Sidebar>
 	</view>
 </template>
 
 <script>
+	import Sidebar from '@/components/Sidebar/index.vue'
 	export default {
+		components: {
+			Sidebar
+		},
 		data() {
 			return {
 				current: 0,
@@ -139,6 +145,10 @@
 			}
 		},
 		methods: {
+			// 打开侧边栏
+			onClick() {
+				this.$refs.sidebarRef && this.$refs.sidebarRef.open()
+			},
 			//切换tab，逻辑请自行处理
 			change(e) {
 				this.currentTab = e.index

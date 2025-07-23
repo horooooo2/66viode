@@ -1,6 +1,10 @@
 <template>
 	<view class="collect">
-		<NavBar title="收藏记录" isRight rightText="管理" @right="toUpdate"></NavBar>
+		<NavBar title="收藏记录">
+			<template #right>
+				<view style="font-size: 28rpx;color: #ddd;" @click="toUpdate">管理</view>
+			</template>
+		</NavBar>
 		<view class="collect-container">
 			<view class="filter">
 				<view class="panel">
@@ -19,14 +23,13 @@
 						<image v-else src="/static/images/setting/icon_checkbox_active.svg" mode="widthFix"></image>
 					</view>
 					<view class="cover">
-						<image class="pic" src="/static/img.png" mode=""></image>
+						<image class="pic" src="/static/images/img.png" mode=""></image>
 						<view class="type">视频</view>
 					</view>
 					<view class="right-panel">
 						<view class="title">未来不再遥远。外面多少风雨、黑暗都不再怕</view>
 						<view class="time">
-							<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"
-								fill="none">
+							<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none">
 								<path
 									d="M8.2582 10.875H3.81537C3.11549 10.875 2.44627 10.2056 2.44627 9.59275V2.41149C2.44627 1.7986 3.11549 1.125 3.81537 1.125H8.2582C8.95809 1.125 9.56828 1.7986 9.56828 2.41149V9.59275C9.56828 10.2056 8.95809 10.875 8.2582 10.875ZM3.81537 1.77048C3.41257 1.77048 3.08337 2.05759 3.08337 2.41149V9.59275C3.08337 9.94548 3.41123 10.2338 3.81537 10.2338H8.2582C8.661 10.2338 8.9902 9.94665 8.9902 9.59275V2.41149C8.9902 2.05876 8.66234 1.77048 8.2582 1.77048H3.81537Z"
 									fill="#777777" />
@@ -212,19 +215,23 @@
 			justify-content: space-between;
 			padding: 14rpx 32rpx;
 			box-sizing: border-box;
+
 			.all-button {
 				display: flex;
 				align-items: center;
+
 				image {
 					width: 32rpx;
 					height: 32rpx;
 					margin-right: 20rpx;
 				}
+
 				text {
 					color: #ddd;
 					font-size: 26rpx;
 				}
 			}
+
 			.button {
 				width: 168rpx;
 				height: 72rpx;

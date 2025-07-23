@@ -26,7 +26,7 @@
 			:maskClosable="false">
 			<view class="d-title">
 				<text>确认订单</text>
-				<image class="close" @click="visible = false" src="/static/icon_nav_news_white.png" mode=""></image>
+				<image class="close" @click="visible = false" src="/static/images/icon_nav_news_white.png" mode=""></image>
 			</view>
 			<view class="d-container">
 				<!-- <view class="address-add" @click="toLink('/pages/address/add')">添加收货地址</view> -->
@@ -39,7 +39,7 @@
 						</view>
 						<view class="dizhi">湖北省武汉市经济开发区开发路890号蜂场快递柜</view>
 					</view>
-					<image class="address-check" src="/static/icon_right.png" mode="">
+					<image class="address-check" src="/static/images/icon_right.png" mode="">
 					</image>
 				</view>
 				<view class="goods-card">
