@@ -3,12 +3,12 @@ const BASE_URL = 'http://66cg.6980.cc/api.php' // 根据实际项目修改
 const TIMEOUT = 15000
 
 // 请求队列（防重复提交）
-const pendingRequests = new Map()
+// const pendingRequests = new Map()
 
-// 生成请求key
-const generateReqKey = (config) => {
-  return `${config.url}?${JSON.stringify(config.data)}&request_type=${config.method}`
-}
+ // 生成请求key
+// const generateReqKey = (config) => {
+//   return `${config.url}?${JSON.stringify(config.data)}&request_type=${config.method}`
+// }
 
 // 请求拦截
 const requestInterceptor = (config) => {
@@ -20,20 +20,19 @@ const requestInterceptor = (config) => {
   }
   
   // 防重复提交处理
-  const requestKey = generateReqKey(config)
-  if (pendingRequests.has(requestKey)) {
-    return Promise.reject(new Error('请勿重复提交'))
-  }
-  pendingRequests.set(requestKey, config)
+  // const requestKey = generateReqKey(config)
+  // if (pendingRequests.has(requestKey)) {
+  //   return Promise.reject(new Error('请勿重复提交'))
+  // }
+  // pendingRequests.set(requestKey, config)
   
   return config
 }
 
 // 响应拦截
 const responseInterceptor = (response) => {
-  const requestKey = generateReqKey(response.config)
-  pendingRequests.delete(requestKey)
-  
+	console.log( '响应拦截 response ===',response )
+
   // 示例：处理特定状态码
   if (response.statusCode === 401) {
     uni.reLaunch({ url: '/pages/login/index' })
@@ -80,7 +79,7 @@ const request = (options) => {
   
   // 执行拦截器
   options = requestInterceptor(options) || options
-  
+  console.log( 'options requestInterceptor ===',options )
   return new Promise((resolve, reject) => {
     uni.request({
       ...options,

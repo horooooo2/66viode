@@ -8,7 +8,7 @@
 		</view>
 		<button class="r_submit" @click="submitFun" :class="isOK ? 'isOK':''">登录</button>
 	</view>
-	<DialogVue v-model:isShow="isShow" @dialogConfirm="dialogConfirm"/>
+	<!-- <DialogVue v-model:isShow="isShow" @dialogConfirm="dialogConfirm"/> -->
 	
 	
 </template>
@@ -16,7 +16,7 @@
 <script setup>
 	import { computed,reactive,ref } from 'vue';
 	import {apiLogin} from '@/common/api/user.js'
-	import DialogVue from './dialog.vue';
+	// import DialogVue from './dialog.vue';
 	
 	const checkRef = ref(false);
 	const isShow = ref(false);
@@ -31,16 +31,15 @@
 		checkRef.value = !checkRef.value 
 	}
 	const submitFun=()=>{
-		console.log('isShow.value ==',isShow.value )
-		isShow.value = true;
+		// isShow.value = true;
 		apiLogin({...params}).then(res=>{
 			console.log('res==',res);
 		})
 	}
 	
-	const dialogConfirm = (code)=>{
-		console.log('code ==',code)
-	}
+	// const dialogConfirm = (code)=>{
+	// 	console.log('code ==',code)
+	// }
 
 </script>
 
