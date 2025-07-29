@@ -104,25 +104,18 @@
 
 		console.log('checkVal.value==',checkVal.value);
 		if(!isOK.value) return;
-		// console.log('isShow.value ==',isShow.value )
 		// isShow.value = true;
-		// if(!params.username) return uni.showToast({ title: '请输入用户名', icon:'none' });
-		// if(!params.password) return uni.showToast({ title: '请输入密码', icon:'none' });
-		// if(!params.confirm_password) return uni.showToast({ title: '请输入确认密码', icon:'none' });
-		// if(params.password != params.confirm_password) return uni.showToast({ title: '密码和确认密码不一致', icon:'none' });
-		// if(!params.mobile) return uni.showToast({ title: '请输入手机号', icon:'none' });
-		// if(!params.code) return uni.showToast({ title: '请输入验证码', icon:'none' });
 		if(params.password != params.confirm_password) return uni.showToast({ title: '密码和确认密码不一致', icon:'none' });
 		if(!checkVal.value) return uni.showToast({ title: '请确认接受并勾选用户服务协议', icon:'none' });
 		
-		uni.showLoading({ title: '', mask: true });
-		const {code,msg,data} = await apiRegister({...params});
-		uni.hideLoading();
+		const {code,msg,data} = await apiRegister({...params,loading:true});
 		uni.showToast({ title: msg, icon:'none', duration: 2000 });
 		console.log('data===',data);
 		if(code == 0){
 			uni.setStorageSync('storage_user_data', data);	
-			
+			uni.switchTab({
+				url: '/pages/home/index'
+			});
 		}
 		
 		

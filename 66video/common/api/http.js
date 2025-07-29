@@ -16,9 +16,10 @@ const requestInterceptor = (config) => {
   config.header = {
     ...config.header,
     'Content-Type': 'application/json',
-    'Authorization': uni.getStorageSync('token') || ''
+    'Authorization': uni.getStorageSync('token') || '',
+	'Token': uni.getStorageSync('storage_user_data')?.token || '',
   }
-  
+
   // 防重复提交处理
   // const requestKey = generateReqKey(config)
   // if (pendingRequests.has(requestKey)) {
@@ -81,6 +82,9 @@ const request = (options) => {
   options = requestInterceptor(options) || options
   console.log( 'options requestInterceptor ===',options )
   return new Promise((resolve, reject) => {
+	if( options?.data?.loading ){
+		uni.showLoading({ title: '', mask: true });
+	}
     uni.request({
       ...options,
       success: (res) => {
@@ -105,7 +109,7 @@ const request = (options) => {
 
 // 快捷方法
 const http = {
-  get(url, data, options = {}) {
+  get(url, data={}, options = {}) {
     return request({
       url,
       data,
@@ -114,7 +118,7 @@ const http = {
     })
   },
   
-  post(url, data, options = {}) {
+  post(url, data={}, options = {}) {
     return request({
       url,
       data,

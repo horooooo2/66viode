@@ -2,9 +2,11 @@
 	<view class="login_box"> 
 		<uni-easyinput class="r_input"  prefixIcon="person" v-model="params.username" :inputBorder="false"  :clearable="false"  trim  placeholder="请输入账号" placeholderStyle="color: #777" ></uni-easyinput>
 		<uni-easyinput class="r_input" type="password"  prefixIcon="locked"  v-model="params.password" :inputBorder="false"  :clearable="false"  trim  placeholder="请输入密码" placeholderStyle="color: #777" ></uni-easyinput>
-		<view class="server" @click="changeCheck"> 
-			<checkbox  :checked="checkRef"  backgroundColor="transparent" borderColor="#ddd" activeBackgroundColor="#FA3296" activeBorderColor="#FA3296" color="#fff" style="transform:scale(0.7)" />
-			<view>记住账号</view>
+		<view class="server" > 
+			<checkbox-group @change="changeCheck">
+				<checkbox  :checked="checkRef"  backgroundColor="transparent" borderColor="#ddd" activeBackgroundColor="#FA3296" activeBorderColor="#FA3296" color="#fff" style="transform:scale(0.7)" />
+			</checkbox-group>
+			<view @click="changeCheck">记住账号</view>
 		</view>
 		<button class="r_submit" @click="submitFun" :class="isOK ? 'isOK':''">登录</button>
 	</view>
@@ -18,10 +20,10 @@
 	import {apiLogin} from '@/common/api/user.js'
 	// import DialogVue from './dialog.vue';
 	
-	const checkRef = ref(false);
+	const checkRef = ref(uni.getStorageSync('storage_remember_username')? true:false);
 	const isShow = ref(false);
 	const params = reactive({
-		username: '',
+		username: uni.getStorageSync('storage_remember_username') || '',
 		password:'',
 	})
 	const isOK = computed(()=>{
@@ -30,11 +32,24 @@
 	const changeCheck = ()=>{
 		checkRef.value = !checkRef.value 
 	}
-	const submitFun=()=>{
+	const submitFun=async()=>{
+		console.log('checkRef==',checkRef.value);
+		if(!isOK.value) return;
 		// isShow.value = true;
-		apiLogin({...params}).then(res=>{
-			console.log('res==',res);
-		})
+		
+		const {code,msg,data} = await apiLogin({...params,loading:true});
+		uni.showToast({ title: msg, icon:'none', duration: 2000 });
+		if(code == 0){
+			uni.setStorageSync('storage_user_data', data);	
+			uni.switchTab({
+				url: '/pages/home/index'
+			});
+		}
+		if( checkRef.value ){
+			uni.setStorageSync('storage_remember_username', params.username);		
+		}else{
+			uni.removeStorageSync('storage_remember_username');
+		}
 	}
 	
 	// const dialogConfirm = (code)=>{
