@@ -1,16 +1,17 @@
 {
-	"pages": [{
-			"path": "pages/home/index",
-			"style": {
-				"navigationBarTitleText": "菜单"
-			}
-		},
+	"pages": [
 		{
 			"path": "pages/eat/index",
 			"style": {
 				"navigationBarTitleText": "吃瓜"
 			}
 		},
+		{
+				"path": "pages/home/index",
+				"style": {
+					"navigationBarTitleText": "菜单"
+				}
+			},
 		{
 			"path": "pages/entertainment/index",
 			"style": {
@@ -171,12 +172,6 @@
 			}
 		},
 		{
-			"path": "pages/activity/index",
-			"style": {
-				"navigationBarTitleText": "活动"
-			}
-		},
-		{
 			"path": "pages/media/index",
 			"style": {
 				"navigationBarTitleText": "官方媒体"
@@ -206,27 +201,28 @@
 		"selectedColor": "#FF1A8C",
 		"backgroundColor": "#101010",
 		"borderStyle": "black",
-		"list": [{
-			"pagePath": "pages/home/index",
-			"text": "菜单",
-			"iconPath": "static/images/tabbar/foot1.png",
-			"selectedIconPath": "static/images/tabbar/foot1_active.png"
-		}, {
-			"pagePath": "pages/eat/index",
-			"text": "吃瓜",
-			"iconPath": "static/images/tabbar/foot2.png",
-			"selectedIconPath": "static/images/tabbar/foot2_active.png"
-		}, {
-			"pagePath": "pages/entertainment/index",
-			"text": "文娱",
-			"iconPath": "static/images/tabbar/foot3.png",
-			"selectedIconPath": "static/images/tabbar/foot3_active.png"
-		}, {
-			"pagePath": "pages/active/index",
-			"text": "活动",
-			"iconPath": "static/images/tabbar/foot4.png",
-			"selectedIconPath": "static/images/tabbar/foot4_active.png"
-		}]
+		"custom": true,
+		        "list": [{
+		            "pagePath": "pages/home/index",
+		            "text": "菜单",
+		            "iconPath": "static/images/tabbar/foot1.png",
+		            "selectedIconPath": "static/images/tabbar/foot1_active.png"
+		        }, {
+		            "pagePath": "pages/eat/index",
+		            "text": "吃瓜",
+		            "iconPath": "static/images/tabbar/foot2.png",
+		            "selectedIconPath": "static/images/tabbar/foot2_active.png"
+		        }, {
+		            "pagePath": "pages/entertainment/index",
+		            "text": "文娱",
+		            "iconPath": "static/images/tabbar/foot3.png",
+		            "selectedIconPath": "static/images/tabbar/foot3_active.png"
+		        }, {
+		            "pagePath": "pages/active/index",
+		            "text": "活动",
+		            "iconPath": "static/images/tabbar/foot4.png",
+		            "selectedIconPath": "static/images/tabbar/foot4_active.png"
+		        }]
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

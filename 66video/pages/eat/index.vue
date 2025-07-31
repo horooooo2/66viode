@@ -55,7 +55,8 @@
 						<tui-list-cell>
 							<view class="thorui-align__center sort-item">
 								<view class="sort-label">{{item.name}}</view>
-								<tui-radio :checked="item.checked" :value="item.value" color="#D018F5" borderColor="#c5c9d1">
+								<tui-radio :checked="item.checked" :value="item.value" color="#D018F5"
+									borderColor="#c5c9d1">
 								</tui-radio>
 							</view>
 						</tui-list-cell>
@@ -73,7 +74,8 @@
 						<tui-list-cell>
 							<view class="thorui-align__center sort-item">
 								<view class="sort-label">{{item.name}}</view>
-								<tui-radio :checked="item.checked" :value="item.value" color="#D018F5" borderColor="#c5c9d1">
+								<tui-radio :checked="item.checked" :value="item.value" color="#D018F5"
+									borderColor="#c5c9d1">
 								</tui-radio>
 							</view>
 						</tui-list-cell>
@@ -81,16 +83,19 @@
 				</tui-radio-group>
 			</view>
 		</tui-bottom-popup>
-		
-		<Sidebar ref="sidebarRef"></Sidebar>
+
+		<custom-tabbar :current="1" @change="handleTabChange"></custom-tabbar>
 	</view>
 </template>
 
 <script>
 	import Sidebar from '@/components/Sidebar/index.vue'
+	import CustomTabbar from '@/components/custom-tabbar.vue'
+
 	export default {
 		components: {
-			Sidebar
+			Sidebar,
+			CustomTabbar
 		},
 		data() {
 			return {
@@ -143,6 +148,12 @@
 					}
 				]
 			}
+		},
+		onShow() {
+			uni.$on('showCenterPopup', this.showCenterPopup);
+		},
+		onHide() {
+			uni.$off('showCenterPopup', this.showCenterPopup);
 		},
 		methods: {
 			// 打开侧边栏
@@ -221,11 +232,12 @@
 				}
 			}
 		}
-		
+
 		.search {
 			width: 100%;
 			padding: 0 32rpx;
 			box-sizing: border-box;
+
 			.input {
 				width: 100%;
 				height: 72rpx;
@@ -237,6 +249,7 @@
 				padding: 0 32rpx;
 				box-sizing: border-box;
 			}
+
 			.uni-input-placeholder {
 				color: #828282;
 				left: 50%;
