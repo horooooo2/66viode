@@ -81,7 +81,8 @@
             /* radial-gradient(60% 300px at right top ,#ff5050, transparent); */
 		/* backdrop-filter: blur(8px); */
         backdrop-filter: saturate(50%) blur(8px);
-		height: 100vh;
+		height: auto;
+		min-height: 100vh;
 		.close{
 			position: absolute;
 			left: 40rpx;
@@ -142,6 +143,7 @@
 		._kf{
 			margin-top: 90rpx;
 			padding: 10rpx 0;
+			padding-bottom: 30rpx;
 			font-size: 22rpx;
 			color: #777;
 			text-align: center;

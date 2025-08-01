@@ -109,16 +109,34 @@
 				</view>
 			</view>
 			
-			<view class="button">退出登录</view>
+			<view class="button" @click="logoutFun">退出登录</view>
 		</view>
 	</view>
 </template>
 
 <script>
+	import {apiLogout,apiGetUserInfo} from '@/common/api/user.js'
 	export default {
+		created() {
+			this.getUserInfo();
+		},
 		methods: {
 			toLink(url) {
 				uni.navigateTo({ url })
+			},
+			async logoutFun(){
+				const {code,msg} = await apiLogout({loading:true});
+				uni.showToast({ title: msg, icon:'none', duration: 2000 });
+				if(code == 0){
+					uni.removeStorageSync('storage_user_data');	
+					uni.switchTab({
+						url: '/pages/home/index'
+					});
+				}
+			},
+			async getUserInfo(){
+				const {code,msg,data} = await apiGetUserInfo();
+				console.log('data==',data);
 			}
 		}
 	}
