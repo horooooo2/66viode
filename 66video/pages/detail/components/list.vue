@@ -7,7 +7,7 @@
 	</view>
 	<view class="d_list">
 		<view class="d_list_wrap">
-			<button class="d_list_item" size="default" type="default" >第1话</button>
+			<button class="d_list_item current" size="default" type="default" @click="openList">第1话</button>
 			<button class="d_list_item" size="default" type="default" >第2话</button>
 			<button class="d_list_item" size="default" type="default" >第3话</button>
 			<button class="d_list_item" size="default" type="default" >第3话</button>
@@ -209,6 +209,8 @@
 			color: #999;
 		}
 	}
+	
+
 	.d_list{
 		padding: 20rpx;
 		overflow: auto;
@@ -230,12 +232,24 @@
 			font-size: 22rpx;
 			padding: 0rpx 4rpx;
 			margin-right: 20rpx;
+			&.current {
+				border-color: #FF1A8C;
+				color: #FF1A8C;
+			}
 		}
+		
+		
+		
 		.btn-hover{
 			border-color: #FF1A8C;
 			color: #FF1A8C;
 		}
 	}
+	
+	
+	
+	
+	
 	.list_popup_cont{
 		height: 80vh;
 		color: #ccc;
@@ -277,4 +291,5 @@
 			color: #FF1A8C;
 		}
 	}
+	
 </style>

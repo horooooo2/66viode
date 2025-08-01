@@ -6,8 +6,17 @@
 			<uni-icons type="left" size="26" color="#fff" @click="goBack()"></uni-icons>
 		</view>
 		<view class="anime_detail">
-			<view>
+			<view class="video-box">
 				<videoDom />
+				<view class="video-title">标题，爱是自由意志的沦陷，你无法通过意志控制自己不要去爱。主观的感受却是客观存在，不以不以不...</view>
+				<view class="video-label">
+					<view class="video-label-info">11.2W 观看 一年前</view>
+					<view class="video-label-item">
+						<view class="text">#真挚</view>
+						<view class="text">#真挚</view>
+						<view class="text">#真挚</view>
+					</view>
+				</view>
 			</view>
 			<view class="d_cont"> 
 				<view class="d_img">
@@ -134,6 +143,33 @@ const goBack=()=>{
 		font-size: 21rpx;
 		.labels_i{
 			margin-right: 20rpx;
+		}
+	}
+}
+
+.video-box {
+	width: 100%;
+	.video-title {
+		font-size: 28rpx;
+		line-height: 40rpx;
+		color: #ddd;
+	}
+	.video-label {
+		margin-top: 16rpx;
+		display: flex;
+		align-items: center;
+		&-info {
+			font-size: 24rpx;
+			color: #999;
+			font-weight: 400;
+		}
+		&-item {
+			display: flex;
+			align-items: center;
+			color: #DB7FDB;
+			font-size: 24rpx;
+			font-weight: 400;
+			gap: 8px;
 		}
 	}
 }
