@@ -84,15 +84,15 @@
 			</view>
 		</tui-bottom-popup>
 		
-		<Sidebar ref="sidebarRef"></Sidebar>
+		<custom-tabbar :current="2" @change="handleTabChange"></custom-tabbar>
 	</view>
 </template>
 
 <script>
-	import Sidebar from '@/components/Sidebar/index.vue'
+	import CustomTabbar from '@/components/custom-tabbar.vue'
 	export default {
 		components: {
-			Sidebar
+			CustomTabbar
 		},
 		data() {
 			return {

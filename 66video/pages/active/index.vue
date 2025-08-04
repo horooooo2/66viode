@@ -73,6 +73,8 @@
 		<PrizePopup ref="prizeRef"></PrizePopup>
 
 		<TagPopup ref="tagRef"></TagPopup>
+		<custom-tabbar :current="3" @change="handleTabChange"></custom-tabbar>
+		
 	</view>
 </template>
 
@@ -83,6 +85,7 @@
 	import RulePopup from "./components/RulePopup.vue"
 	import PrizePopup from "./components/PrizePopup.vue"
 	import TagPopup from "./components/TagPopup.vue"
+	import CustomTabbar from '@/components/custom-tabbar.vue'
 	export default {
 		components: {
 			NavBar,
@@ -91,6 +94,7 @@
 			RulePopup,
 			PrizePopup,
 			TagPopup,
+			CustomTabbar
 		},
 		data() {
 			return {
