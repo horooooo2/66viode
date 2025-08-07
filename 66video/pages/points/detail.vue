@@ -3,62 +3,61 @@
 		<NavBar :isTitle="false"></NavBar>
 		<view class="detail-container">
 			<view class="cover">
-				<image src="/static/images/points/img.png" mode=""></image>
+				<image :src="dataItem.cover_image" mode=""></image>
 			</view>
 			<view class="jifen">
 				<image class="icon" src="/static/images/points/icon_jf.png" mode=""></image>
-				<text>500</text>
+				<text>{{ dataItem.price }}</text>
 			</view>
-			<view class="title">Bulgari DIVAS’ DREAM 18K 玫瑰金</view>
-			<view class="kucun">库存：12</view>
-			<view class="desc-box">
-				<view class="desc-item" v-for="i in 3" :key="i">
-					<view class="desc-title">标题1</view>
-					<p>1.内容文案内容文案，内容文案内容文案内容文案。</p>
-					<p>2.内容文案内容文案，内容文案内容文案内容文案。内容文案，内容文案，内容文案。</p>
-					<p>3.内容文案内容文案，内容文案，内容文案内容文案。内容文案内容文案。</p>
-				</view>
-			</view>
-			<view class="button" @click="visible = true">申请兑换</view>
+			<view class="title">{{ dataItem.name }}</view>
+			<view class="kucun">库存：{{ dataItem.stock }}</view>
+			<view class="desc-box" v-html="dataItem.description"></view>
+			<view class="button" @click="onClickOrder">申请兑换</view>
 		</view>
 
 		<tui-drawer class="address-drawer" :visible="visible" backgroundColor="#202020" mode="bottom"
 			:maskClosable="false">
 			<view class="d-title">
 				<text>确认订单</text>
-				<image class="close" @click="visible = false" src="/static/images/icon_nav_news_white.png" mode=""></image>
+				<image class="close" @click="visible = false" src="/static/images/icon_nav_news_white.png" mode="">
+				</image>
 			</view>
 			<view class="d-container">
-				<!-- <view class="address-add" @click="toLink('/pages/address/add')">添加收货地址</view> -->
-				<view class="address-card">
+				<view v-if="isAddressEmpty" class="address-add" @click="toLink('/pages/address/index')">添加收货地址</view>
+				<view v-else class="address-card">
 					<image class="icon-address" src="/static/images/points/icon-address.png" mode=""></image>
 					<view class="address-content">
 						<view class="userinfo">
-							<view class="username">zack</view>
-							<view class="phone">+86 123456789</view>
+							<view class="username">{{ addressItem.name }}</view>
+							<view class="phone">{{ addressItem.phone }}</view>
 						</view>
-						<view class="dizhi">湖北省武汉市经济开发区开发路890号蜂场快递柜</view>
+						<view class="dizhi">{{ addressItem.address }}</view>
 					</view>
-					<image class="address-check" src="/static/images/icon_right.png" mode="">
+					<image class="address-check" src="/static/images/icon_right.png" mode=""
+						@click="toLink('/pages/address/index')">
 					</image>
 				</view>
 				<view class="goods-card">
 					<view class="goods-cover">
-						<image src="/static/images/points/img.png" mode=""></image>
+						<image :src="dataItem.cover_image" mode=""></image>
 					</view>
 					<view class="right-panel">
-						<view class="goods-title">实物Bulgari DIVAS’ DREAM 18K</view>
+						<view class="goods-title">{{ dataItem.name }}</view>
 						<view class="goods-num">
-							<tui-numberbox :value="value" @change="change"></tui-numberbox>
+							<tui-numberbox :value="count" :min="1" :max="dataItem.stock"
+								@change="onChange"></tui-numberbox>
 						</view>
 					</view>
+				</view>
+				<view v-if="dataItem.type == 2" class="goods-phone">
+					<input v-model="recharge_phone" type="number" placeholder="充值手机号" class="input" />
 				</view>
 				<view class="goods-money">
 					<view>商品合计</view>
 					<image class="icon-jifen" src="/static/images/points/icon_jf.png" mode=""></image>
-					<text>500</text>
+					<text>{{ money }}</text>
 				</view>
-				<button class="d-button">去结算</button>
+				<button class="d-button" @click="onClickSubmit">去结算</button>
 			</view>
 		</tui-drawer>
 	</view>
@@ -66,16 +65,113 @@
 
 <script>
 	import NavBar from '@/components/NavBar/index.vue'
+	import {
+		apiGoodsDetails,
+		apiAddressList,
+		apiCreateOrder
+	} from '@/common/api/goods.js'
 	export default {
 		components: {
 			NavBar
 		},
 		data() {
 			return {
-				visible: false
+				visible: false,
+				dataItem: {},
+				addressItem: {},
+				isAddressEmpty: true,
+				count: 1,
+				recharge_phone: ''
 			}
 		},
+		computed: {
+			money() {
+				const total = this.count * this.dataItem.price;
+				return parseFloat(total.toFixed(2));
+			}
+		},
+		onLoad(options) {
+			this.getData(options.id)
+		},
 		methods: {
+			onClickSubmit() {
+				if (this.dataItem.type === 1 && !this.addressItem.id) {
+					uni.showToast({
+						title: '请填写收货地址',
+						icon: 'none',
+						duration: 2000
+					});
+					return;
+				}
+				if (this.dataItem.type === 2 && !this.recharge_phone) {
+					uni.showToast({
+						title: '充值手机号不能为空',
+						icon: 'none',
+						duration: 2000
+					});
+					return;
+				}
+				apiCreateOrder({
+					goods_id: this.dataItem.id,
+					count: this.count,
+					address_id: this.addressItem.id,
+					recharge_phone: this.recharge_phone,
+					order_remark: '',
+				}).then((res) => {
+					uni.showToast({
+						title: res.msg,
+						icon: 'none',
+						duration: 2000
+					});
+					if (res.code == 0) {
+						this.visible = false
+					}
+				})
+			},
+			onChange(e) {
+				this.count = e.value
+			},
+			async getData(id) {
+				const {
+					code,
+					msg,
+					data
+				} = await apiGoodsDetails({
+					id
+				})
+				if (code === 0) {
+					this.dataItem = data
+				} else {
+					uni.showToast({
+						title: msg,
+						icon: 'none',
+						duration: 2000
+					});
+				}
+			},
+			getAddressList() {
+				apiAddressList().then((res) => {
+					if (res.code === 0) {
+						if (!res.data && !res.data.length) {
+							this.isAddressEmpty = true
+						} else {
+							this.isAddressEmpty = false
+							let listData = res.data || []
+							this.addressItem = listData.find((item) => item.is_default === 1)
+						}
+					} else {
+						uni.showToast({
+							title: res.msg,
+							icon: 'none',
+							duration: 2000
+						});
+					}
+				})
+			},
+			onClickOrder() {
+				this.getAddressList();
+				this.visible = true;
+			},
 			toLink(url) {
 				uni.navigateTo({
 					url
@@ -183,7 +279,11 @@
 			}
 
 			.button {
-				width: 100%;
+				position: fixed;
+				left: 16px;
+				right: 16px;
+				bottom: 22px;
+				// width: 100%;
 				height: 88rpx;
 				border-radius: 20rpx;
 				background: linear-gradient(270deg, #D018F5 0%, #FA3296 100%);
@@ -192,7 +292,6 @@
 				font-size: 34rpx;
 				font-weight: 400;
 				line-height: 88rpx;
-				margin-top: 40rpx;
 			}
 		}
 
@@ -310,7 +409,7 @@
 					align-items: center;
 					padding: 22rpx 28rpx;
 					box-sizing: border-box;
-					margin-bottom: 36rpx;
+					margin-bottom: 20rpx;
 
 					.goods-cover {
 						width: 136rpx;
@@ -336,6 +435,31 @@
 							font-size: 28rpx;
 							font-weight: 500;
 							line-height: 48rpx;
+						}
+					}
+				}
+				
+				.goods-phone {
+					width: 100%;
+					margin-bottom: 36rpx;
+					.input {
+						width: 100%;
+						height: 96rpx;
+						padding: 32rpx;
+						box-sizing: border-box;
+						border-radius: 20rpx;
+						background: #101010;
+					
+						.uni-input-placeholder {
+							color: #555;
+							font-size: 32rpx;
+						}
+					
+						:deep() {
+							.uni-input-input {
+								color: #ccc;
+								font-size: 32rpx;
+							}
 						}
 					}
 				}

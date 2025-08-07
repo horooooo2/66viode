@@ -5,40 +5,127 @@
 			<view class="address-label">我的收货地址</view>
 			<view class="address-add" @click="toLink('/pages/address/add')">未找到任何地址</view>
 			<view class="address-list">
-				<view class="address-card" v-for="i in 2" :key="i">
-					<image class="icon-address" src="/static/images/points/icon-address.png" mode=""></image>
-					<view class="address-content">
-						<view class="userinfo">
-							<view class="username">zack</view>
-							<view class="phone">+86 123456789</view>
-						</view>
-						<view class="dizhi">湖北省武汉市经济开发区开发路890号蜂场快递柜</view>
-					</view>
-					<view class="address-check">
-						<image v-if="isCheck" class="icon-check" src="/static/images/setting/icon_checkbox.svg" mode="">
-						</image>
-						<image v-else class="icon-check" src="/static/images/setting/icon_checkbox_active.svg" mode="">
-						</image>
-					</view>
-				</view>
+				<template v-for="(item,index) in listData" :key="index">
+					<tui-swipe-action :actions="actions" backgroundColor="transparent"
+						@click="(e) => handlerButton(e, item, index)">
+						<template v-slot:content>
+							<view class="address-card">
+								<image class="icon-address" src="/static/images/points/icon-address.png" mode="">
+								</image>
+								<view class="address-content">
+									<view class="userinfo">
+										<view class="username">{{ item.name }}</view>
+										<view class="phone">{{ item.phone }}</view>
+									</view>
+									<view class="dizhi">{{ item.address }}</view>
+								</view>
+								<view class="address-check" @click="onClickSet(item)">
+									<image v-if="item.is_default == 0" class="icon-check"
+										src="/static/images/setting/icon_checkbox.svg" mode="">
+									</image>
+									<image v-if="item.is_default == 1" class="icon-check"
+										src="/static/images/setting/icon_checkbox_active.svg" mode="">
+									</image>
+								</view>
+							</view>
+						</template>
+					</tui-swipe-action>
+				</template>
 			</view>
 		</view>
-		<view class="button">新增</view>
+		<view class="button" @click="toLink('/pages/address/add')">新增</view>
 	</view>
 </template>
 
 <script>
 	import NavBar from '@/components/NavBar/index.vue'
+	import {
+		apiAddressList, apiDelAddress, apiSetAddress
+	} from '@/common/api/goods.js'
 	export default {
 		components: {
 			NavBar
 		},
 		data() {
 			return {
-				isCheck: true
+				actions: [{
+						name: '删除',
+						color: '#fff',
+						fontsize: 30, //单位rpx
+						width: 70, //单位px
+						background: '#FD3B31'
+					},
+					{
+						name: '修改',
+						color: '#fff',
+						fontsize: 30,
+						width: 70,
+						background: '#5677fc'
+					},
+				],
+
+				listData: [],
 			}
 		},
+		onShow() {
+			this.getList()
+		},
 		methods: {
+			getList() {
+				apiAddressList().then(res => {
+					if (res.code === 0) {
+						this.listData = res.data || []
+					} else {
+						uni.showToast({
+							title: res.msg,
+							icon: 'none',
+							duration: 2000
+						});
+					}
+				})
+			},
+			// 接收事件对象、当前item和index
+			handlerButton(e, item, index) {
+				const menuTxt = ['删除', '修改'][e.index];
+				if (menuTxt === '删除') {
+					apiDelAddress({ id: item.id }).then((res) => {
+						uni.showToast({
+							title: res.msg,
+							icon: 'none',
+							duration: 2000
+						});
+						if (res.code == 0) {
+							this.getList()
+						}
+					})
+				} else if (menuTxt === '修改') {
+					uni.navigateTo({
+						url: `/pages/address/add?id=${item.id}`
+					})
+				}
+			},
+			// 设置默认地址
+			onClickSet(item) {
+				if (item.is_default === 1) {
+					uni.showToast({
+						title: '当前地址已是默认地址',
+						icon: 'none',
+						duration: 2000
+					});
+					return
+				}
+				console.log(item, '13')
+				apiSetAddress({ id: item.id }).then((res) => {
+					uni.showToast({
+						title: res.msg,
+						icon: 'none',
+						duration: 2000
+					});
+					if (res.code == 0) {
+						this.getList()
+					}
+				})
+			},
 			toLink(url) {
 				uni.navigateTo({
 					url
@@ -88,6 +175,10 @@
 			}
 
 			.address-list {
+				display: flex;
+				flex-direction: column;
+				gap: 40rpx;
+
 				.address-card {
 					width: 100%;
 					padding: 20rpx 32rpx;
@@ -97,7 +188,6 @@
 					display: flex;
 					align-items: center;
 					justify-content: space-between;
-					margin-bottom: 40rpx;
 
 					.icon-address {
 						width: 76rpx;
@@ -150,7 +240,7 @@
 				}
 			}
 		}
-		
+
 		.button {
 			position: fixed;
 			bottom: 20rpx;
