@@ -84,6 +84,7 @@ const request = (options) => {
   return new Promise((resolve, reject) => {
 	if( options?.data?.loading ){
 		uni.showLoading({ title: '', mask: true });
+		delete options.data.loading;
 	}
     uni.request({
       ...options,

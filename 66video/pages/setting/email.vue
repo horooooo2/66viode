@@ -3,17 +3,39 @@
 		<NavBar title="邮箱"></NavBar>
 		<view class="email-container">
 			<view class="label">邮箱</view>
-			<input class="input" type="text" placeholder="请输入邮箱" />
-			<view class="button">提交</view>
+			<input class="input" v-model="email" type="text" placeholder="请输入邮箱" />
+			<view class="button" @click="submitForm">提交</view>
 		</view>
 	</view>
 </template>
 
-<script>
+<script setup>
 	import NavBar from '@/components/NavBar/index.vue'
-	export default {
-		components: {
-			NavBar
+	import { apiChangeEmail } from '@/common/api/user.js'
+	import { ref } from 'vue'
+	const email = ref('');
+	const submitForm = async () => {
+		if (!email.value) {
+			uni.showToast({
+				title: '请输入邮箱',
+				icon: 'none'
+			})
+			return
+		}
+		if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(email.value)) {
+			uni.showToast({
+				title: '请输入正确的邮箱格式',
+				icon: 'none'
+			})
+			return
+		}
+		const {code,msg} = await apiChangeEmail({
+			email: email.value,
+			loading:true
+		})
+		uni.showToast({ title: msg, icon:'none', duration: 2000 });
+		if (code === 0) {
+			uni.navigateBack();
 		}
 	}
 </script>

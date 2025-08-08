@@ -4,7 +4,7 @@
 		<view class="setting-container">
 			<view class="card-list">
 				<view class="card-item" @click="toLink('/pages/setting/phone')">
-					<view class="label">手机号</view>
+					<view class="label">换绑手机号</view>
 					<image class="arrow" src="/static/images/setting/icon_arrow.png" mode="widthFix"></image>
 				</view>
 				<view class="card-item" @click="toLink('/pages/setting/email')">

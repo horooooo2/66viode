@@ -42,7 +42,7 @@
 		if(code == 0){
 			uni.setStorageSync('storage_user_data', data);	
 			uni.switchTab({
-				url: '/pages/home/index'
+				url: '/'
 			});
 		}
 		if( checkRef.value ){

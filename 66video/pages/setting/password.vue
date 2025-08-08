@@ -3,21 +3,61 @@
 		<NavBar title="修改登录密码"></NavBar>
 		<view class="password-container">
 			<view class="label">登录密码</view>
-			<input class="input" type="text" placeholder="6～18位 字母与数字组合" />
+			<uni-easyinput class="r_input"  prefixIcon="locked" type="password"  v-model="old_password" :inputBorder="false"  :clearable="false"  trim  placeholder="6～18位 字母与数字组合" placeholderStyle="color: #777" ></uni-easyinput>
+			<!-- <input class="input" type="text" v-model="old_password" placeholder="6～18位 字母与数字组合" /> -->
 			<view class="label">新登录密码</view>
-			<input class="input" type="text" placeholder="6～18位 字母与数字组合" />
+			<uni-easyinput class="r_input"  prefixIcon="locked" type="password"  v-model="password" :inputBorder="false"  :clearable="false"  trim  placeholder="6～18位 字母与数字组合" placeholderStyle="color: #777" ></uni-easyinput>
+			<!-- <input class="input" type="text" v-model="password" placeholder="6～18位 字母与数字组合" /> -->
 			<view class="label">确认登录密码</view>
-			<input class="input" type="text" placeholder="请再次输入登录密码" />
-			<view class="button">提交</view>
+			<uni-easyinput class="r_input"  prefixIcon="locked" type="password"  v-model="confirm_password" :inputBorder="false"  :clearable="false"  trim  placeholder="请再次输入登录密码" placeholderStyle="color: #777" ></uni-easyinput>
+			<!-- <input class="input" type="text" v-model="confirm_password" placeholder="请再次输入登录密码" /> -->
+			<view class="button" @click="changePassword">提交</view>
 		</view>
 	</view>
 </template>
 
 <script>
 	import NavBar from '@/components/NavBar/index.vue'
+	import { apiChangePassword, apiLogout } from '@/common/api/user.js'
 	export default {
 		components: {
 			NavBar
+		},
+		data() {
+			return {
+				old_password: '',
+				password: '',
+				confirm_password: ''
+			}
+		},
+		methods: {
+			async changePassword() {
+				if (this.password !== this.confirm_password) {
+					uni.showToast({
+						title: '新密码与确认密码不一致',
+						icon: 'none'
+					})
+					return
+				}
+				const {code,msg} = await apiChangePassword({
+					old_password: this.old_password,
+					password: this.password,
+					confirm_password: this.confirm_password,
+					loading:true
+				})
+				
+				uni.showToast({ title: msg, icon:'none', duration: 2000 });
+				if (code === 0) {
+					apiLogout().then(() => {
+						// 清除用户信息
+						uni.removeStorageSync('storage_user_data')
+						// 跳转到登录页面
+						uni.redirectTo({
+							url: '/pages/login/index?type=1'
+						})
+					})
+				}
+			}
 		}
 	}
 </script>

@@ -114,7 +114,7 @@
 		if(code == 0){
 			uni.setStorageSync('storage_user_data', data);	
 			uni.switchTab({
-				url: '/pages/eat/index'
+				url: '/'
 			});
 		}
 		
@@ -161,7 +161,7 @@
 <style lang="scss" scoped> 
 @font-face {
 	font-family: CustomFont;
-	src: url('./iconfont.ttf');
+	src: url('@/common/styles/iconfont.ttf');
 }
 .tui-icon {
 	font-family: 'CustomFont' !important;
@@ -186,28 +186,6 @@
 .register_box{
 	margin-top: 40rpx;
 	padding: 40rpx;
-	.r_input{
-		color: #ddd !important;
-		margin-bottom: 20rpx;
-		:deep(){
-			.uni-easyinput__content{
-				background-color: #202020 !important;
-				border-radius: 12rpx;
-			} 
-			.content-clear-icon{
-				padding: 0 7px;
-			}
-			.uni-easyinput__content-input{
-				height: 80rpx;
-			}
-			.content-clear-icon{
-				color: #ddd !important;
-			}
-			.uniui-eye-filled::before{
-				// content: '\66c';
-			}
-		}
-	}
 	.r_submit{
 		margin-top: 60rpx;
 		border-radius: 14rpx;
