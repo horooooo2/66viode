@@ -93,32 +93,6 @@ export const uploadAvatarImage = (imagePath) => {
 	});
 }
 
-//完整的头像更新流程
-export const updateUserAvatar = async () => {
-	try {
-		// 1. 选择图片
-		const imagePath = await chooseImage();
-		
-		// 2. 上传图片获取路径
-		const avatarUrl = await uploadAvatarImage(imagePath);
-		
-		// 3. 更新用户信息
-		const updateResult = await apiUpdateProfile({
-			avatar: avatarUrl
-		});
-		
-		return {
-			success: true,
-			avatarUrl: avatarUrl,
-			message: '头像更新成功'
-		};
-	} catch (error) {
-		return {
-			success: false,
-			message: error.message || error || '头像更新失败'
-		};
-	}
-}
 
 //修改资料
 export const apiUpdateProfile = (params) =>{

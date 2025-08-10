@@ -202,19 +202,15 @@
 			})
 
 			const {code:dataCode,data} = await apiGetUserInfo();
-				if (dataCode == 0) {
-					uni.setStorageSync('storage_user_data', data);	
-					// 延迟返回上一页
-					setTimeout(() => {
-						uni.navigateBack()
-					}, 1500)
-				} else {
-					uni.showToast({ title: '更新失败，请稍后再试', icon: 'none' });
-				}
-			
-			
-			
-			
+			if (dataCode == 0) {
+				uni.setStorageSync('storage_user_data', data);	
+				// 延迟返回上一页
+				setTimeout(() => {
+					uni.navigateBack()
+				}, 1500)
+			} else {
+				uni.showToast({ title: '更新失败，请稍后再试', icon: 'none' });
+			}
 		} catch (error) {
 			uni.hideLoading()
 			uni.showToast({
