@@ -5,14 +5,14 @@
 			<view class="card" @click="toLink('/pages/user/avatar')">
 				<view class="label">头像</view>
 				<view class="right">
-					<image class="avatar" src="/static/logo.png" mode="widthFix"></image>
+					<image class="avatar" :src="userInfo.avatar" mode="widthFix"></image>
 					<image class="arrow" src="/static/images/setting/icon_arrow.png" mode="widthFix"></image>
 				</view>
 			</view>
 			<view class="card" @click="toLink('/pages/user/nickname')">
 				<view class="label">昵称</view>
 				<view class="right">
-					<text>昵称文本</text>
+					<text>{{userInfo.nickname}}</text>
 					<image class="arrow" src="/static/images/setting/icon_arrow.png" mode="widthFix"></image>
 				</view>
 			</view>
@@ -20,19 +20,34 @@
 	</view>
 </template>
 
-<script>
+<script setup>
 	import NavBar from '@/components/NavBar/index.vue'
-	export default {
-		components: {
-			NavBar
-		},
-		methods: {
-			toLink(url) {
-				uni.navigateTo({
-					url
-				})
-			}
+	import { reactive } from 'vue'
+	import { onShow } from '@dcloudio/uni-app'
+	
+	const userInfo = reactive({
+		avatar: '',
+		nickname: ''
+	});
+
+	// 获取用户数据的函数
+	const getUserData = () => {
+		const userData = uni.getStorageSync('storage_user_data');
+		if (userData) {
+			userInfo.avatar = userData.avatar || '';
+			userInfo.nickname = userData.nickname || '';
 		}
+	};
+
+	onShow(() => {
+		console.log('进入 onShow - 路由变化监听');
+		getUserData();
+	});
+
+	const toLink = (url) => {
+		uni.navigateTo({
+			url
+		})
 	}
 </script>
 
