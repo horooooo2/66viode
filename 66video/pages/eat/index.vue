@@ -3,7 +3,11 @@
 		<view class="status_bar"></view>
 		<view class="header">
 			<view class="logo" @click="onClick">66 Video</view>
-			<view class="button">
+			<view v-if="isLogin" class="right">
+				<Surplus></Surplus>
+				<view class="avatar"></view>
+			</view>
+			<view v-else class="button">
 				<view class="login" @click="toPath('/pages/login/index?type=1')">登录</view>
 				<view class="register" @click="toPath('/pages/login/index?type=2')">注册</view>
 			</view>
@@ -91,11 +95,13 @@
 <script>
 	import Sidebar from '@/components/Sidebar/index.vue'
 	import CustomTabbar from '@/components/custom-tabbar.vue'
+	import Surplus from "@/components/Surplus/index.vue"
 
 	export default {
 		components: {
 			Sidebar,
-			CustomTabbar
+			CustomTabbar,
+			Surplus,
 		},
 		data() {
 			return {
@@ -148,6 +154,11 @@
 					}
 				]
 			}
+		},
+		computed: {
+			isLogin() {
+				return !!uni.getStorageSync('token')
+			},
 		},
 		onShow() {
 			uni.$on('showCenterPopup', this.showCenterPopup);
@@ -205,6 +216,18 @@
 				font-size: 16px;
 				font-weight: bold;
 				color: #fff;
+			}
+			
+			.right {
+				display: flex;
+				gap: 20rpx;
+			
+				.avatar {
+					width: 64rpx;
+					height: 64rpx;
+					border-radius: 50%;
+					background: linear-gradient(0deg, #D018F5 0%, #FA3296 100%);
+				}
 			}
 
 			.button {
