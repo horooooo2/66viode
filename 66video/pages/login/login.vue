@@ -43,7 +43,7 @@
 			uni.setStorageSync('storage_user_data', data);
 			uni.setStorageSync('token', data.token)
 			uni.switchTab({
-				url: '/pages/home/index'
+				url: '/'
 			});
 		}
 		if( checkRef.value ){

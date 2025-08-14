@@ -17,7 +17,7 @@ const requestInterceptor = (config) => {
     ...config.header,
     'Content-Type': 'application/json',
     'Authorization': uni.getStorageSync('token') || '',
-	'Token': uni.getStorageSync('storage_user_data')?.token || '',
+	  'Token': uni.getStorageSync('storage_user_data')?.token || '',
   }
 
   // 防重复提交处理
@@ -84,6 +84,7 @@ const request = (options) => {
   return new Promise((resolve, reject) => {
 	if( options?.data?.loading ){
 		uni.showLoading({ title: '', mask: true });
+		delete options.data.loading;
 	}
     uni.request({
       ...options,
@@ -143,7 +144,8 @@ const http = {
       method: 'DELETE',
       ...options
     })
-  }
+  },
+  baseURL:BASE_URL
 }
 
 export default http

@@ -40,6 +40,60 @@ export const apiChangeEmail = (params) =>{
 export const apiUploadAvatar = (params) =>{
 	return http.post('/user/upload_avatar',params);
 }
+
+//选择图片
+export const chooseImage = () => {
+	return new Promise((resolve, reject) => {
+		uni.chooseImage({
+			count: 1,
+			sizeType: ['compressed'],
+			sourceType: ['album', 'camera'],
+			success: (res) => {
+				resolve(res.tempFilePaths[0]);
+			},
+			fail: (err) => {
+				reject(err);
+			}
+		});
+	});
+}
+
+//上传头像图片文件
+export const uploadAvatarImage = (imagePath) => {
+	return new Promise((resolve, reject) => {
+		uni.uploadFile({
+			url: http.baseURL + '/user/upload_avatar',
+			filePath: imagePath,
+			name: 'file',
+			header: {
+				'Authorization': uni.getStorageSync('token') || '',
+				'Token': uni.getStorageSync('storage_user_data')?.token || '',
+			},
+			formData: {},
+			success: (uploadRes) => {
+				try {
+					console.log('uploadRes ===', uploadRes);
+					
+					const data = JSON.parse(uploadRes.data);
+					console.log('uploadRes data===', data);
+					
+					if (data.code === 0) {
+						resolve(data);
+					} else {
+						reject(data || '上传失败');
+					}
+				} catch (e) {
+					reject('上传结果解析失败');
+				}
+			},
+			fail: (err) => {
+				reject(err.errMsg || '上传失败');
+			}
+		});
+	});
+}
+
+
 //修改资料
 export const apiUpdateProfile = (params) =>{
 	return http.post('/user/update_profile',params);

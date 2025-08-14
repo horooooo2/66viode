@@ -3,28 +3,44 @@
 		<view class="navbar">
 			<view class="cancel" @click="onBack">取消</view>
 			<view class="title">昵称</view>
-			<view class="submit">完成</view>
+			<view class="submit" @click="onSubmit">完成</view>
 		</view>
 		<view class="nickname-container">
-			<tui-input v-model="name" placeholder="请输入" clearable></tui-input>
+			<tui-input v-model="nickname" placeholder="请输入" clearable></tui-input>
 		</view>
 	</view>
 </template>
 
-<script>
-	export default {
-		data() {
-			return {
-				name: ''
+<script setup>
+	import { apiUpdateProfile,apiGetUserInfo } from '@/common/api/user.js'
+	import { ref } from 'vue'
+
+	const nickname = ref('');
+	
+	const onSubmit = async () => {
+		try {
+			const {code,msg} = await apiUpdateProfile({nickname: nickname.value, loading: true});
+			uni.showToast({ title: msg, icon: 'none', duration: 2000 });
+			if (code === 0) {	
+				// 更新用户信息
+				const {code:dataCode,data} = await apiGetUserInfo();
+				if (dataCode == 0) {
+					uni.setStorageSync('storage_user_data', data);	
+					// 返回上一页
+					onBack();
+				} else {
+					uni.showToast({ title: '更新失败，请稍后再试', icon: 'none' });
+				}
 			}
-		},
-		methods: {
-			onBack() {
-				uni.navigateBack()
-			}
+		} catch (error) {
+			console.error('Failed to change nickname:', error);
 		}
-	}
+	};
+	const onBack = () => {
+		uni.navigateBack()
+	};
 </script>
+
 
 <style lang="scss" scoped>
 	.nickname {
