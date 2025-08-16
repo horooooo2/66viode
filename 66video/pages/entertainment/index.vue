@@ -17,7 +17,7 @@
 		</view>
 
 		<tui-tab sliderHeight="0" backgroundColor="transparent" color="#BBB" selectedColor="#D018F5" bold :tabs="tabs"
-			scroll @change="change"></tui-tab>
+			scroll @change="tabChange"></tui-tab>
 
 		<view class="tui-banner-swiper">
 			<swiper class="tui-banner__height" @change="bannerChange" circular :indicator-dots="false" autoplay
@@ -33,30 +33,30 @@
 		<view class="filter">
 			<view class="filter-box" @click="popupShow = true">
 				<view class="label">排序方式：</view>
-				<view class="value">最受欢迎的</view>
+				<view class="value">{{ radioItems.find(item => item.value === sortSelectValue)?.name }}</view>
 				<image class="icon" src="/static/images/index/icon_close.png" mode=""></image>
 			</view>
-			<view class="filter-box" @click="timePopupShow = true">
-				<view class="label">发布日期：</view>
-				<view class="value">今日</view>
+			<view class="filter-box" @click="()=>$refs.typePopup.open('bottom')">
+				<view class="label">类目：</view>
+				<view class="value">{{ typeSelectValue.name }}</view>
 				<image class="icon" src="/static/images/index/icon_close.png" mode=""></image>
 			</view>
 		</view>
 
 		<view class="list">
-			<view class="list-item" v-for="i in 7" :key="i" @click="toPath('/pages/detail/anime')">
+			<view class="list-item" v-for="val in listData" :key="val.id" @click="goDetail(val)">
 				<view class="flag">
-					#标签
+					#{{val.category_info.name}}
 				</view>
-				<image class="poster" src="/static/images/wenyu/cover.png" mode=""></image>
-				<view class="title">名字</view>
+				<image class="poster" :src="val.pc_image" mode=""></image>
+				<view class="title">{{val.title}}</view>
 			</view>
 		</view>
 
 		<tui-bottom-popup backgroundColor="#202020" z-index="1002" :height="450" :show="popupShow" @close="hiddenPopup">
 			<view class="sort-box">
 				<view class="sort-title">排序方式</view>
-				<tui-radio-group>
+				<tui-radio-group @change="sortRadioChange" v-model="sortSelectValue">
 					<tui-label v-for="(item,index) in radioItems" :key="index">
 						<tui-list-cell>
 							<view class="thorui-align__center sort-item">
@@ -70,23 +70,27 @@
 			</view>
 		</tui-bottom-popup>
 
-		<tui-bottom-popup backgroundColor="#202020" z-index="1002" :height="450" :show="timePopupShow"
-			@close="hiddenTimePopup">
+		
+		<uni-popup ref="typePopup" class="typePopup" type="bottom" safe-area background-color="rgb(32, 32, 32)" >
 			<view class="sort-box">
-				<view class="sort-title">发布日期</view>
-				<tui-radio-group>
-					<tui-label v-for="(item,index) in timeRadioItems" :key="index">
-						<tui-list-cell>
-							<view class="thorui-align__center sort-item">
-								<view class="sort-label">{{item.name}}</view>
-								<tui-radio :checked="item.checked" :value="item.value" color="#D018F5" borderColor="#c5c9d1">
-								</tui-radio>
-							</view>
-						</tui-list-cell>
-					</tui-label>
-				</tui-radio-group>
+				<view class="sort-title">类目</view>
+				<div class="type-list">
+					<tui-radio-group @change="typeRadioChange" v-model="typeSelectValue.value">
+						<tui-label v-for="(item,index) in typeRadioItems[currentTab]" :key="index">
+							<tui-list-cell>
+								<view class="thorui-align__center sort-item">
+									<view class="sort-label">{{item.name}}</view>
+									<tui-radio :checked="item.checked" :value="`${item.value}`" color="#D018F5" borderColor="#c5c9d1">
+									</tui-radio>
+								</view>
+							</tui-list-cell>
+						</tui-label>
+					</tui-radio-group>
+				</div>
+				
 			</view>
-		</tui-bottom-popup>
+		</uni-popup>
+
 		
 		<custom-tabbar :current="2" @change="handleTabChange"></custom-tabbar>
 	</view>
@@ -95,6 +99,14 @@
 <script>
 	import CustomTabbar from '@/components/custom-tabbar.vue'
 	import Surplus from "@/components/Surplus/index.vue"
+	import {
+		apiGetVideoCategories,
+		apiGetImageCategories,
+		apiGetNovelCategories,
+		apiGetImageList,
+		apiGetVideoList,
+		apiGetNovelList
+	} from '@/common/api/content.js'
 	export default {
 		components: {
 			CustomTabbar,
@@ -103,8 +115,8 @@
 		data() {
 			return {
 				current: 0,
-				currentTab: 0,
-				tabs: ['推荐', '食品', '水果蔬菜', '新款男装', '内衣', '女装', '百货', '医药', '手机', '鞋包'],
+				currentTab: 'image',
+				tabs: [{name: '动漫频道',id: 'image'}, {name: '小说频道',id: 'novel'}, {name: '影视频道',id: 'video'}],
 				background: [{
 						img: '/static/images/index/banner.png'
 					},
@@ -116,46 +128,48 @@
 					}
 				],
 				popupShow: false,
+				sortSelectValue: 'new',
 				radioItems: [{
 						name: '受欢迎的',
-						value: '1',
+						value: 'hot',
 						checked: true
 					},
 					{
 						name: '新品发布',
-						value: '2',
-						checked: false
-					},
-					{
-						name: '新品发布',
-						value: '3',
+						value: 'new',
 						checked: false
 					}
 				],
-
-				timePopupShow: false,
-				timeRadioItems: [{
-						name: '今日',
-						value: '1',
-						checked: true
-					},
-					{
-						name: '本周',
-						value: '2',
-						checked: false
-					},
-					{
-						name: '最近30天',
-						value: '3',
-						checked: false
-					}
-				]
+				//选中的类目
+				typeSelectValue: {
+					parentId: 'image',
+					name: '全部',
+					value: 'all'
+				},
+				typeRadioItems: {
+					'image': [],
+					'novel': [],
+					'video': []
+				},
+				listData: [],
 			}
 		},
 		computed: {
 			isLogin() {
 				return !!uni.getStorageSync('storage_user_data')?.token
 			},
+			listParams() {
+				return {
+					category_id: this.typeSelectValue.value !== 'all' ? this.typeSelectValue.value : '',
+					order: this.sortSelectValue,
+					page: 1,
+					limit: 10
+				}
+			}
+		},
+		created() {
+			this.fetchCategories();
+			this.getList();
 		},
 		methods: {
 			// 打开侧边栏
@@ -163,24 +177,119 @@
 				this.$refs.sidebarRef && this.$refs.sidebarRef.open()
 			},
 			//切换tab，逻辑请自行处理
-			change(e) {
-				this.currentTab = e.index
+			tabChange(e) {
+				console.log('tabChange==', e);
+				this.currentTab = e.item.id;
+				//初始化
+				this.sortSelectValue = 'new';
+				this.typeSelectValue = {
+					parentId: this.currentTab,
+					name: '全部',
+					value: 'all'
+				};
+				this.getList();
 			},
-			bannerChange: function(e) {
+			bannerChange(e) {
 				this.current = e.detail.current;
 			},
 
 			hiddenPopup() {
 				this.popupShow = false
 			},
-			hiddenTimePopup() {
-				this.timePopupShow = false
+			sortRadioChange(e) {
+				if (e.detail.value === this.sortSelectValue) {
+					return;
+				}
+				this.sortSelectValue = e.detail.value;
+				this.popupShow = false;
+				this.getList();
+			},
+			typeRadioChange(e) {
+				if( e.detail.value === this.typeSelectValue.value ){
+					return;
+				}
+				this.typeSelectValue = {
+					parentId: this.currentTab,
+					name: this.typeRadioItems[this.currentTab].find(item => item.value === parseInt(e.detail.value))?.name || '全部',
+					value: e.detail.value
+				};
+				this.$refs.typePopup.close();
+				this.getList();
 			},
 			toPath: function(path) {
 				uni.navigateTo({
 					url: path
 				})
 			},
+			async fetchCategories() {
+				apiGetImageCategories().then(res => {
+					console.log('image 漫画 categories==', res);
+					if (res.code === 0 && res?.data?.length) {
+						// this.videoCategories = res.data;
+						this.typeRadioItems['image'] = res.data.map(item => ({
+							name: item.name,
+							value: item.id,
+							checked: false
+						}));
+						this.typeRadioItems['image'].unshift({
+							name: '全部',
+							value: 'all',
+							checked: true
+						});
+					}
+				});
+				apiGetVideoCategories().then(res => {
+					console.log('video categories==', res);
+					if (res.code === 0 && res?.data?.length) {
+						this.typeRadioItems['video'] = res.data.map(item => ({
+							name: item.name,
+							value: item.id,
+							checked: false
+						}));
+						this.typeRadioItems['video'].unshift({
+							name: '全部',
+							value: 'all',
+							checked: true
+						});
+					}
+				});
+				apiGetNovelCategories().then(res => {
+					console.log('novel 小说 categories==', res);
+					if (res.code === 0 && res?.data?.length) {
+						this.typeRadioItems['novel'] = res.data.map(item => ({
+							name: item.name,
+							value: item.id,
+							checked: false
+						}));
+						this.typeRadioItems['video'].unshift({
+							name: '全部',
+							value: 'all',
+							checked: true
+						});
+					}
+				});
+			},
+			async getList() {
+				console.log('listParams==', this.listParams);
+				let res = {};
+				if (this.currentTab === 'image') {
+					res = await apiGetImageList({ ...this.listParams, loading: true })
+				} else if (this.currentTab === 'video') {
+					res = await apiGetVideoList({ ...this.listParams, loading: true })
+				} else if (this.currentTab === 'novel') {
+					res = await apiGetNovelList({ ...this.listParams, loading: true })
+				}
+				if (res.code === 0 && res?.data?.list.length) {
+					this.listData = res.data.list;
+				}
+			},
+			goDetail(item) {
+				console.log('item==', item);
+				uni.navigateTo({
+					url: `/pages/detail/anime?id=${item.id}&type=${this.currentTab}`
+				})
+			},
+				
 		}
 	}
 </script>
@@ -391,6 +500,13 @@
 					font-size: 28rpx;
 				}
 			}
+		}
+		.type-list {
+			height: 400rpx;
+			overflow-y: auto;
+		}
+		.typePopup{
+			z-index: 99999;
 		}
 	}
 </style>

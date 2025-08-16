@@ -100,7 +100,6 @@
 		apiGetArticleCategories,
 		apiGetArticleList,
 		apiGetArticleDetail,
-		apiGetVideoCategories, apiGetVideoList, apiGetVideoDetail
 	} from '@/common/api/content.js'
 
 	export default {
@@ -205,12 +204,6 @@
 					
 					if (res.code === 200) {
 						this.categories = res.data;
-					}
-				});
-				 apiGetVideoCategories().then(res => {
-					console.log('video categories==', res);
-					if (res.code === 200) {
-						this.videoCategories = res.data;
 					}
 				});
 			}

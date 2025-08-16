@@ -25,7 +25,7 @@
 			}
 		},
 		{
-			"path": "pages/detail/index",
+			"path": "pages/detail/article",
 			"style": {
 				"navigationStyle": "default",
 				"navigationBarTitleText": "吃瓜详情",

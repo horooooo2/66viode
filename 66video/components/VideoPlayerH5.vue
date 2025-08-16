@@ -85,7 +85,6 @@ const changePlayer = (index) => {
 
 <style lang="scss" scoped>
 #player_box {
-  margin: 10px 0;
   width: 100%;
   outline: none;
  :deep() {
