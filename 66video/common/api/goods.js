@@ -49,3 +49,8 @@ export const apiOrderList = (params) => {
 export const apiCreateOrder = (params) => {
 	return http.post('/mall/create_order', params)
 }
+
+// 邀请好友-邀请规则
+export const apiGetInviteRules = (params) =>{
+	return http.get('/invite/rules',params);
+}

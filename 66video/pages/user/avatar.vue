@@ -191,9 +191,13 @@
 			}
 			
 			// 更新用户头像
-			await apiUpdateProfile({
+			let {code,msg} =  await apiUpdateProfile({
 				avatar: avatarUrl
 			})
+			if (code != 0) {
+				uni.showToast({ title: msg, icon: 'none' });
+				return;
+			}
 
 			uni.hideLoading()
 			uni.showToast({

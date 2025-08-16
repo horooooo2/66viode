@@ -129,10 +129,10 @@
 				uni.showToast({ title: msg, icon:'none', duration: 2000 });
 				if(code == 0){
 					uni.removeStorageSync('storage_user_data');	
-					uni.switchTab({
-						url: '/pages/home/index'
-					});
 				}
+				uni.navigateTo({
+					url: '/pages/login/index?type=1'
+				});
 			},
 			async getUserInfo(){
 				const {code,msg,data} = await apiGetUserInfo();

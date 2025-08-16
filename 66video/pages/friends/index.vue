@@ -46,34 +46,20 @@
 						<view class="table-item" style="border-top-right-radius: 30rpx;">每人奖励积分</view>
 					</view>
 					<view class="table-content">
-						<view class="table-td">
-							<view class="tr">≥1</view>
-							<view class="tr">10</view>
-						</view>
-						<view class="table-td">
-							<view class="tr">≥3</view>
-							<view class="tr">30</view>
-						</view>
-						<view class="table-td">
-							<view class="tr">≥5</view>
-							<view class="tr">50</view>
-						</view>
-						<view class="table-td">
-							<view class="tr" style="border-bottom-left-radius: 30rpx;">≥10</view>
-							<view class="tr" style="border-bottom-right-radius: 30rpx;">100</view>
+						<view class="table-td" v-for="(item, index) in rewardRules" :key="index">
+							<view class="tr">≥{{ item.invite_count }}</view>
+							<view class="tr">{{ item.reward_points }}</view>
 						</view>
 					</view>
 				</view>
 			</view>
 			<view class="card">
 				<image class="title" src="/static/images/friends/title-yqgz.png" mode=""></image>
-				<view class="textarea">
-					简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容简述内容
-				</view>
+				<view class="textarea">{{ ruleDesc }}</view>
 			</view>
 		</view>
 
-		<tui-popup class="yq-popup" :modeClass="fade" :show="transShow" style="background-color: rgba(0,0,0,0.8);">
+		<tui-popup class="yq-popup" :show="transShow" style="background-color: rgba(0,0,0,0.8);">
 			<view class="popup-main">
 				<image class="close" src="/static/images/friends/icon_Close.png" mode="" @click="transShow = false"></image>
 				<view class="popup-content">
@@ -88,17 +74,36 @@
 
 <script>
 	import NavBar from '@/components/NavBar/index.vue'
+	import { apiGetInviteRules } from '@/common/api/goods.js'
 	export default {
 		components: {
 			NavBar
 		},
 		data() {
 			return {
+				rewardRules: [],
+				ruleDesc: '',
 				transShow: false,
 			}
 		},
+		onLoad() {
+			this.getInviteRules()
+		},
 		methods: {
-
+			async getInviteRules() {
+				let {code, msg, data} = await apiGetInviteRules()
+				console.log(code, msg, data)
+				if (code == 0) {
+					this.rewardRules = data.reward_rules
+					this.ruleDesc = data.rule_description
+				} else {
+					uni.showToast({
+						title: msg,
+						icon: 'none',
+						duration: 2000
+					});
+				}
+			}
 		}
 	}
 </script>
@@ -256,6 +261,15 @@
 								font-size: 28rpx;
 								font-weight: 500;
 								line-height: 76rpx;
+							}
+							
+							&:last-child {
+								.tr:first-child {
+									border-bottom-left-radius: 30rpx;
+								}
+								.tr:last-child {
+									border-bottom-right-radius: 30rpx;
+								}
 							}
 						}
 					}
