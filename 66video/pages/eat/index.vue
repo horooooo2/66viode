@@ -91,6 +91,12 @@
 <script>
 	import Sidebar from '@/components/Sidebar/index.vue'
 	import CustomTabbar from '@/components/custom-tabbar.vue'
+	import {
+		apiGetArticleCategories,
+		apiGetArticleList,
+		apiGetArticleDetail
+	} from '@/common/api/article.js'
+	import { apiGetVideoCategories, apiGetVideoList, apiGetVideoDetail } from '@/common/api/video.js'
 
 	export default {
 		components: {
@@ -149,6 +155,9 @@
 				]
 			}
 		},
+		created() {
+			this.fetchCategories();
+		},
 		onShow() {
 			uni.$on('showCenterPopup', this.showCenterPopup);
 		},
@@ -179,6 +188,21 @@
 					url: path
 				})
 			},
+			async fetchCategories() {
+				 apiGetArticleCategories().then(res => {
+					console.log('res==',res);
+					
+					if (res.code === 200) {
+						this.categories = res.data;
+					}
+				});
+				 apiGetVideoCategories().then(res => {
+					console.log('video categories==', res);
+					if (res.code === 200) {
+						this.videoCategories = res.data;
+					}
+				});
+			}
 		}
 	}
 </script>
