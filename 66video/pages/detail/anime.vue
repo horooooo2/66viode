@@ -119,6 +119,8 @@ const goBack=()=>{
 	// top: 0;
 	// left: 0;
 	// z-index: 9;
+	position: relative;
+	z-index: 9;
 	width: 100%;
 	height: 90rpx;
 	padding-left: 20rpx;
@@ -133,7 +135,7 @@ const goBack=()=>{
 	.d_cont{
 		display: flex;
 		.d_img{
-			width: 32%;
+			flex: 1;
 			height: 340rpx;
 			.d_img_item{
 				width: 100%;
@@ -142,22 +144,25 @@ const goBack=()=>{
 			}
 		}
 		.d_works{
-			flex: 1;
+			width: 68%;
 			color: #fff;
 			padding-left: 20rpx;
 			.d_name{
 				margin-top: 30rpx;
-				font-size: 32rpx;
+				font-size: 34rpx;
+				text-overflow: ellipsis;
+				overflow: hidden;
+				white-space: nowrap;
 			}
 			.d_time{
 				margin-top: 40rpx;
 				font-size: 21rpx;
-				color: #ccc;
+				color: #fff;
 			}
 			.d_profile{
 				margin-top: 25rpx;
-				font-size: 25rpx;
-				color: #ccc;
+				font-size: 24rpx;
+				color: #fff;
 			}
 		}
 	}
