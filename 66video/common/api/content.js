@@ -78,3 +78,24 @@ export const apiGetNovelChapters = (params) =>{
 export const apiGetNovelContent = (params) =>{
 	return http.get('/novel/content',params);
 }
+
+
+//获取评论
+export const apiGetComments = (params) =>{
+	return http.get('/comment/list',params);
+}
+
+//发表评论
+export const apiAddComment = (params) =>{
+	return http.post('/comment/add',params);
+}
+
+//添加喜欢
+export const apiAddLike = (params) =>{
+	return http.post('/like/add',params);
+}
+//取消喜欢
+export const apiRemoveLike = (params) =>{
+	return http.post('/like/remove',params);
+}
+

@@ -1,24 +1,19 @@
 <template>
 	<view class="critique">
 		<view class="critique_t">
-			评论 <text>999</text>
+			评论 <text>{{ commentList.length }}</text>
 		</view>
 		<view class="critique_cont">
-			<view class="c_item">
-				<view class="c_name">ss名字</view>
-				<view class="c_cont">内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容</view>
-				<view class="c_time">2025年5月10日 12:55 评论</view>
+			<view class="c_item" v-for="(item, index) in commentList" :key="index">
+				<view class="c_name">{{ item.user.nickname }}</view>
+				<view class="c_cont">{{ item.content }}</view>
+				<view class="c_time">{{ item.created_at }} 评论</view>
 			</view>
-			<view class="c_item">
-				<view class="c_name">ss名字</view>
-				<view class="c_cont">内容内容内容</view>
-				<view class="c_time">2025年5月10日 12:55 评论</view>
-			</view>
-			<view class="c_item">
+			<!-- <view class="c_item">
 				<view class="c_name">ss名字</view>
 				<view class="c_cont">内容内容内容</view>
 				<view class="c_time">2025年5月10日 12:55 评论</view>
-			</view>
+			</view> -->
 		</view>
 		<view class="c_send">
 			<input class="uni-input" @input="onKeyInput" placeholder="说点什么吧..." />
@@ -31,7 +26,43 @@
 	</view>
 </template>
 
-<script>
+<script setup>
+import { ref, reactive, defineEmits, defineProps,onMounted } from 'vue'
+import {
+  apiGetComments
+} from "@/common/api/content.js";
+const props = defineProps({
+  detailData: {
+	type: Object,
+	default: () => ({})
+  }
+})
+const commentList = ref([]);
+const onKeyInput = (e) => {
+  console.log("输入内容：", e.target.value);
+};
+const getComments = async () => {
+	let params = {
+		content_id: props.detailData.id,
+		content_type: props.detailData.type || '',
+		page: 1,
+		size: 10,
+	}
+  const res = await apiGetComments(params);
+  if (res.code === 0) {
+	commentList.value = res?.data?.list || [];
+  } else {
+	uni.showToast({
+	  title: res.msg || "获取评论失败",
+	  icon: "none",
+	});
+  }
+};
+
+onMounted(() => {
+  getComments();
+});
+
 </script>
 
 <style lang="scss"scoped>

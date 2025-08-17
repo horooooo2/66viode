@@ -1,17 +1,29 @@
 
+<!-- 
+ :options="{ 
+      html5: { 
+        vhs: { 
+          overrideNative: true 
+        },
+        nativeVideoTracks: false,
+        nativeAudioTracks: false
+      }
+    }" -->
 
 <template>
   <view class="video-container" id="player_box">
-  <video-player class="video-player  vjs-big-play-centered" :class="['player_box', { loading: !state }]" :fluid="true" :sources="config.sources"
-    :poster="config.poster" crossorigin="anonymous" playsinline :playbackRates="[1, 1.5, 2]" :playbackRate="1"
-    :height="210" :loop="false" :volume="0.6" controls @mounted="handleMounted">
+  <video-player class="video-player  vjs-big-play-centered" :class="['player_box', { loading: !state }]" :fluid="true" 
+    :sources="config.sources"
+    :poster="config.poster" 
+    crossorigin="anonymous" playsinline :playbackRates="[1, 1.5, 2]" :playbackRate="1"
+    :height="210" :loop="false" :volume="0.6" controls 
+    @mounted="handleMounted">
   </video-player>
   </view>
 </template>
 
 <script setup >
-import { ref, reactive, computed, nextTick } from "vue";
-import { playlist } from "./videos";
+import { ref, reactive, computed, nextTick,defineProps } from "vue";
 // #ifdef H5
 import { VideoPlayer } from '@videojs-player/vue'
 import videojs from "video.js";
@@ -21,35 +33,58 @@ import 'video.js/dist/video-js.css'
 const player = ref();
 const state = ref();
 
-const setTimeList = reactive([
-  {
-    time: '00:10',
-    val: 10,
-  },
-  {
-    time: '00:20',
-    val: 20,
-  },
-  {
-    time: '00:50',
-    val: 50,
-  },
-  {
-    time: '01:10',
-    val: 70,
-  },
-])
-
 const props = defineProps({
-		src: {
-			type: String,
-			required: true
-		},
-		autoplay: {
-			type: Boolean,
-			default: false
-		}
-	})
+	detailData: {
+		type: Object,
+		default: () => ({})
+	}
+})
+
+const config = computed(() => {
+  const src = props.detailData?.data?.content;
+  let type = props.detailData?.data?.type;
+  
+  console.log('Video source:', src);
+  console.log('Video type:', type);
+  
+  // 如果没有明确的类型，根据URL自动判断
+  if (!type && src) {
+    if (src.includes('.m3u8')) {
+      type = 'application/x-mpegurl'; // HLS流
+    } else if (src.includes('.mp4')) {
+      type = 'video/mp4';
+    } else if (src.includes('.webm')) {
+      type = 'video/webm';
+    } else {
+      type = 'application/x-mpegurl'; // 默认为HLS
+    }
+  }
+  
+  console.log('Final type:', type);
+  
+  return {
+    sources: [
+      {
+        src: src,
+        type: type || 'application/x-mpegurl',
+        // src: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+        // type: props.detailData?.data?.type || 'application/x-mpegurl' || 'video/mp4' || 'video/webm',
+      },
+    ],
+    poster: props.detailData?.data?.video_cover || props.detailData?.data?.pc_image || props.detailData?.data?.mobile_image || '',
+  };
+});
+
+// const props = defineProps({
+// 		src: {
+// 			type: String,
+// 			required: true
+// 		},
+// 		autoplay: {
+// 			type: Boolean,
+// 			default: false
+// 		}
+// })
 
 const setTime = (time) => {
   console.log("time=", time);
@@ -57,22 +92,23 @@ const setTime = (time) => {
     player.value?.currentTime(time);
   });
 };
-
 const playMediaIndex = ref(0);
-const config = computed(() => ({
-  sources: [
-    {
-      src: playlist.videos[playMediaIndex.value].video,
-      type: playlist.videos[playMediaIndex.value].type || "",
-    },
-  ],
-  poster: playlist.videos[playMediaIndex.value].image,
-}));
 
 const handleMounted = (payload) => {
-  console.log("player==", payload);
   state.value = payload.state;
   player.value = payload.player;
+  
+  // 添加错误监听
+  if (payload.player) {
+    payload.player.on('error', (error) => {
+      console.error('Video player error:', error);
+      console.error('Current source:', config.value.sources[0]);
+    });
+    
+    payload.player.on('loadstart', () => {
+      console.log('Loading started for:', config.value.sources[0].src);
+    });
+  }
 };
 
 const changePlayer = (index) => {

@@ -1,5 +1,5 @@
 // 基础配置
-const BASE_URL = 'http://66cg.6980.cc/api.php' // 根据实际项目修改
+const BASE_URL = 'https://66cg.6980.cc/api.php' // 根据实际项目修改
 const TIMEOUT = 15000
 
 // 请求队列（防重复提交）

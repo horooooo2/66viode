@@ -6,14 +6,13 @@
 		</view>
 		<view class="anime_detail">
 			<view class="video-box" v-if="detailData.type === 'video'">
-				<videoDom />
-				<view class="video-title">标题，爱是自由意志的沦陷，你无法通过意志控制自己不要去爱。主观的感受却是客观存在，不以不以不...</view>
+				<videoDom :detailData="detailData" />
+				<view class="video-title">{{detailData.data.title || ''}}</view>
 				<view class="video-label">
-					<view class="video-label-info">11.2W 观看 一年前</view>
+					<!-- <view class="video-label-info">11.2W 观看 一年前</view> -->
+					<view class="video-label-info">{{ detailData?.data?.updated_at?.split(" ")?.[0] }}</view>
 					<view class="video-label-item">
-						<view class="text">#真挚</view>
-						<view class="text">#真挚</view>
-						<view class="text">#真挚</view>
+						<view class="text" v-for="val in detailData.data.hash_tags" :key="val">#{{ val }}</view>
 					</view>
 				</view>
 			</view>
@@ -27,9 +26,9 @@
 						<view class="d_time">
 							<text>SVIP</text>
 							<text>推荐阅读 </text>
-							<text>更新于 2025-05-10</text>
+							<text>更新于 {{ detailData.data?.updated_at?.split(" ")?.[0] || '未知时间' }}</text>
 						</view>
-						<view class="d_profile">忘掉安全感，到你所害怕的地方生活。摧毁你的名声，作一个名声狼藉，却内心真城的人。</view>
+						<view class="d_profile">{{ detailData.data.description || '暂无简介' }}</view>
 					</view>
 				</view>
 				<view class="labels">
@@ -39,12 +38,12 @@
 				</view>
 			</view>
 		
-			<Like />
-			<List v-if="detailData.type !== 'video'" />
+			<Like :detailData="detailData" />
+			<List :detailData="detailData" v-if="detailData.type !== 'video'" />
 			<Recommend />
 			<Share />
 			<Sponsor />
-			<Critique />
+			<Critique :detailData="detailData"/>
 		</view>
 	</view>
 		
@@ -190,9 +189,12 @@ const goBack=()=>{
 		display: flex;
 		align-items: center;
 		&-info {
+			position: relative;
+			top: 1rpx;
 			font-size: 24rpx;
 			color: #999;
 			font-weight: 400;
+			
 		}
 		&-item {
 			display: flex;
@@ -200,7 +202,11 @@ const goBack=()=>{
 			color: #DB7FDB;
 			font-size: 24rpx;
 			font-weight: 400;
+			margin-left: 10rpx;
 			gap: 8px;
+			// .text {
+			// 	margin-right: 8rpx;
+			// }
 		}
 	}
 }
