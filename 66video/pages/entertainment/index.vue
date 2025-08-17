@@ -1,5 +1,5 @@
 <template>
-	<view class="home">
+	<view class="entertainment">
 		<view class="status_bar"></view>
 		<view class="header">
 			<view class="logo" @click="onClick">66 Video</view>
@@ -13,7 +13,7 @@
 			</view>
 		</view>
 		<view class="search">
-			<input class="input" type="text" placeholder="搜索视频关键词"></input>
+			<input class="input" type="text" placeholder="搜索视频关键词" @click="toPath('/pages/search/index')"></input>
 		</view>
 
 		<tui-tab sliderHeight="0" backgroundColor="transparent" color="#BBB" selectedColor="#D018F5" bold :tabs="tabs"
@@ -52,6 +52,7 @@
 				<view class="title">{{val.title}}</view>
 			</view>
 		</view>
+		<Empty v-if="listData.length === 0" class="entertainment_empty"></Empty>
 
 		<tui-bottom-popup backgroundColor="#202020" z-index="1002" :height="450" :show="popupShow" @close="hiddenPopup">
 			<view class="sort-box">
@@ -90,8 +91,6 @@
 				
 			</view>
 		</uni-popup>
-
-		
 		<custom-tabbar :current="2" @change="handleTabChange"></custom-tabbar>
 	</view>
 </template>
@@ -99,6 +98,7 @@
 <script>
 	import CustomTabbar from '@/components/custom-tabbar.vue'
 	import Surplus from "@/components/Surplus/index.vue"
+	import Empty from "@/pages/search/components/empty.vue"
 	import {
 		apiGetVideoCategories,
 		apiGetImageCategories,
@@ -110,7 +110,8 @@
 	export default {
 		components: {
 			CustomTabbar,
-			Surplus
+			Surplus,
+			Empty
 		},
 		data() {
 			return {
@@ -261,7 +262,7 @@
 							value: item.id,
 							checked: false
 						}));
-						this.typeRadioItems['video'].unshift({
+						this.typeRadioItems['novel'].unshift({
 							name: '全部',
 							value: 'all',
 							checked: true
@@ -279,7 +280,7 @@
 				} else if (this.currentTab === 'novel') {
 					res = await apiGetNovelList({ ...this.listParams, loading: true })
 				}
-				if (res.code === 0 && res?.data?.list.length) {
+				if (res.code === 0) {
 					this.listData = res.data.list;
 				}
 			},
@@ -295,7 +296,7 @@
 </script>
 
 <style lang="scss">
-	.home {
+	.entertainment {
 		width: 100%;
 		background-color: #101010;
 		min-height: 100vh;
@@ -303,6 +304,9 @@
 		background-position: top center;
 		background-repeat: no-repeat;
 		background-size: cover;
+		.entertainment_empty{
+			color: #fff;
+		}
 
 		.header {
 			width: 100%;

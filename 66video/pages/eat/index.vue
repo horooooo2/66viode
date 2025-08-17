@@ -1,5 +1,5 @@
 <template>
-	<view class="home">
+	<view class="article_home">
 		<view class="status_bar"></view>
 		<view class="header">
 			<view class="logo" @click="onClick">66 Video</view>
@@ -13,7 +13,7 @@
 			</view>
 		</view>
 		<view class="search">
-			<input class="input" type="text" placeholder="搜索视频关键词"></input>
+			<input class="input" type="text" placeholder="搜索视频关键词" @click="toPath('/pages/search/index')"></input>
 		</view>
 
 		<tui-tab sliderHeight="0" backgroundColor="transparent" color="#BBB" selectedColor="#D018F5" bold :tabs="tabs"
@@ -212,7 +212,7 @@
 </script>
 
 <style lang="scss">
-	.home {
+	.article_home {
 		width: 100%;
 		background-color: #101010;
 		min-height: 100vh;
