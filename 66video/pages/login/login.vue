@@ -18,7 +18,10 @@
 <script setup>
 	import { computed,reactive,ref } from 'vue';
 	import {apiLogin} from '@/common/api/user.js'
+	import { useUserStore } from '@/store/user'
 	// import DialogVue from './dialog.vue';
+	
+	const userStore = useUserStore()
 	
 	const checkRef = ref(uni.getStorageSync('storage_remember_username')? true:false);
 	const isShow = ref(false);
@@ -40,6 +43,7 @@
 		const {code,msg,data} = await apiLogin({...params,loading:true});
 		uni.showToast({ title: msg, icon:'none', duration: 2000 });
 		if(code == 0){
+			userStore.setUser(data)
 			uni.setStorageSync('storage_user_data', data);
 			uni.setStorageSync('token', data.token)
 			uni.switchTab({

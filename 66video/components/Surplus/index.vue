@@ -1,20 +1,19 @@
 <template>
 	<view class="surplus">
-		<text>{{ points }}</text>
+		<text>{{ userInfo.points }}</text>
 		<!-- <image class="icon-add" src="/static/images/icon-add.png" mode=""></image> -->
 	</view>
 </template>
 
-<script>
-	export default {
-		computed: {
-			points() {
-				let { points } = uni.getStorageSync('storage_user_data')
-				return points || 0
-			}
-		},
-	}
+<script setup>
+import { computed } from 'vue';
+import { useUserStore } from '@/store/user'
+const userStore = useUserStore()
+
+const userInfo = computed(() => userStore.userData || {})
+
 </script>
+
 
 <style lang="scss" scoped>
 	.surplus {

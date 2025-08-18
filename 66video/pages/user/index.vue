@@ -116,6 +116,7 @@
 
 <script>
 	import {apiLogout,apiGetUserInfo} from '@/common/api/user.js'
+	import { useUserStore } from '@/store/user'
 	export default {
 		created() {
 			this.getUserInfo();
@@ -124,15 +125,19 @@
 			toLink(url) {
 				uni.navigateTo({ url })
 			},
-			async logoutFun(){
-				const {code,msg} = await apiLogout({loading:true});
-				uni.showToast({ title: msg, icon:'none', duration: 2000 });
-				if(code == 0){
-					uni.removeStorageSync('storage_user_data');	
-				}
-				uni.navigateTo({
-					url: '/pages/login/index?type=1'
-				});
+			async logoutFun() {
+			  const userStore = useUserStore()
+			  const { code, msg } = await apiLogout({ loading: true })
+			  uni.showToast({ title: msg, icon: 'none', duration: 2000 })
+			
+			  if (code === 0) {
+			    userStore.logout()
+			
+			    // 跳转到登录页
+			    uni.navigateTo({
+			      url: '/pages/login/index?type=1'
+			    })
+			  }
 			},
 			async getUserInfo(){
 				const {code,msg,data} = await apiGetUserInfo();

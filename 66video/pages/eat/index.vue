@@ -99,6 +99,7 @@
 		apiGetArticleCategories,
 		apiGetArticleList,
 	} from '@/common/api/content.js'
+	import { useUserStore } from '@/store/user'
 
 	export default {
 		mixins: [MescrollMixin], // 使用mixin
@@ -172,8 +173,11 @@
 			}
 		},
 		computed: {
+			userStore() {
+			  return useUserStore()
+			},
 			isLogin() {
-				return !!uni.getStorageSync('storage_user_data')?.token
+			  return this.userStore.isLogin
 			},
 			dateName() {
 				return this.dateOptions.filter(item => item.value == this.date)[0].name
