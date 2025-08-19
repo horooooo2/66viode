@@ -46,8 +46,8 @@
 			userStore.setUser(data)
 			uni.setStorageSync('storage_user_data', data);
 			uni.setStorageSync('token', data.token)
-			uni.switchTab({
-				url: '/'
+			uni.navigateTo({
+				url: '/pages/eat/index'
 			});
 		}
 		if( checkRef.value ){

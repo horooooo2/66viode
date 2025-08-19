@@ -7,7 +7,7 @@
 				</view>
 				<view class="userInfo" @click="toLink('/pages/user/info')">
 					<view class="title-box">
-						<view class="username">zackUP主</view>
+						<view class="username">{{userInfo.username}}</view>
 						<image class="copy" src="/static/images/mine/edit-icon.png" mode=""></image>
 					</view>
 					<view class="time">会员到期 2023/05/06</view>
@@ -29,7 +29,7 @@
 					<image class="image" src="/static/images/mine/history.png" mode=""></image>
 					<text>历史</text>
 				</view>
-				<view class="grid-item">
+				<view class="grid-item" @click="toLink('/pages/points/index')">
 					<image class="image" src="/static/images/mine/mall.png" mode=""></image>
 					<text>商城</text>
 				</view>
@@ -64,7 +64,7 @@
 		
 		<view class="content">
 			<view class="card">
-				<view class="card-item">
+				<view class="card-item" @click="toLink('/pages/active/index')">
 					<view class="card-left">
 						<view class="task">任务中心</view>
 						<view class="text">做任务领积分</view>
@@ -75,7 +75,7 @@
 					<view class="card-left">
 						<view class="card-title">
 							<image class="coin" src="/static/images/mine/icon-coin1.png" mode=""></image>
-							<text>99978</text>
+							<text>{{userInfo.points}}</text>
 						</view>
 						<view class="text">小积分兑豪礼</view>
 					</view>
@@ -84,11 +84,11 @@
 			</view>
 			
 			<view class="cell">
-				<view class="cell-item">
+				<view class="cell-item" @click="toLink('/pages/friends/index')">
 					<image class="icon" src="/static/images/mine/icon-yqhy.png" mode=""></image>
 					<text>邀请好友</text>
 				</view>
-				<view class="cell-item">
+				<view class="cell-item" @click="toLink('/pages/media/index')">
 					<image class="icon" src="/static/images/mine/icon-gfmt.png" mode=""></image>
 					<text>官方媒体</text>
 				</view>
@@ -99,11 +99,11 @@
 					<image class="icon" src="/static/images/mine/icon-sz.png" mode=""></image>
 					<text>设置</text>
 				</view>
-				<view class="cell-item">
+				<!-- <view class="cell-item">
 					<image class="icon" src="/static/images/mine/icon-yy.png" mode=""></image>
 					<text>语言</text>
-				</view>
-				<view class="cell-item">
+				</view> -->
+				<view class="cell-item" @click="toService()">
 					<image class="icon" src="/static/images/mine/icon-zxkf.png" mode=""></image>
 					<text>在线客服</text>
 				</view>
@@ -118,12 +118,20 @@
 	import {apiLogout,apiGetUserInfo} from '@/common/api/user.js'
 	import { useUserStore } from '@/store/user'
 	export default {
+		data(){
+			return{
+				userInfo: ''
+			}
+		},
 		created() {
 			this.getUserInfo();
 		},
 		methods: {
 			toLink(url) {
 				uni.navigateTo({ url })
+			},
+			toService() {
+				location.href = 'https://www.baidu.com'
 			},
 			async logoutFun() {
 			  const userStore = useUserStore()
@@ -141,6 +149,7 @@
 			},
 			async getUserInfo(){
 				const {code,msg,data} = await apiGetUserInfo();
+				this.userInfo = data
 				console.log('data==',data);
 			}
 		}

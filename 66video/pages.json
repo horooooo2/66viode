@@ -21,7 +21,8 @@
 		{
 			"path": "pages/active/index",
 			"style": {
-				"navigationBarTitleText": "活动"
+				"navigationBarTitleText": "活动",
+				 "enablePullDownRefresh": false
 			}
 		},
 		{
@@ -201,27 +202,7 @@
 		"backgroundColor": "#101010",
 		"borderStyle": "black",
 		"custom": true,
-		        "list": [{
-		            "pagePath": "pages/home/index",
-		            "text": "菜单",
-		            "iconPath": "static/images/tabbar/foot1.png",
-		            "selectedIconPath": "static/images/tabbar/foot1_active.png"
-		        }, {
-		            "pagePath": "pages/eat/index",
-		            "text": "吃瓜",
-		            "iconPath": "static/images/tabbar/foot2.png",
-		            "selectedIconPath": "static/images/tabbar/foot2_active.png"
-		        }, {
-		            "pagePath": "pages/entertainment/index",
-		            "text": "文娱",
-		            "iconPath": "static/images/tabbar/foot3.png",
-		            "selectedIconPath": "static/images/tabbar/foot3_active.png"
-		        }, {
-		            "pagePath": "pages/active/index",
-		            "text": "活动",
-		            "iconPath": "static/images/tabbar/foot4.png",
-		            "selectedIconPath": "static/images/tabbar/foot4_active.png"
-		        }]
+		"list": []
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
@@ -229,6 +210,7 @@
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"navigationStyle": "custom",
 		"backgroundColor": "#111",
+		"animationType": "none",
 		"app-plus": {
 			"titleView": false, // 隐藏标题栏（App端）
 			"statusbar": {
