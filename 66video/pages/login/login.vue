@@ -45,7 +45,6 @@
 		if(code == 0){
 			userStore.setUser(data)
 			uni.setStorageSync('storage_user_data', data);
-			uni.setStorageSync('token', data.token)
 			uni.navigateTo({
 				url: '/pages/eat/index'
 			});

@@ -60,13 +60,13 @@ export const chooseImage = () => {
 
 //上传头像图片文件
 export const uploadAvatarImage = (imagePath) => {
-	return new Promise((resolve, reject) => {
+	return http.uploadFile('/user/upload_avatar', imagePath);
+	/*return new Promise((resolve, reject) => {
 		uni.uploadFile({
 			url: http.baseURL + '/user/upload_avatar',
 			filePath: imagePath,
 			name: 'file',
 			header: {
-				'Authorization': uni.getStorageSync('token') || '',
 				'Token': uni.getStorageSync('storage_user_data')?.token || '',
 			},
 			formData: {},
@@ -90,7 +90,7 @@ export const uploadAvatarImage = (imagePath) => {
 				reject(err.errMsg || '上传失败');
 			}
 		});
-	});
+	});*/
 }
 
 

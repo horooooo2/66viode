@@ -90,6 +90,11 @@ export const apiAddComment = (params) =>{
 	return http.post('/comment/add',params);
 }
 
+//获取喜欢收藏列表
+export const apiGetLikeList = (params) =>{
+	return http.get('/like/list',params);
+}
+
 //添加喜欢
 export const apiAddLike = (params) =>{
 	return http.post('/like/add',params);

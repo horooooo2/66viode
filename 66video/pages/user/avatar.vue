@@ -115,7 +115,7 @@
 		
 		<!-- 上传自定义头像功能 -->
 		<view class="upload-section">
-			<view class="upload-title">或上传自定义头像</view>
+			<view class="upload-title">上传自定义头像</view>
 			<view class="upload-container">
 				<view class="upload-btn" @click="chooseCustomAvatar">
 					<image v-if="customAvatar" :src="customAvatar" class="custom-avatar-preview" mode="aspectFill"></image>
@@ -175,11 +175,8 @@
 			
 			if (customAvatar.value) {
 				// 上传自定义头像
-				uni.showLoading({
-					title: '上传中...'
-				})
-				let {code, data,msg} = await uploadAvatarImage(customAvatar.value)
-				uni.showToast({ title: msg, icon: 'none', duration: 2000 });
+				let {code,data,msg} = await uploadAvatarImage(customAvatar.value);
+				uni.showToast({ title: msg, icon: 'none' });
 				if (code == 0) {
 					avatarUrl = data.avatar;
 				}else{
@@ -194,17 +191,11 @@
 			let {code,msg} =  await apiUpdateProfile({
 				avatar: avatarUrl
 			})
-			if (code != 0) {
-				uni.showToast({ title: msg, icon: 'none' });
+			uni.showToast({ title: msg, icon: 'none' });
+			if( code != 0 ){
 				return;
 			}
-
-			uni.hideLoading()
-			uni.showToast({
-				title: '头像更新成功',
-				icon: 'success'
-			})
-
+		
 			const {code:dataCode,data} = await apiGetUserInfo();
 			if (dataCode == 0) {
 				uni.setStorageSync('storage_user_data', data);	

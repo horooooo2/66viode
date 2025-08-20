@@ -1,4 +1,5 @@
-// 基础配置
+import { useUserStore } from '@/store/user'
+
 const BASE_URL = 'https://66cg.6980.cc/api.php' // 根据实际项目修改
 const TIMEOUT = 15000
 
@@ -16,7 +17,6 @@ const requestInterceptor = (config) => {
   config.header = {
     ...config.header,
     'Content-Type': 'application/json',
-    'Authorization': uni.getStorageSync('token') || '',
 	  'Token': uni.getStorageSync('storage_user_data')?.token || '',
   }
 
@@ -35,8 +35,15 @@ const responseInterceptor = (response) => {
 	console.log( '响应拦截 response ===',response )
 
   // 示例：处理特定状态码
-  if (response.statusCode === 401) {
+  if (response.statusCode === 401 || response.data.code === -999) {
     uni.reLaunch({ url: '/pages/login/index' })
+    const userStore = useUserStore()
+    userStore.logout()
+    uni.showToast({
+      title: '请重新登录',
+      icon: 'none',
+      duration: 2000
+    })
     return Promise.reject(new Error('请重新登录'))
   }
   
@@ -143,6 +150,32 @@ const http = {
       data,
       method: 'DELETE',
       ...options
+    })
+  },
+  uploadFile(url, filePath, name = 'file', formData = {}, options = {}) {
+    return new Promise((resolve, reject) => {
+      uni.uploadFile({
+        url: url.startsWith('http') ? url : BASE_URL + url,
+        filePath,
+        name,
+        formData,
+        header: {
+          'Token': uni.getStorageSync('storage_user_data')?.token || '',
+          ...options.header
+        },
+        success: (uploadRes) => {
+          try {
+            const data = JSON.parse(uploadRes.data)
+            console.log('uploadRes data===', data)
+            resolve(data)
+          } catch (e) {
+            reject('上传结果解析失败')
+          }
+        },
+        fail: (err) => {
+          reject(err.errMsg || '上传失败')
+        }
+      })
     })
   },
   baseURL:BASE_URL

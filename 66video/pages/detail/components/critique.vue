@@ -16,12 +16,12 @@
 			</view> -->
 		</view>
 		<view class="c_send">
-			<input class="uni-input" @input="onKeyInput" placeholder="说点什么吧..." />
+			<input class="uni-input" v-model="sendText" placeholder="说点什么吧..." />
 		</view>
 		<view class="c_btn">
 			<button class="btn share_btn">分享你的作品</button>
-			<button class="btn send_btn">发送评论</button>
-			<!-- <button class="btn send_btn">登录</button> -->
+			<button class="btn send_btn" v-if="!userStore.isLogin" @click="goLogin">登录</button>
+			<button class="btn send_btn" v-else @click="sendComment">发送评论</button>
 		</view>
 	</view>
 </template>
@@ -29,8 +29,12 @@
 <script setup>
 import { ref, reactive, defineEmits, defineProps,onMounted } from 'vue'
 import {
-  apiGetComments
+  apiGetComments,
+  apiAddComment
 } from "@/common/api/content.js";
+import { useUserStore } from '@/store/user'
+
+const userStore = useUserStore()
 const props = defineProps({
   detailData: {
 	type: Object,
@@ -38,9 +42,7 @@ const props = defineProps({
   }
 })
 const commentList = ref([]);
-const onKeyInput = (e) => {
-  console.log("输入内容：", e.target.value);
-};
+const sendText = ref('');
 const getComments = async () => {
 	let params = {
 		content_id: props.detailData.id,
@@ -57,6 +59,43 @@ const getComments = async () => {
 	  icon: "none",
 	});
   }
+};
+
+const sendComment = async () => {
+	if (!sendText.value) {
+		uni.showToast({
+			title: '评论内容不能为空',
+			icon: 'none'
+		});
+		return;
+	}
+	const res = await apiAddComment({
+		content_id: props.detailData.id,
+		content_type: props.detailData.type || '',
+		content: sendText.value,
+		loading: true
+	});
+	if (res.code === 0) {
+		getComments();
+		uni.showToast({
+			title: res.msg || "评论成功",
+			icon: 'none'
+		});
+		sendText.value = '';
+	} else {
+		getComments();
+		uni.showToast({
+			title: res.msg || "评论失败",
+			icon: 'none'
+		});
+		sendText.value = '';
+	}
+};
+
+const goLogin = () => {
+  uni.navigateTo({
+	url: '/pages/login/index'
+  });
 };
 
 onMounted(() => {

@@ -38,7 +38,7 @@
 				</view>
 			</view>
 		
-			<Like :detailData="detailData" />
+			<Like :detailData="detailData" @getDetail="getDetail" />
 			<List :detailData="detailData" v-if="detailData.type !== 'video'" />
 			<Recommend />
 			<Share />
@@ -62,7 +62,7 @@ import { onLoad } from '@dcloudio/uni-app'
 import { apiGetImageDetail,apiGetImageChapters,apiGetNovelDetail,apiGetNovelChapters,apiGetVideoDetail } from '@/common/api/content.js'
 
 const detailData = reactive({
-	id: '73541071197396',
+	id: '',
 	type: '', // video, image, novel
 	data: null
 })

@@ -3,31 +3,32 @@
 		<NavBar title="吃瓜"></NavBar>
 
 		<view class="eat-container">
-			<view class="d_title">{{ dataItem.title }}</view>
-			<view class="d_time"><text>吃瓜视频 </text>发布于<text>{{ dataItem.created_at }} {{store?.user?.userData?.name}}</text></view>
-			<view class="d_cont" v-for="(item, index) in dataItem.content" :key="index">
+			<view class="d_title">{{ detailData.data.title }}</view>
+			<view class="d_time"><text>吃瓜视频 </text>发布于<text>{{ detailData.data.created_at }} {{store?.user?.userData?.name}}</text></view>
+			<view class="d_cont" v-for="(item, index) in detailData.data.content" :key="index">
 				<rich-text v-if="item.type === 'richtext'" :nodes="item.content"></rich-text>
 				
 				<view class="video-box" v-if="item.type === 'video'">
-					<videoDom :detailData="{ data: { type: item.type, content: item.content.url, mobile_image: dataItem.mobile_image } }" />
+					<videoDom :detailData="{ data: { content: item.content.url, mobile_image: detailData.data.mobile_image } }" />
 					<view class="video-label">
 						<view class="video-label-item">
-							<view class="text" v-for="val in dataItem.hash_tags" :key="val">#{{ val }}</view>
+							<view class="text" v-for="val in detailData.data.hash_tags" :key="val">#{{ val }}</view>
 						</view>
 					</view>
 				</view>
 			</view>
 
-			<Like :detailData="{ data: { like_count: dataItem.like_count, view_count: dataItem.view_count, comment_count: dataItem.comment_count } }" />
+			<Like :detailData="detailData" @getDetail="getData" />
 			<Share />
 			<Sponsor />
-			<Critique />
+			<Critique :detailData="detailData" />
 		</view>
 	</view>
 </template>
 
 <script setup>
 	import {
+		reactive,
 		ref,
 		defineEmits,
 		defineProps,
@@ -37,6 +38,7 @@
 	import {
 		useRoute
 	} from 'vue-router'
+	import { onLoad } from '@dcloudio/uni-app'
 	import NavBar from '@/components/NavBar/index.vue'
 	import videoDom from '../video/index.vue'
 	import Like from './components/like.vue'
@@ -48,20 +50,29 @@
 	} from '@/common/api/content.js'
 
 	const route = useRoute()
-
-	const strings = ref('<div><p>富文本数据......</p></div>');
-	const dataItem = ref('')
-
-	onMounted(() => {
-		getData()
+	const detailData = reactive({
+		id: '',
+		type: '', // video, image, novel
+		data: null
 	})
+
+	onLoad((options)=>{
+		console.log('onload options=',options);
+		if(options.id){
+			detailData.id = options.id;
+			detailData.type = options.type || 'article';
+			getData();
+		}
+	})
+
+
 	
 	const getData = () => {
 		apiGetArticleDetail({
 			id: route.query.id
 		}).then(res => {
 			if (res.code === 0) {
-				dataItem.value = res.data
+				detailData.data = res.data
 			} else {
 				uni.showToast({
 					title: res.msg,
@@ -72,11 +83,6 @@
 		})
 	}
 
-	const setUser = () => {
-		store.user.setUser({
-			name: 9999
-		});
-	}
 </script>
 <style lang="scss" scoped>
 	.my_detail {
