@@ -71,7 +71,8 @@ const config = computed(() => {
         // type: props.detailData?.data?.type || 'application/x-mpegurl' || 'video/mp4' || 'video/webm',
       },
     ],
-    poster: props.detailData?.data?.video_cover || props.detailData?.data?.pc_image || props.detailData?.data?.mobile_image || '',
+    // poster: props.detailData?.data?.video_cover || props.detailData?.data?.pc_image || props.detailData?.data?.mobile_image || '',
+    poster: "http://66cg.6980.cc/upload/default/20250809/c6aea3500f6191891fd02a72468fecce.jpeg",
   };
 });
 
