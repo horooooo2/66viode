@@ -113,8 +113,8 @@
 		console.log('data===',data);
 		if(code == 0){
 			uni.setStorageSync('storage_user_data', data);	
-			uni.switchTab({
-				url: '/'
+			uni.navigateTo({
+				url: '/pages/eat/index'
 			});
 		}
 		

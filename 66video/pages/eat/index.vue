@@ -1,66 +1,66 @@
 <template>
 	<view class="article_home">
-		<view class="status_bar"></view>
-		<view class="header">
-			<view class="logo" @click="onClick">66 Video</view>
-			<view v-if="isLogin" class="right" @click="toPath('/pages/user/index')">
-				<Surplus></Surplus>
-				<view class="avatar"></view>
+		<mescroll-body ref="mescrollRef" :bottombar='false' :safearea="true" @init="mescrollInit" @down="downCallback"
+			:up="upOption" @up="upCallback" @emptyclick="emptyClick">
+			<view class="status_bar"></view>
+			<view class="header">
+				<view class="logo" @click="onClick">66 Video</view>
+				<view v-if="isLogin" class="right" @click="toPath('/pages/user/index')">
+					<Surplus></Surplus>
+					<view class="avatar"></view>
+				</view>
+				<view v-else class="button">
+					<view class="login" @click="toPath('/pages/login/index?type=1')">登录</view>
+					<view class="register" @click="toPath('/pages/login/index?type=2')">注册</view>
+				</view>
 			</view>
-			<view v-else class="button">
-				<view class="login" @click="toPath('/pages/login/index?type=1')">登录</view>
-				<view class="register" @click="toPath('/pages/login/index?type=2')">注册</view>
+			<view class="search">
+				<input class="input" type="text" placeholder="搜索视频关键词" @click="toPath('/pages/search/index')"></input>
 			</view>
-		</view>
-		<view class="search">
-			<input class="input" type="text" placeholder="搜索视频关键词" @click="toPath('/pages/search/index')"></input>
-		</view>
 
-		<tui-tab sliderHeight="0" backgroundColor="transparent" color="#BBB" selectedColor="#D018F5" bold :tabs="tabs"
-			scroll @change="change"></tui-tab>
+			<tui-tab sliderHeight="0" backgroundColor="transparent" color="#BBB" selectedColor="#D018F5" bold
+				:tabs="categories" scroll @change="onClickCategories"></tui-tab>
 
-		<view class="tui-banner-swiper">
-			<swiper class="tui-banner__height" @change="bannerChange" circular :indicator-dots="false" autoplay
-				:interval="4000" :duration="150">
-				<block v-for="(item,index) in background" :key="index">
-					<swiper-item style="border-radius: 10px;overflow: hidden;">
-						<image class="swiper-img" :src="item.img" mode=""></image>
-					</swiper-item>
-				</block>
-			</swiper>
-		</view>
-
-		<view class="filter">
-			<view class="filter-box" @click="popupShow = true">
-				<view class="label">排序方式：</view>
-				<view class="value">最受欢迎的</view>
-				<image class="icon" src="/static/images/index/icon_close.png" mode=""></image>
+			<view class="tui-banner-swiper">
+				<swiper class="tui-banner__height" @change="bannerChange" circular :indicator-dots="false" autoplay
+					:interval="4000" :duration="150">
+					<block v-for="(item,index) in background" :key="index">
+						<swiper-item style="border-radius: 10px;overflow: hidden;">
+							<image class="swiper-img" :src="item.img" mode=""></image>
+						</swiper-item>
+					</block>
+				</swiper>
 			</view>
-			<view class="filter-box" @click="timePopupShow = true">
-				<view class="label">发布日期：</view>
-				<view class="value">今日</view>
-				<image class="icon" src="/static/images/index/icon_close.png" mode=""></image>
-			</view>
-		</view>
 
-		<view class="list">
-			<view class="list-item" v-for="i in 3" :key="i">
-				<image class="flag" src="/static/images/index/hot-icon.png" mode=""></image>
-				<image class="poster" src="/static/images/index/poster.png" mode=""></image>
-				<view class="mask">抖音网红 王幼宁 携手闺蜜团/精神小伙 拿刀霸凌某女子 现场视频流出引全网热议！</view>
+			<view class="filter">
+				<view class="filter-box" @click="orderPopup = true">
+					<view class="label">排序方式：</view>
+					<view class="value">{{ orderName }}</view>
+					<image class="icon" src="/static/images/index/icon_close.png" mode=""></image>
+				</view>
+				<view class="filter-box" @click="datePopup = true">
+					<view class="label">发布日期：</view>
+					<view class="value">{{ dateName }}</view>
+					<image class="icon" src="/static/images/index/icon_close.png" mode=""></image>
+				</view>
 			</view>
-		</view>
+			<!-- 数据列表 -->
+			<list :list="listData" @refreshList='refreshList'></list>
 
-		<tui-bottom-popup backgroundColor="#202020" z-index="1002" :height="450" :show="popupShow" @close="hiddenPopup">
+			<custom-tabbar :current="1" @change="handleTabChange"></custom-tabbar>
+
+		</mescroll-body>
+
+		<tui-bottom-popup backgroundColor="#202020" z-index="1002" :height="350" :show="orderPopup"
+			@close="closeOrderPopup">
 			<view class="sort-box">
 				<view class="sort-title">排序方式</view>
-				<tui-radio-group>
-					<tui-label v-for="(item,index) in radioItems" :key="index">
+				<tui-radio-group :value="order" @change="onClickOrder">
+					<tui-label v-for="(item,index) in orderOptions" :key="index">
 						<tui-list-cell>
 							<view class="thorui-align__center sort-item">
 								<view class="sort-label">{{item.name}}</view>
-								<tui-radio :checked="item.checked" :value="item.value" color="#D018F5"
-									borderColor="#c5c9d1">
+								<tui-radio :value="item.value" color="#D018F5" borderColor="#c5c9d1">
 								</tui-radio>
 							</view>
 						</tui-list-cell>
@@ -69,17 +69,16 @@
 			</view>
 		</tui-bottom-popup>
 
-		<tui-bottom-popup backgroundColor="#202020" z-index="1002" :height="450" :show="timePopupShow"
-			@close="hiddenTimePopup">
+		<tui-bottom-popup backgroundColor="#202020" z-index="1002" :height="450" :show="datePopup"
+			@close="closeDatePopup">
 			<view class="sort-box">
 				<view class="sort-title">发布日期</view>
-				<tui-radio-group>
-					<tui-label v-for="(item,index) in timeRadioItems" :key="index">
+				<tui-radio-group :value="date" @change="onClickDate">
+					<tui-label v-for="(item,index) in dateOptions" :key="index">
 						<tui-list-cell>
 							<view class="thorui-align__center sort-item">
 								<view class="sort-label">{{item.name}}</view>
-								<tui-radio :checked="item.checked" :value="item.value" color="#D018F5"
-									borderColor="#c5c9d1">
+								<tui-radio :value="item.value" color="#D018F5" borderColor="#c5c9d1">
 								</tui-radio>
 							</view>
 						</tui-list-cell>
@@ -87,32 +86,52 @@
 				</tui-radio-group>
 			</view>
 		</tui-bottom-popup>
-
-		<custom-tabbar :current="1" @change="handleTabChange"></custom-tabbar>
 	</view>
 </template>
 
 <script>
+	import MescrollMixin from "@/uni_modules/mescroll-uni/components/mescroll-uni/mescroll-mixins.js";
 	import Sidebar from '@/components/Sidebar/index.vue'
 	import CustomTabbar from '@/components/custom-tabbar.vue'
 	import Surplus from "@/components/Surplus/index.vue"
+	import list from "./components/list.vue"
 	import {
 		apiGetArticleCategories,
 		apiGetArticleList,
-		apiGetArticleDetail,
 	} from '@/common/api/content.js'
+	import { useUserStore } from '@/store/user'
 
 	export default {
+		mixins: [MescrollMixin], // 使用mixin
 		components: {
 			Sidebar,
 			CustomTabbar,
 			Surplus,
+			list,
 		},
 		data() {
 			return {
+				// 分页配置
+				upOption: {
+					// 首次自动执行
+					auto: true,
+					// page: {
+					// 	size: 10 // 每页数据的数量
+					// },
+					noMoreSize: 4, //如果列表已无数据,可设置列表的总数量要大于半页才显示无更多数据;避免列表数据过少(比如只有一条数据),显示无更多数据会不好看; 默认5
+					empty: {
+						tip: '~ 搜索无数据 ~', // 提示
+						// btnText: '去看看'
+					},
+					textNoMore: '没有更多了', // 没有更多数据的提示文本
+				},
+				listData: [], // 数据
+				total: 0,
+
+				category_id: '',
+				categories: [],
+
 				current: 0,
-				currentTab: 0,
-				tabs: ['推荐', '食品', '水果蔬菜', '新款男装', '内衣', '女装', '百货', '医药', '手机', '鞋包'],
 				background: [{
 						img: '/static/images/index/banner.png'
 					},
@@ -123,46 +142,48 @@
 						img: '/static/images/index/banner.png'
 					}
 				],
-				popupShow: false,
-				radioItems: [{
-						name: '受欢迎的',
-						value: '1',
-						checked: true
+
+				order: 'new',
+				orderPopup: false,
+				orderOptions: [{
+						name: '受欢迎',
+						value: 'hot',
 					},
 					{
-						name: '新品发布',
-						value: '2',
-						checked: false
+						name: '新发布',
+						value: 'new',
 					},
-					{
-						name: '新品发布',
-						value: '3',
-						checked: false
-					}
 				],
 
-				timePopupShow: false,
-				timeRadioItems: [{
+				date: 'month',
+				datePopup: false,
+				dateOptions: [{
 						name: '今日',
-						value: '1',
-						checked: true
+						value: 'today',
 					},
 					{
 						name: '本周',
-						value: '2',
-						checked: false
+						value: 'week',
 					},
 					{
 						name: '最近30天',
-						value: '3',
-						checked: false
+						value: 'month',
 					}
 				]
 			}
 		},
 		computed: {
+			userStore() {
+			  return useUserStore()
+			},
 			isLogin() {
-				return !!uni.getStorageSync('storage_user_data')?.token
+			  return this.userStore.isLogin
+			},
+			dateName() {
+				return this.dateOptions.filter(item => item.value == this.date)[0].name
+			},
+			orderName() {
+				return this.orderOptions.filter(item => item.value == this.order)[0].name
 			},
 		},
 		onShow() {
@@ -179,34 +200,89 @@
 			onClick() {
 				this.$refs.sidebarRef && this.$refs.sidebarRef.open()
 			},
-			//切换tab，逻辑请自行处理
-			change(e) {
-				this.currentTab = e.index
-			},
 			bannerChange: function(e) {
 				this.current = e.detail.current;
 			},
 
-			hiddenPopup() {
-				this.popupShow = false
+			//切换tab，逻辑请自行处理
+			onClickCategories(e) {
+				this.category_id = e.item.id
+				this.refreshList()
 			},
-			hiddenTimePopup() {
-				this.timePopupShow = false
+
+			// 排序方式
+			onClickOrder(item) {
+				this.order = item.detail.value;
+				this.closeOrderPopup();
+				this.refreshList()
 			},
+			closeOrderPopup() {
+				this.orderPopup = false
+			},
+
+			// 发布日期
+			onClickDate(item) {
+				this.date = item.detail.value;
+				this.closeDatePopup();
+				this.refreshList()
+			},
+			closeDatePopup() {
+				this.datePopup = false
+			},
+
 			toPath: function(path) {
 				uni.navigateTo({
 					url: path
 				})
 			},
-			async fetchCategories() {
-				 apiGetArticleCategories().then(res => {
-					console.log('res==',res);
-					
-					if (res.code === 200) {
-						this.categories = res.data;
+
+			fetchCategories() {
+				apiGetArticleCategories().then(res => {
+					if (res.code === 0) {
+						this.categories = res.data
+						this.categories.unshift({
+							id: '',
+							name: '推荐'
+						});
 					}
 				});
-			}
+			},
+			/*上拉加载的回调: 其中page.num:当前页 从1开始, page.size:每页数据条数,默认10 */
+			upCallback(page) {
+				//联网加载数据
+				apiGetArticleList({
+					category_id: this.category_id,
+					order: this.order,
+					date: this.date,
+					page: page.num,
+					limit: page.size,
+				}).then(res => {
+					let data = res.data;
+					let totalPage = data.total;
+					this.total = totalPage;
+					//联网成功的回调,隐藏下拉刷新和上拉加载的状态;
+					this.mescroll.endByPage(data.list.length, totalPage);
+					//设置列表数据
+					if (page.num == 1) this.listData = []; //如果是第一页需手动制空列表
+					this.listData = this.listData.concat(data.list); //追加新数据
+				}).catch(() => {
+					//联网失败, 结束加载
+					this.mescroll.endErr();
+				})
+			},
+			//点击空布局按钮的回调
+			emptyClick() {
+				uni.showToast({
+					title: '点击了按钮,具体逻辑自行实现'
+				})
+			},
+			// 刷新列表
+			refreshList() {
+				this.listData = [] // 先置空列表,显示加载进度
+				setTimeout(() => {
+					this.mescroll.resetUpScroll()
+				}, 120)
+			},
 		}
 	}
 </script>
@@ -234,11 +310,11 @@
 				font-weight: bold;
 				color: #fff;
 			}
-			
+
 			.right {
 				display: flex;
 				gap: 20rpx;
-			
+
 				.avatar {
 					width: 64rpx;
 					height: 64rpx;
@@ -342,53 +418,6 @@
 					height: 28rpx;
 					border-radius: 50%;
 					margin-left: 10rpx;
-				}
-			}
-		}
-
-		.list {
-			display: flex;
-			flex-direction: column;
-			gap: 28rpx;
-			padding: 0 32rpx 28rpx;
-			box-sizing: border-box;
-
-			.list-item {
-				position: relative;
-				width: 100%;
-				height: 260rpx;
-				border-radius: 20rpx;
-
-				.flag {
-					position: absolute;
-					top: 0;
-					left: 20rpx;
-					width: 48rpx;
-					height: 48rpx;
-					z-index: 1;
-				}
-
-				.poster {
-					width: 100%;
-					height: 100%;
-				}
-
-				.mask {
-					width: 100%;
-					height: 100%;
-					background-color: rgba(0, 0, 0, 0.4);
-					position: absolute;
-					top: 0;
-					left: 0;
-					padding: 40rpx 76rpx;
-					box-sizing: border-box;
-					display: flex;
-					align-items: center;
-					justify-content: center;
-					font-size: 28rpx;
-					color: #fff;
-					font-weight: 600;
-					line-height: 40rpx;
 				}
 			}
 		}

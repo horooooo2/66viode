@@ -58,7 +58,7 @@
 				}
 				if (this.current === index) return;
 
-				uni.switchTab({
+				uni.navigateTo({
 					url: this.list[index].pagePath
 				});
 				// 通知父组件更新current

@@ -1,5 +1,6 @@
 import App from './App'
 import './common/styles/index.scss'
+import { createPinia } from 'pinia'
 
 // #ifndef VUE3
 import Vue from 'vue'
@@ -19,6 +20,8 @@ import installDirective from './common/util/directive.js'
 export function createApp() {
   const app = createSSRApp(App);
   installDirective(app);
+  const pinia = createPinia()
+  app.use(pinia)
   return {
     app
   }

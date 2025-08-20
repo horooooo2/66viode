@@ -58,8 +58,8 @@
 				// uni.navigateTo({
 				// 	url: '/pages/home/index'
 				// });
-				uni.switchTab({
-					url: '/pages/home/index'
+				uni.navigateTo({
+					url: '/pages/eat/index'
 				});
 			},
 			changeType(){
