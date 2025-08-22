@@ -2,7 +2,7 @@
 	<view class="user">
 		<view class="header-box">
 			<view class="header">
-				<view class="avatar">
+				<view class="avatar" @click="toLink('/pages/user/avatar')">
 					<image class="avatarUrl" src="/static/images/mine/avatar.png" mode=""></image>
 				</view>
 				<view class="userInfo" @click="toLink('/pages/user/info')">
