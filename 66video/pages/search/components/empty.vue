@@ -25,6 +25,7 @@
 		.empty_txt{
 			margin-top: 40rpx;
 			font-size: 24rpx;
+			color: #fff;
 		}
 	}
 	

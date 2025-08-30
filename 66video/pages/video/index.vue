@@ -1,10 +1,10 @@
 <template>
 	<view class="container">
 		<!-- #ifdef H5 -->
-		<VideoPlayerH5 :src="videoUrl" :autoplay="autoplay" :detailData="detailData" />
+		<VideoPlayerH5 :detailData="detailData" />
 		<!-- #endif -->
 		<!-- #ifndef H5 -->
-		<VideoPlayerApp :src="videoUrl" :autoplay="autoplay" :detailData="detailData" />
+		<VideoPlayerApp :src="detailData?.data?.content" :autoplay="autoplay" :detailData="detailData" />
 		<!-- #endif -->
 	</view>
 </template>

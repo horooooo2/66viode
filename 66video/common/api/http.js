@@ -35,7 +35,7 @@ const responseInterceptor = (response) => {
 	console.log( '响应拦截 response ===',response )
 
   // 示例：处理特定状态码
-  if (response.statusCode === 401 || response.data.code === -999) {
+  if (response?.statusCode === 401 || response?.data?.code === -999) {
     uni.reLaunch({ url: '/pages/login/index' })
     const userStore = useUserStore()
     userStore.logout()
@@ -97,15 +97,18 @@ const request = (options) => {
       ...options,
       success: (res) => {
         try {
-          const processedRes = responseInterceptor(res)
+          const processedRes = responseInterceptor(res);
+          console.log('processedRes==', processedRes);
           resolve(processedRes)
         } catch (e) {
           reject(e)
         }
+        uni.hideLoading();
       },
       fail: (err) => {
         errorHandler(err)
-        reject(err)
+        reject(err);
+        uni.hideLoading();
       },
       complete: () => {
         // 可添加全局loading控制

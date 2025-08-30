@@ -5,7 +5,7 @@ export const useUserStore = defineStore('user', {
     userData: uni.getStorageSync('storage_user_data') || null,
   }),
   getters: {
-    isLogin: (state) => !!state.userData.token
+    isLogin: (state) => !!state?.userData?.token
   },
   actions: {
     setUser(data) {
