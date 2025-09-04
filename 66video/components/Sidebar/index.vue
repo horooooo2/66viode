@@ -6,24 +6,24 @@
 				<image class="back" src="/static/images/sidebar/icon_Back.png" mode="" @click="close"></image>
 				<image class="logo" src="/static/images/sidebar/LOGO.png" mode=""></image>
 			</view>
-			<!-- <view class="button">
-				<view class="login">登录</view>
-				<view class="register">注册</view>
-			</view> -->
-			<Surplus></Surplus>
+			<view v-if="!isLogin" class="button">
+				<view class="login" @click="toPath('/pages/login/index?type=1')">登录</view>
+				<view class="register" @click="toPath('/pages/login/index?type=2')">注册</view>
+			</view>
+			<Surplus v-else></Surplus>
 		</view>
 		<view class="d-container">
-			<view class="card">
+			<view class="card" @click="onClick('svideo')">
 				<image class="icon" src="/static/images/sidebar/sp.png" mode=""></image>
 				<text>视频</text>
 				<image class="arrow" src="/static/images/sidebar/icon-xiala.png" mode=""></image>
 			</view>
-			<view class="card">
+			<view class="card" @click="onClick('cartoon')">
 				<image class="icon" src="/static/images/sidebar/dm.png" mode=""></image>
 				<text>动漫</text>
 				<image class="arrow" src="/static/images/sidebar/icon-xiala.png" mode=""></image>
 			</view>
-			<view class="card">
+			<view class="card" @click="onClick('novel')">
 				<image class="icon" src="/static/images/sidebar/xs.png" mode=""></image>
 				<text>小说</text>
 				<image class="arrow" src="/static/images/sidebar/icon-xiala.png" mode=""></image>
@@ -74,26 +74,69 @@
 	</tui-drawer>
 
 	<Language ref="languageRef"></Language>
-
 	<Sponsor ref="sponsorRef"></Sponsor>
+	<SVideo ref="svideoRef"></SVideo>
+	<cartoon ref="cartoonRef"></cartoon>
+	<novel ref="novelRef"></novel>
 </template>
 
 <script>
 	import Language from "@/components/Language/index.vue"
 	import Sponsor from "@/components/Sponsor/index.vue"
 	import Surplus from "@/components/Surplus/index.vue"
+	import SVideo from "@/components/SVideo/index.vue"
+	import cartoon from "@/components/cartoon/index.vue"
+	import novel from "@/components/novel/index.vue"
+	import { useUserStore } from '@/store/user'
+	import {
+		apiGetImageList,
+		apiGetVideoList,
+		apiGetNovelList
+	} from '@/common/api/content.js'
 	export default {
 		components: {
 			Language,
 			Sponsor,
 			Surplus,
+			SVideo,
+			cartoon,
+			novel,
 		},
 		data() {
 			return {
-				visible: false
+				visible: false,
+				listData1: [],
+				listData2: [],
+				listData3: []
 			}
 		},
+		computed: {
+			userStore() {
+			  return useUserStore()
+			},
+			isLogin() {
+			  return this.userStore.isLogin
+			},
+		},
+		created() {
+			// this.loadData();
+		},
 		methods: {
+			async loadData() {
+			  try {
+			    const res1 = await apiGetImageList();
+			    const res2 = await apiGetVideoList();
+			    const res3 = await apiGetNovelList();
+			    
+			    if (res1.code === 0) this.listData1 = res1.data.list;
+			    if (res2.code === 0) this.listData2 = res2.data.list;
+			    if (res3.code === 0) this.listData3 = res3.data.list;
+			    
+			    console.log(this.listData1); // 此时有数据
+			  } catch (error) {
+			    console.error('请求失败:', error);
+			  }
+			},
 			onClick(flag, url) {
 				switch (flag) {
 					case 'language':
@@ -101,6 +144,15 @@
 						break
 					case 'sponsor':
 						this.$refs.sponsorRef && this.$refs.sponsorRef.open()
+						break
+					case 'svideo':
+						this.$refs.svideoRef && this.$refs.svideoRef.open()
+						break
+					case 'cartoon':
+						this.$refs.cartoonRef && this.$refs.cartoonRef.open()
+						break
+					case 'novel':
+						this.$refs.novelRef && this.$refs.novelRef.open()
 						break
 					case 'router':
 						uni.navigateTo({

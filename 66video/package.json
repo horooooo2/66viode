@@ -3,6 +3,7 @@
     "@dcloudio/uni-ui": "^1.5.7",
     "@videojs-player/vue": "^1.0.0",
     "pinia": "^3.0.3",
+    "uqrcodejs": "^4.0.7",
     "video.js": "^8.22.0"
   }
 }

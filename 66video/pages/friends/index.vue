@@ -36,7 +36,7 @@
 					<view class="label">邀请还有注册，最高奖励 30000 积分！</view>
 					<view class="text">快来看看积分可以兑换哪些物品吧～</view>
 				</view>
-				<image class="button" src="/static/images/friends/button-ljyq.png" @click="transShow = true"></image>
+				<image class="button" src="/static/images/friends/button-ljyq.png" @click="transShowCode()"></image>
 			</view>
 			<view class="card">
 				<image class="title" src="/static/images/friends/title-wdcj.png" mode=""></image>
@@ -61,12 +61,17 @@
 
 		<tui-popup class="yq-popup" :show="transShow" style="background-color: rgba(0,0,0,0.8);">
 			<view class="popup-main">
-				<image class="close" src="/static/images/friends/icon_Close.png" mode="" @click="transShow = false"></image>
+				<image class="close" src="/static/images/friends/icon_Close.png" mode="" @click="transShow = false">
+				</image>
 				<view class="popup-content">
+					<view class="qrcode-container">
+						<canvas v-if="transShow" canvas-id="qrcodeCanvas" class="qrcode-canvas"></canvas>
+					</view>
 					<image class="popup-cover" src="/static/images/friends/img.png" mode="widthFix"></image>
 					<text>链接已生成 或复制链接给好友</text>
 				</view>
-				<image class="popup-button" src="/static/images/friends/button-ljfx.png" mode="widthFix"></image>
+				<image @click="copyInviteLink()" class="popup-button" src="/static/images/friends/button-ljfx.png"
+					mode="widthFix"></image>
 			</view>
 		</tui-popup>
 	</view>
@@ -74,7 +79,10 @@
 
 <script>
 	import NavBar from '@/components/NavBar/index.vue'
-	import { apiGetInviteRules } from '@/common/api/goods.js'
+	import {
+		apiGetInviteRules
+	} from '@/common/api/goods.js'
+	import UQRCode from 'uqrcodejs';
 	export default {
 		components: {
 			NavBar
@@ -83,6 +91,7 @@
 			return {
 				rewardRules: [],
 				ruleDesc: '',
+				invite_url: '',
 				transShow: false,
 			}
 		},
@@ -90,11 +99,89 @@
 			this.getInviteRules()
 		},
 		methods: {
+			transShowCode() {
+				this.transShow = true
+				setTimeout(() => {
+					this.generateQRCode();
+				}, 150);
+			},
+			generateQRCode() {
+				try {
+					// 确保正确导入UQRCode
+
+					// 创建二维码实例
+					const qrcode = new UQRCode();
+
+					// 设置二维码内容
+					qrcode.data = this.invite_url;
+
+					// 设置二维码大小
+					qrcode.size = 130;
+
+					// 设置二维码级别
+					qrcode.errorCorrectLevel = UQRCode.errorCorrectLevel.H;
+
+					// 生成二维码
+					qrcode.make();
+
+					// 获取canvas上下文
+					const ctx = uni.createCanvasContext('qrcodeCanvas', this);
+
+					// 关键步骤1：先清空canvas
+					ctx.clearRect(0, 0, 130, 130);
+
+					// 关键步骤2：设置白色背景
+					ctx.setFillStyle('#FFFFFF');
+					ctx.fillRect(0, 0, 130, 130);
+
+					// 将二维码绘制到canvas
+					qrcode.canvasContext = ctx;
+					qrcode.drawCanvas();
+
+					// 关键步骤3：使用 ctx.draw(true) 保留绘制
+					ctx.draw(true, () => {
+						console.log('二维码绘制完成');
+					});
+
+				} catch (error) {
+					console.error('生成二维码失败:', error);
+					uni.showToast({
+						title: '生成失败: ' + error.message,
+						icon: 'none'
+					});
+				}
+			},
+			copyLink(linkToCopy) {
+				uni.setClipboardData({
+					data: linkToCopy,
+					success: () => {
+						uni.showToast({
+							title: '复制成功',
+							icon: 'success'
+						});
+					},
+					fail: (err) => {
+						console.error('复制失败:', err);
+						uni.showToast({
+							title: '复制失败',
+							icon: 'none'
+						});
+					}
+				});
+			},
+			copyInviteLink() {
+				this.copyLink(this.invite_url);
+			},
 			async getInviteRules() {
-				let {code, msg, data} = await apiGetInviteRules()
+				let {
+					code,
+					msg,
+					data
+				} = await apiGetInviteRules()
 				console.log(code, msg, data)
 				if (code == 0) {
 					this.rewardRules = data.reward_rules
+					this.invite_url = data.invite_url
 					this.ruleDesc = data.rule_description
 				} else {
 					uni.showToast({
@@ -262,11 +349,12 @@
 								font-weight: 500;
 								line-height: 76rpx;
 							}
-							
+
 							&:last-child {
 								.tr:first-child {
 									border-bottom-left-radius: 30rpx;
 								}
+
 								.tr:last-child {
 									border-bottom-right-radius: 30rpx;
 								}
@@ -303,6 +391,7 @@
 					right: -14rpx;
 					width: 48rpx;
 					height: 48rpx;
+					z-index: 999999;
 				}
 
 				.popup-content {
@@ -314,9 +403,19 @@
 					display: flex;
 					flex-direction: column;
 					gap: 18rpx;
+					position: relative;
 
 					.popup-cover {
 						width: 100%;
+					}
+
+					.qrcode-container {
+						position: absolute;
+						left: 30rpx;
+						bottom: 90rpx;
+						width: 240rpx;
+						height: 240rpx;
+						z-index: 9999;
 					}
 
 					text {
@@ -332,5 +431,39 @@
 				}
 			}
 		}
+	}
+</style>
+<style>
+	.container {
+		padding: 20px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.input {
+		width: 100%;
+		height: 40px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		padding: 0 10px;
+		margin-bottom: 15px;
+	}
+
+	.btn {
+		background-color: #007AFF;
+		color: white;
+		padding: 10px 20px;
+		border-radius: 4px;
+		margin-bottom: 20px;
+	}
+
+	.qrcode-container {
+		margin-top: 20px;
+	}
+
+	.qrcode-canvas {
+		width: 130px;
+		height: 130px;
 	}
 </style>

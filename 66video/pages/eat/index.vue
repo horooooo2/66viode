@@ -7,6 +7,7 @@
 			@refresherrefresh="onRefresh"
 		>
 			<view class="status_bar"></view>
+			<Sidebar ref="sidebarRef"></Sidebar>
 			<view class="header">
 				<view class="logo" @click="onClick">66 Video</view>
 				<view v-if="isLogin" class="right" @click="toPath('/pages/user/index')">

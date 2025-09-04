@@ -46,7 +46,7 @@
 		<view class="list">
 			<view class="list-item" v-for="val in listData" :key="val.id" @click="goDetail(val)">
 				<view class="flag">
-					#{{val.category_info.name}}
+					{{val.category_info.name}}
 				</view>
 				<image class="poster" :src="val.pc_image" mode=""></image>
 				<view class="title">{{val.title}}</view>
@@ -92,10 +92,12 @@
 			</view>
 		</uni-popup>
 		<custom-tabbar :current="2" @change="handleTabChange"></custom-tabbar>
+		<Sidebar ref="sidebarRef"></Sidebar>
 	</view>
 </template>
 
 <script>
+	import Sidebar from '@/components/Sidebar/index.vue'
 	import CustomTabbar from '@/components/custom-tabbar.vue'
 	import Surplus from "@/components/Surplus/index.vue"
 	import Empty from "@/pages/search/components/empty.vue"
@@ -107,8 +109,10 @@
 		apiGetVideoList,
 		apiGetNovelList
 	} from '@/common/api/content.js'
+	import { useUserStore } from '@/store/user'
 	export default {
 		components: {
+			Sidebar,
 			CustomTabbar,
 			Surplus,
 			Empty
@@ -156,8 +160,11 @@
 			}
 		},
 		computed: {
+			userStore() {
+			  return useUserStore()
+			},
 			isLogin() {
-				return !!uni.getStorageSync('storage_user_data')?.token
+			  return this.userStore.isLogin
 			},
 			listParams() {
 				return {

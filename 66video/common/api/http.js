@@ -32,7 +32,7 @@ const requestInterceptor = (config) => {
 
 // 响应拦截
 const responseInterceptor = (response) => {
-	console.log( '响应拦截 response ===',response )
+	// console.log( '响应拦截 response ===',response )
 
   // 示例：处理特定状态码
   if (response?.statusCode === 401 || response?.data?.code === -999) {
@@ -74,7 +74,7 @@ const errorHandler = (error) => {
 
 // 核心请求方法
 const request = (options) => {
-	console.log( 'http options==',options )
+	// console.log( 'http options==',options )
   // 合并配置
   options = {
 	 ...options,
@@ -87,7 +87,7 @@ const request = (options) => {
   
   // 执行拦截器
   options = requestInterceptor(options) || options
-  console.log( 'options requestInterceptor ===',options )
+  // console.log( 'options requestInterceptor ===',options )
   return new Promise((resolve, reject) => {
 	if( options?.data?.loading ){
 		uni.showLoading({ title: '', mask: true });
@@ -98,7 +98,7 @@ const request = (options) => {
       success: (res) => {
         try {
           const processedRes = responseInterceptor(res);
-          console.log('processedRes==', processedRes);
+          // console.log('processedRes==', processedRes);
           resolve(processedRes)
         } catch (e) {
           reject(e)
