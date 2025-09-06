@@ -4,12 +4,12 @@
 			<view class="content">
 				<view class="title">活跃奖励</view>
 				<view class="list">
-					<view class="list-main" v-for="i in 2" :key="i">
+					<view class="list-main" v-for="item in activeList" :key="item.id" @click="onClickActive(item)">
 						<view class="top-panel">
-							<view class="label">今日活跃度</view>
-							<view class="right-panel">今日0点重置</view>
+							<view class="label">{{ item.active_name }}</view>
+							<view class="right-panel">重置时间:{{ activeObj.reset_cycle }}</view>
 						</view>
-						<Prize></Prize>
+						<Prize :prizeList="item.reward_config"></Prize>
 					</view>
 				</view>
 			</view>
@@ -24,12 +24,27 @@
 		components: {
 			Prize,
 		},
+		props: {
+			activeObj: {
+				type: Object,
+				default: () => {}
+			}
+		},
+		computed: {
+			activeList() {
+				return this.activeObj?.actives || []
+			}
+		},
 		data() {
 			return {
 				visible: false
 			}
 		},
 		methods: {
+			onClickActive(item) {
+				this.$emit('change', item)
+				this.closeDrawer()
+			},
 			closeDrawer(e) {
 				this.visible = false
 			},

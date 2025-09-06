@@ -4,16 +4,18 @@
 			<view class="content">
 				<view class="title-panel">
 					<view class="title">标签</view>
-					<view class="clear">清除全部</view>
+					<view class="clear" @click="onClickChange({ tag_name: '全部', id: '' })">清除全部</view>
 				</view>
 				<view class="list">
-					<view class="item" v-for="i in 3" :key="i" :class="{ active: i == 1 }">
+					<view class="item" v-for="item in tagList" :key="item.id" :class="{ active: item.id == tagIndex }"
+						@click="onClickChange(item)">
 						<view class="check">
-							<image v-if="i == 1" src="/static/images/setting/icon_checkbox_active.svg" mode=""></image>
+							<image v-if="item.id == tagIndex" src="/static/images/setting/icon_checkbox_active.svg"
+								mode=""></image>
 							<image v-else src="/static/images/setting/icon_checkbox.svg" mode=""></image>
 						</view>
-						<view class="level">{{ i == 1 ? '简单' : i == 2 ? '中等' : '困难' }}</view>
-						<view class="desc">99个奖励任务</view>
+						<view class="level">{{ item.tag_name }}</view>
+						<view class="desc">{{ item.task_count }}个奖励任务</view>
 					</view>
 				</view>
 			</view>
@@ -24,12 +26,25 @@
 
 <script>
 	export default {
+		props: {
+			tagList: {
+				type: Array,
+				default: []
+			}
+		},
 		data() {
 			return {
-				visible: false
+				visible: false,
+
+				tagIndex: null,
 			}
 		},
 		methods: {
+			onClickChange(item) {
+				this.tagIndex = item.id
+				this.$emit('change', item)
+				this.closeDrawer()
+			},
 			closeDrawer(e) {
 				this.visible = false
 			},
@@ -110,7 +125,7 @@
 									height: 100%;
 								}
 							}
-							
+
 							.level {
 								min-width: 0;
 								flex: 1;
@@ -118,7 +133,7 @@
 								font-size: 28rpx;
 								margin-left: 24rpx;
 							}
-							
+
 							.desc {
 								color: #CCC;
 								font-size: 28rpx;

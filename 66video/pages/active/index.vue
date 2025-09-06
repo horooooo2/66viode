@@ -3,23 +3,25 @@
 		<view class="banner">
 			<view class="banner-main">
 				<view class="top-panel">
-					<view class="label">今日活跃度 <text>200</text></view>
+					<view class="label">今日活跃度 <text>{{ activeObj.current_activity }}</text></view>
 					<view class="right-panel" @click="onClickPopup('prize')">
-						<text>每日活跃</text>
+						<text>{{ activeCurrentItem.active_name }}</text>
 						<image class="arrow" src="/static/images/activity/icon_close.png"></image>
 					</view>
 				</view>
-				<Prize></Prize>
+				<Prize :prizeList="activeCurrentItem.reward_config"></Prize>
 			</view>
 		</view>
 		<view class="container">
 			<view class="tabs">
-				<view class="tabs-item" v-for="i in 3" :key="i" :class="{ active: i === tabIndex }" @click="onChange(i)">任务分组
+				<view class="tabs-item" v-for="(item, index) in taskGroupList" :key="index"
+					:class="{ active: index === groupTabIndex }" @click="onChangeGroup(item.id, index)">
+					{{ item.group_name }}
 				</view>
 			</view>
 			<view class="search-panel">
 				<view class="search-left" @click="onClickPopup('tag')">
-					<text>标签：全部</text>
+					<text>标签：{{ tagCurrentItem.tag_name || '全部' }}</text>
 					<image class="arrow" src="/static/images/activity/icon_close.png"></image>
 				</view>
 				<view class="buttons">
@@ -28,37 +30,7 @@
 					<image src="/static/images/activity/lishi.png" mode="widthFix" @click="toLink('/pages/task/index')"></image>
 				</view>
 			</view>
-			<view v-if="isEmpty" class="list">
-				<view class="list-item" v-for="i in 5" :key="i">
-					<view class="item-panel">
-						<view class="panel-left">
-							<image class="icon-cover" src="/static/images/activity/1.png"></image>
-							<view class="left-content">
-								<view class="title">邀请好友</view>
-								<view>任务描述</view>
-							</view>
-						</view>
-						<view class="button">签到</view>
-					</view>
-					<view class="item-progress">
-						<view class="progress-box">
-							<tui-progress :percent="60" radius="24rpx" :width="24"
-								activeColor="linear-gradient(0deg, #D018F5 0%, #FA3296 100%)" backgroundColor="#777"></tui-progress>
-						</view>
-						<view class="statics">
-							<view class="box-num">
-								<image src="/static/images/activity/jifen.png"></image>
-								<text>10</text>
-							</view>
-							<view class="box-num">
-								<image src="/static/images/activity/image133.png"></image>
-								<text>10</text>
-							</view>
-						</view>
-					</view>
-				</view>
-			</view>
-			<view v-else class="empty-box">
+			<view v-if="isEmpty" class="empty-box">
 				<image class="empty-img" src="/static/images/search/empty.png" mode="widthFix"></image>
 				<view class="empty-text">
 					开启时间
@@ -66,15 +38,46 @@
 					敬请期待
 				</view>
 			</view>
+			<view v-else class="list">
+				<view class="list-item" v-for="(item, index) in taskList" :key="index">
+					<view class="item-panel">
+						<view class="panel-left">
+							<image class="icon-cover" :src="item.task_image"></image>
+							<view class="left-content">
+								<view class="title">{{ item.task_name }}</view>
+								<view>{{ item.task_desc }}</view>
+							</view>
+						</view>
+						<view class="button">签到</view>
+					</view>
+					<view class="item-progress">
+						<view class="progress-box">
+							<tui-progress :percent="item.progress.current_count" radius="24rpx" :width="24"
+								activeColor="linear-gradient(0deg, #D018F5 0%, #FA3296 100%)"
+								backgroundColor="#777"></tui-progress>
+						</view>
+						<view class="statics">
+							<view class="box-num">
+								<image src="/static/images/activity/jifen.png"></image>
+								<text>{{ item.activity_score }}</text>
+							</view>
+							<view class="box-num">
+								<image src="/static/images/activity/image133.png"></image>
+								<text>{{ item.task_reward }}</text>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
 		</view>
 
 		<RulePopup ref="ruleRef"></RulePopup>
 
-		<PrizePopup ref="prizeRef"></PrizePopup>
+		<PrizePopup ref="prizeRef" :activeObj="activeObj" @change="onChangePrize"></PrizePopup>
 
-		<TagPopup ref="tagRef"></TagPopup>
+		<TagPopup ref="tagRef" :tagList="tagList" @change="onChangeTag"></TagPopup>
+
 		<custom-tabbar :current="3" @change="handleTabChange"></custom-tabbar>
-		
 	</view>
 </template>
 
@@ -86,6 +89,12 @@
 	import PrizePopup from "./components/PrizePopup.vue"
 	import TagPopup from "./components/TagPopup.vue"
 	import CustomTabbar from '@/components/custom-tabbar.vue'
+	import {
+		apiTaskActive,
+		apiTaskGroup,
+		apiTaskTag,
+		apiTaskList
+	} from '@/common/api/active.js'
 	export default {
 		components: {
 			NavBar,
@@ -96,15 +105,119 @@
 			TagPopup,
 			CustomTabbar
 		},
-		data() {
-			return {
-				tabIndex: 1,
-				isEmpty: false,
+		computed: {
+			isEmpty() {
+				return this.taskList.length === 0;
 			}
 		},
+		data() {
+			return {
+				activeObj: {},
+				activeCurrentItem: {},
+				
+				groupTabIndex: 0,
+				groupId: "",
+				taskGroupList: [],
+
+				tagList: [],
+				tagCurrentItem: {},
+
+				taskList: [],
+			}
+		},
+		onLoad() {
+			this.getTaskActive();
+			this.getData();
+		},
 		methods: {
-			onChange(i) {
-				this.tabIndex = i
+			async getData() {
+				try {
+					// 确保串行执行顺序
+					await this.getTaskGroup();
+					await this.getTaskGroupTag();
+					await this.getTaskList();
+				} catch (error) {
+					console.error('数据加载失败:', error);
+					uni.showToast({
+						title: '数据加载失败',
+						icon: 'none',
+						duration: 2000
+					});
+				}
+			},
+			// 获取任务分组
+			getTaskGroup() {
+				return apiTaskGroup().then((res) => {
+					if (res.code === 0) {
+						this.taskGroupList = res.data || [];
+						// 确保有数据再设置groupId
+						if (this.taskGroupList.length > 0) {
+							this.groupId = this.taskGroupList[0].id;
+						} else {
+							throw new Error('任务分组为空');
+						}
+					} else {
+						throw new Error(res.msg || '获取任务分组失败');
+					}
+				});
+			},
+			// 获取分组下标签 - 依赖groupId
+			getTaskGroupTag() {
+				// 前置校验
+				if (!this.groupId) {
+					throw new Error('未获取到有效的分组ID');
+				}
+
+				return apiTaskTag({
+					group_id: this.groupId
+				}).then((res) => {
+					if (res.code === 0) {
+						this.tagList = res.data || [];
+					} else {
+						throw new Error(res.msg || '获取分组标签失败');
+					}
+				});
+			},
+			// 获取任务列表 - 依赖groupId和tagId
+			getTaskList() {
+				if (!this.groupId) {
+					throw new Error('未获取到有效的分组ID');
+				}
+
+				const params = {
+					group_id: this.groupId,
+					tag_id: this.tagCurrentItem?.id || ''
+				};
+
+				return apiTaskList(params).then(res => {
+					if (res.code === 0) {
+						this.taskList = res.data || [];
+					} else {
+						throw new Error(res.msg || '获取任务列表失败');
+					}
+				});
+			},
+			// 获取任务活跃
+			getTaskActive() {
+				apiTaskActive().then(res => {
+					this.activeObj = res.data
+					this.activeCurrentItem = this.activeObj.actives?.[0]
+				})
+			},
+			// 任务活跃奖励
+			onChangePrize(prizeItem) {
+				this.activeCurrentItem = prizeItem
+			},
+			// 切换任务分组下的任务标签
+			onChangeTag(item) {
+				this.tagCurrentItem = item
+				this.getTaskList();
+			},
+			// 切换任务分组
+			onChangeGroup(id, index) {
+				this.groupId = id
+				this.groupTabIndex = index
+				this.getTaskList();
 			},
 			toLink(url) {
 				uni.navigateTo({
@@ -222,21 +335,22 @@
 				box-sizing: border-box;
 				gap: 48rpx;
 				margin-bottom: 16rpx;
+				overflow-x: scroll;
+				scrollbar-width: none;
+
+				::-webkit-scrollbar {
+					display: none;
+				}
 
 				.tabs-item {
+					white-space: nowrap;
 					color: #bbb;
 					font-size: 28rpx;
-					font-weight: 400;
 					line-height: 36rpx;
 				}
 
 				.active {
-					font-size: 36rpx;
-					font-weight: 500;
-					background: linear-gradient(270deg, #D018F5 0%, #FA3296 100%);
-					background-clip: text;
-					-webkit-background-clip: text;
-					-webkit-text-fill-color: transparent;
+					color: #D018F5;
 				}
 			}
 
@@ -381,6 +495,7 @@
 					}
 				}
 			}
+
 			.empty-box {
 				position: absolute;
 				top: 50%;
@@ -390,9 +505,11 @@
 				display: flex;
 				flex-direction: column;
 				align-items: center;
+
 				.empty-img {
 					width: 380rpx;
 				}
+
 				.empty-text {
 					width: 248rpx;
 					margin: 0 auto;

@@ -1,38 +1,54 @@
 <template>
 	<view class="prize">
-		<view class="card" v-for="i in 6" :key="i">
+		<view class="card" v-for="(item, index) in prizeList" :key="index">
 			<view class="prize-item">
-				<view class="box-card" :class="{ 'active-card': i === 1 }">
-					<image class="icon-check" :src="iconUrl(i)" mode="widthFix"></image>
-					<text>{{ i === 1 ? '已领取' : '未领取'}}</text>
+				<view class="box-card" :class="{ 'active-card': isPrizeActive(index) }">
+					<image class="icon-check" :src="iconUrl(index)" mode="widthFix"></image>
+					<text>{{ isPrizeActive(index) ? '已领取' : '未领取'}}</text>
 				</view>
-				<image class="dot" :src="dotUrl(i)" mode=""></image>
-				<view class="coin-num" :class="{ point: i === 2 }">{{ i }}00</view>
+				<image class="dot" :src="dotUrl(index)" mode=""></image>
+				<view class="coin-num" :class="{ point: isPrizeActive(index) }">{{ item.active_target }}</view>
 			</view>
-			<view v-if="isLaster(i)" class="line" :class="{ 'active-line': i === 1 }"></view>
+			<view v-if="!isLaster(index)" class="line" :class="{ 'active-line': isPrizeActive(index) }"></view>
 		</view>
 	</view>
 </template>
 
 <script>
 	export default {
+		props: {
+			prizeList: {
+				type: Array,
+				default: []
+			}
+		},
 		computed: {
 			isLaster() {
-				return (i) => {
-					return 6 - i
+				return (index) => {
+					return this.prizeList.length > 0 && index === this.prizeList.length - 1;
 				}
 			},
 			iconUrl() {
-				return (i) => {
-					return i === 1 ? '/static/images/activity/icon_Check.png' : '/static/images/activity/image131.png'
+				return (index) => {
+					return this.isPrizeActive(index) ? '/static/images/activity/icon_Check.png' : '/static/images/activity/image131.png'
 				}
 			},
 			dotUrl() {
-				return (i) => {
-					return i === 1 || i === 2 ? '/static/images/activity/Ellipse 3.png' : '/static/images/activity/Ellipse 5.png'
+				return (index) => {
+					return this.isPrizeActive(index) ? '/static/images/activity/Ellipse 3.png' : '/static/images/activity/Ellipse 5.png'
 				}
 			},
-		}
+			isPrizeActive() {
+				return (index) => {
+					return this.prizeIndex === index
+				}
+			}
+		},
+		data() {
+			return {
+				prizeIndex: null
+			}
+		},
 	}
 </script>
 
