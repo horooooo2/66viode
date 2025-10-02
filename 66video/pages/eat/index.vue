@@ -187,7 +187,8 @@
 		},
 		onShow() {
 			uni.$on('showCenterPopup', this.showCenterPopup);
-			this.canReset && this.refreshList();
+			this.fetchCategories();
+			this.getUserInfo();
 		},
 		onHide() {
 			uni.$off('showCenterPopup', this.showCenterPopup);
@@ -202,10 +203,6 @@
 		// 下拉刷新
 		onPullDownRefresh() {
 			this.refreshList();
-		},
-		created() {
-			this.fetchCategories();
-			this.getUserInfo();
 		},
 		methods: {
 			handleTabChange() {
