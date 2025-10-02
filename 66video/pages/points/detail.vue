@@ -1,6 +1,6 @@
 <template>
 	<view class="point-detail">
-		<NavBar :isTitle="false"></NavBar>
+		<NavBar :isTitle="false" fallbackUrl='/pages/points/index'></NavBar>
 		<view class="detail-container">
 			<view class="cover">
 				<image :src="dataItem.cover_image" mode=""></image>
@@ -252,6 +252,7 @@
 				width: 100%;
 				margin-top: 44rpx;
 				display: flex;
+				color: #fff;
 				flex-direction: column;
 				gap: 40rpx;
 

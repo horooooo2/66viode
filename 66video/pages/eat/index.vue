@@ -12,7 +12,7 @@
 				<view class="logo" @click="onClick">66 Video</view>
 				<view v-if="isLogin" class="right" @click="toPath('/pages/user/index')">
 					<Surplus></Surplus>
-					<view class="avatar"></view>
+					<view class="avatar"><image class="avatarUrl" :src="userInfo.avatar ? userInfo.avatar : '/static/images/mine/avatar.png'" mode=""></image></view>
 				</view>
 				<view v-else class="button">
 					<view class="login" @click="toPath('/pages/login/index?type=1')">登录</view>
@@ -95,6 +95,7 @@
 </template>
 
 <script>
+	import {apiGetUserInfo} from '@/common/api/user.js'
 	import Sidebar from '@/components/Sidebar/index.vue'
 	import CustomTabbar from '@/components/custom-tabbar.vue'
 	import Surplus from "@/components/Surplus/index.vue"
@@ -135,6 +136,7 @@
 				],
 
 				order: 'new',
+				userInfo: '',
 				orderPopup: false,
 				orderOptions: [{
 						name: '受欢迎',
@@ -185,10 +187,15 @@
 		},
 		created() {
 			this.fetchCategories();
+			this.getUserInfo();
 		},
 		methods: {
 			handleTabChange(){
 
+			},
+			async getUserInfo(){
+				const {code,msg,data} = await apiGetUserInfo();
+				this.userInfo = data
 			},
 			// 打开侧边栏
 			onClick() {
@@ -309,6 +316,11 @@
 					height: 64rpx;
 					border-radius: 50%;
 					background: linear-gradient(0deg, #D018F5 0%, #FA3296 100%);
+					.avatarUrl {
+						width: 100%;
+						height: 100%;
+						display: block;
+					}
 				}
 			}
 

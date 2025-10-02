@@ -61,15 +61,15 @@
 					<text>官方媒体</text>
 				</view>
 			</view>
-			<view class="card" @click="onClick('router', '/pages/version/index')">
+		<!-- 	<view class="card" @click="onClick('router', '/pages/version/index')">
 				<image class="icon" src="/static/images/sidebar/yybb.png" mode=""></image>
 				<text>应用版本</text>
-			</view>
+			</view> -->
 			<image class="banner" src="/static/images/sidebar/banner.png" mode=""></image>
-			<view class="card" @click="onClick('language')">
+			<!-- <view class="card" @click="onClick('language')">
 				<image class="icon" src="/static/images/sidebar/jtze.png" mode=""></image>
 				<text>简体中文</text>
-			</view>
+			</view> -->
 		</view>
 	</tui-drawer>
 
@@ -122,6 +122,11 @@
 			// this.loadData();
 		},
 		methods: {
+			toPath: function(path) {
+				uni.navigateTo({
+					url: path
+				})
+			},
 			async loadData() {
 			  try {
 			    const res1 = await apiGetImageList();

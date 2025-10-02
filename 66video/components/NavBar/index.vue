@@ -19,6 +19,10 @@
 				type: String,
 				default: ''
 			},
+			fallbackUrl: {
+				type: String,
+				default: '/pages/eat/index'
+			},
 			isTitle: {
 				type: Boolean,
 				default: true
@@ -26,7 +30,9 @@
 		},
 		methods: {
 			onBack() {
-				uni.navigateBack()
+				uni.navigateTo({
+					url: this.fallbackUrl
+				});
 			}
 		}
 	}
@@ -40,6 +46,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+
 		.back {
 			position: absolute;
 			top: 50%;
@@ -48,10 +55,12 @@
 			width: 48rpx;
 			height: 48rpx;
 		}
+
 		.title {
 			color: #ddd;
 			font-size: 36rpx;
 		}
+
 		.slot-right {
 			position: absolute;
 			top: 50%;

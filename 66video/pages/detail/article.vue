@@ -1,7 +1,6 @@
 <template>
 	<view class="my_detail">
 		<NavBar title="吃瓜"></NavBar>
-
 		<view class="eat-container">
 			<view class="d_title">{{ detailData.data.title }}</view>
 			<view class="d_time"><text>吃瓜视频 </text>发布于<text>{{ detailData.data.created_at }} {{store?.user?.userData?.name}}</text></view>
@@ -19,8 +18,8 @@
 			</view>
 
 			<Like :detailData="detailData" @getDetail="getData" />
-			<Share />
-			<Sponsor />
+			<!-- <Share /> -->
+			<!-- <Sponsor /> -->
 			<Critique :detailData="detailData" />
 		</view>
 	</view>

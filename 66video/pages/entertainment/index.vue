@@ -5,7 +5,7 @@
 			<view class="logo" @click="onClick">66 Video</view>
 			<view v-if="isLogin" class="right" @click="toPath('/pages/user/index')">
 				<Surplus></Surplus>
-				<view class="avatar"></view>
+				<view class="avatar"><image class="avatarUrl" :src="userInfo.avatar ? userInfo.avatar : '/static/images/mine/avatar.png'" mode=""></image></view>
 			</view>
 			<view v-else class="button">
 				<view class="login" @click="toPath('/pages/login/index?type=1')">登录</view>
@@ -97,6 +97,7 @@
 </template>
 
 <script>
+	import {apiGetUserInfo} from '@/common/api/user.js'
 	import Sidebar from '@/components/Sidebar/index.vue'
 	import CustomTabbar from '@/components/custom-tabbar.vue'
 	import Surplus from "@/components/Surplus/index.vue"
@@ -133,6 +134,7 @@
 					}
 				],
 				popupShow: false,
+				userInfo: '',
 				sortSelectValue: 'new',
 				radioItems: [{
 						name: '受欢迎的',
@@ -178,8 +180,13 @@
 		created() {
 			this.fetchCategories();
 			this.getList();
+			this.getUserInfo();
 		},
 		methods: {
+			async getUserInfo(){
+				const {code,msg,data} = await apiGetUserInfo();
+				this.userInfo = data
+			},
 			// 打开侧边栏
 			onClick() {
 				this.$refs.sidebarRef && this.$refs.sidebarRef.open()

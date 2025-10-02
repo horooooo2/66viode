@@ -1,5 +1,6 @@
 <template>
 	<view class="points">
+		<NavBar :isTitle="false" fallbackUrl='/pages/user/index'></NavBar>
 		 <scroll-view
 			scroll-y
 			:refresher-enabled="true"
@@ -9,10 +10,10 @@
 			<view class="status_bar"></view>
 			<view class="header">
 				<image class="logo" src="/static/images/points/CHIGUALOGO.png" mode="widthFix"></image>
-				<view class="right">
+				<!-- <view class="right">
 					<Surplus></Surplus>
 					<view class="avatar"></view>
-				</view>
+				</view> -->
 			</view>
 			<view class="points-container">
 				<view class="point-menus">
@@ -46,6 +47,7 @@
 </template>
 
 <script>
+	import NavBar from '@/components/NavBar/index.vue'
 	import Surplus from "@/components/Surplus/index.vue"
 	import Empty from "@/pages/search/components/empty.vue";
 	import list from "./components/list.vue"
@@ -57,6 +59,7 @@
 			Surplus,
 			list,
 			Empty,
+			NavBar
 		},
 		data() {
 			return {

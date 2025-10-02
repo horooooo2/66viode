@@ -19,3 +19,11 @@ export const apiTaskTag = (params) => {
 export const apiTaskList = (params) => {
 	return http.get('/task/list', params)
 }
+
+export const apiMissionRewards = (params) =>{
+	return http.post('/task/claim',params);
+}
+
+export const apiMissionClaim = (params) =>{
+	return http.post('/task/active/claim',params);
+}

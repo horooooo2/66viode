@@ -1,6 +1,6 @@
 <template>
 	<view class="address">
-		<NavBar title="选择收货地址"></NavBar>
+		<NavBar title="选择收货地址" fallbackUrl='/pages/points/index'></NavBar>
 		<view class="address-container">
 			<view class="address-label">我的收货地址</view>
 			<view class="address-add" @click="toLink('/pages/address/add')">未找到任何地址</view>

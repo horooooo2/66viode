@@ -9,7 +9,7 @@
 						<image class="arrow" src="/static/images/activity/icon_close.png"></image>
 					</view>
 				</view>
-				<Prize :prizeList="activeCurrentItem.reward_config"></Prize>
+				<Prize :prizeList="activeCurrentItem.reward_config" :prizeData="activeCurrentItem"></Prize>
 			</view>
 		</view>
 		<view class="container">
@@ -25,16 +25,14 @@
 					<image class="arrow" src="/static/images/activity/icon_close.png"></image>
 				</view>
 				<view class="buttons">
-					<image src="/static/images/activity/shuaxin.png" mode="widthFix"></image>
+					<image src="/static/images/activity/shuaxin.png" @click="getData()" mode="widthFix"></image>
 					<image src="/static/images/activity/jilu.png" mode="widthFix" @click="onClickPopup('rule')"></image>
-					<image src="/static/images/activity/lishi.png" mode="widthFix" @click="toLink('/pages/task/index')"></image>
+					<!-- <image src="/static/images/activity/lishi.png" mode="widthFix" @click="toLink('/pages/task/index')"></image> -->
 				</view>
 			</view>
 			<view v-if="isEmpty" class="empty-box">
 				<image class="empty-img" src="/static/images/search/empty.png" mode="widthFix"></image>
 				<view class="empty-text">
-					开启时间
-					yyyy.mm.dd hh:mm
 					敬请期待
 				</view>
 			</view>
@@ -48,7 +46,7 @@
 								<view>{{ item.task_desc }}</view>
 							</view>
 						</view>
-						<view class="button">签到</view>
+						<view class="button" @click="missionRewards(item)">签到</view>
 					</view>
 					<view class="item-progress">
 						<view class="progress-box">
@@ -93,6 +91,7 @@
 		apiTaskActive,
 		apiTaskGroup,
 		apiTaskTag,
+		apiMissionRewards,
 		apiTaskList
 	} from '@/common/api/active.js'
 	export default {
@@ -114,14 +113,11 @@
 			return {
 				activeObj: {},
 				activeCurrentItem: {},
-				
 				groupTabIndex: 0,
 				groupId: "",
 				taskGroupList: [],
-
 				tagList: [],
 				tagCurrentItem: {},
-
 				taskList: [],
 			}
 		},
@@ -131,6 +127,7 @@
 		},
 		methods: {
 			async getData() {
+				this.taskList = []
 				try {
 					// 确保串行执行顺序
 					await this.getTaskGroup();
@@ -176,6 +173,17 @@
 					} else {
 						throw new Error(res.msg || '获取分组标签失败');
 					}
+				});
+			},
+			missionRewards(item) {
+				return apiMissionRewards({
+					task_id: item.id
+				}).then((res) => {
+					uni.showToast({
+						title: res.msg,
+						icon: 'none',
+						duration: 2000
+					});
 				});
 			},
 			// 获取任务列表 - 依赖groupId和tagId

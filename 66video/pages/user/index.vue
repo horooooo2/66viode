@@ -1,16 +1,19 @@
 <template>
 	<view class="user">
+		<view class="leftIcon">
+			<uni-icons type="left" size="26" color="#fff" @click="goBack()"></uni-icons>
+		</view>
 		<view class="header-box">
 			<view class="header">
 				<view class="avatar" @click="toLink('/pages/user/avatar')">
-					<image class="avatarUrl" src="/static/images/mine/avatar.png" mode=""></image>
+					<image class="avatarUrl" :src="userInfo.avatar ? userInfo.avatar : '/static/images/mine/avatar.png'" mode=""></image>
 				</view>
 				<view class="userInfo" @click="toLink('/pages/user/info')">
 					<view class="title-box">
 						<view class="username">{{userInfo.username}}</view>
 						<image class="copy" src="/static/images/mine/edit-icon.png" mode=""></image>
 					</view>
-					<view class="time">会员到期 2023/05/06</view>
+					<!-- <view class="time">会员到期 2023/05/06</view> -->
 				</view>
 			</view>
 		</view>
@@ -36,7 +39,7 @@
 			</view>
 		</view>
 
-		<view class="vip-box">
+		<view class="vip-box" @click="toLink('/pages/club/index')">
 			<view class="vip">
 				<view class="vip-bg">
 					<view class="vip-left">
@@ -127,6 +130,11 @@
 			this.getUserInfo();
 		},
 		methods: {
+			goBack(url) {
+				uni.navigateTo({
+					url: '/pages/eat/index'
+				});
+			},
 			toLink(url) {
 				uni.navigateTo({ url })
 			},
@@ -150,7 +158,6 @@
 			async getUserInfo(){
 				const {code,msg,data} = await apiGetUserInfo();
 				this.userInfo = data
-				console.log('data==',data);
 			}
 		}
 	}
@@ -435,6 +442,20 @@
 				font-size: 30rpx;
 				margin-top: 42rpx;
 			}
+		}
+		.leftIcon{
+			// position: fixed;
+			// top: 0;
+			// left: 0;
+			// z-index: 9;
+			position: relative;
+			z-index: 9;
+			width: 100%;
+			height: 90rpx;
+			padding-left: 20rpx;
+			display: flex;
+			align-items: center;
+			color: #fff;
 		}
 	}
 </style>

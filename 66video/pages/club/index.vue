@@ -67,13 +67,25 @@
 </template>
 
 <script>
+	import {apiGetVipInfo} from '@/common/api/user.js'
 	import NavBar from '@/components/NavBar/index.vue'
 	export default {
 		components: {
 			NavBar
 		},
+		created() {
+			this.getVipInfo();
+		},
 		methods: {
-
+			async getVipInfo() {
+				const {
+					code,
+					msg,
+					data
+				} = await apiGetVipInfo();
+				this.vipInfo = data
+				console.log('data==', data);
+			}
 		}
 	}
 </script>

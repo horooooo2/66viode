@@ -218,7 +218,9 @@
 	}
 	
 	const onBack = () => {
-		uni.navigateBack()
+		uni.navigateTo({
+		  url: '/pages/user/index'
+		})
 	}
 </script>
 

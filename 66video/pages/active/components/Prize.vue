@@ -1,7 +1,7 @@
 <template>
 	<view class="prize">
 		<view class="card" v-for="(item, index) in prizeList" :key="index">
-			<view class="prize-item">
+			<view class="prize-item" @click="missionClaim(item)">
 				<view class="box-card" :class="{ 'active-card': isPrizeActive(index) }">
 					<image class="icon-check" :src="iconUrl(index)" mode="widthFix"></image>
 					<text>{{ isPrizeActive(index) ? '已领取' : '未领取'}}</text>
@@ -15,11 +15,18 @@
 </template>
 
 <script>
+	import {
+		apiMissionClaim
+	} from '@/common/api/active.js'
 	export default {
 		props: {
 			prizeList: {
 				type: Array,
 				default: []
+			},
+			prizeData: {
+				type: Object,
+				default: {}
 			}
 		},
 		computed: {
@@ -30,12 +37,14 @@
 			},
 			iconUrl() {
 				return (index) => {
-					return this.isPrizeActive(index) ? '/static/images/activity/icon_Check.png' : '/static/images/activity/image131.png'
+					return this.isPrizeActive(index) ? '/static/images/activity/icon_Check.png' :
+						'/static/images/activity/image131.png'
 				}
 			},
 			dotUrl() {
 				return (index) => {
-					return this.isPrizeActive(index) ? '/static/images/activity/Ellipse 3.png' : '/static/images/activity/Ellipse 5.png'
+					return this.isPrizeActive(index) ? '/static/images/activity/Ellipse 3.png' :
+						'/static/images/activity/Ellipse 5.png'
 				}
 			},
 			isPrizeActive() {
@@ -49,6 +58,21 @@
 				prizeIndex: null
 			}
 		},
+		methods: {
+			missionClaim(item) {
+				console.log(item)
+				return apiMissionClaim({
+					active_id: this.prizeData.id,
+					stage: item.stage
+				}).then((res) => {
+					uni.showToast({
+						title: res.msg,
+						icon: 'none',
+						duration: 2000
+					});
+				});
+			},
+		}
 	}
 </script>
 

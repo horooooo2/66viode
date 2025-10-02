@@ -102,3 +102,7 @@ export const apiUpdateProfile = (params) =>{
 export const apiGetUserInfo = (params) =>{
 	return http.get('/user/info',params);
 }
+//获取用户信息
+export const apiGetVipInfo = (params) =>{
+	return http.get('/vip/info',params);
+}
