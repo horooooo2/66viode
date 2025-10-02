@@ -18,22 +18,27 @@
 		height: var(--status-bar-height);
 		width: 100%;
 	}
-	*{
-	  padding: 0;
-	  margin: 0;
-	  box-sizing: border-box;
-	  font-family: -apple-system-font, Helvetica Neue, Arial, sans-serif;
+
+	* {
+		padding: 0;
+		margin: 0;
+		box-sizing: border-box;
+		font-family: -apple-system-font, Helvetica Neue, Arial, sans-serif;
 	}
-	li{
-	  list-style: none;
+
+	li {
+		list-style: none;
 	}
-	body{
-	  overflow: auto;
+
+	body {
+		overflow: auto;
 	}
-	i{
-	  font-style: normal;
+
+	i {
+		font-style: normal;
 	}
-	a{
-	  text-decoration: none;
+
+	a {
+		text-decoration: none;
 	}
 </style>
