@@ -104,3 +104,7 @@ export const apiRemoveLike = (params) =>{
 	return http.post('/like/remove',params);
 }
 
+//搜索
+export const apiSearchFun = (params) =>{
+	return http.get('/search/action',params);
+}

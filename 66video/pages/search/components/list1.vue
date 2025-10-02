@@ -3,25 +3,25 @@
 		<view class="title">{{title}} <text class="count" space="ensp"> {{count}}</text></view>
 		
 		<view>
-			<view class="list_item" v-for="val in listData" :key="val.name">
+			<view class="list_item" v-for="val in listData" :key="val.title">
 				<view class="img_box">
-					<image class="img_item" mode="aspectFill" :src="val.img"></image>
+					<image class="img_item" mode="aspectFill" :src="val.mobile_image || val.pc_image"></image>
 				</view>
 				<view class="list_cont">
 					<view>
-						<text class="list_title" v-highlight="keyword">{{val.name}}</text>
+						<text class="list_title" v-highlight="keyword">{{val.title}}</text>
 						<view class="list_jianjie">{{val.jianjie}}</view>
 					</view>
 					
-					<view>
+					<!-- <view>
 						<view class="list_type"> {{val.type}} </view>
 						<view class="list_status">{{val.status}}</view>
-					</view>
+					</view> -->
 					
 				</view>
 			</view>
 		</view>
-		<view class="more">
+		<view class="more" v-if="listData.length>5">
 			<uni-icons class="search_icons" type="search" size="24rpx" color="#804060"></uni-icons>
 			<view>更多{{title}}</view>
 		</view>
