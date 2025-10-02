@@ -3,7 +3,8 @@
 		{
 			"path": "pages/eat/index",
 			"style": {
-				"navigationBarTitleText": "吃瓜"
+				"navigationBarTitleText": "吃瓜",
+				"enablePullDownRefresh": true
 			}
 		},
 		{
@@ -156,7 +157,8 @@
 		{
 			"path": "pages/order/index",
 			"style": {
-				"navigationBarTitleText": "订单列表"
+				"navigationBarTitleText": "订单列表",
+				"enablePullDownRefresh": true
 			}
 		},
 		{
