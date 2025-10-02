@@ -33,7 +33,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 28rpx;
-		padding: 0 32rpx 28rpx;
+		padding: 0 32rpx 110rpx;
 		box-sizing: border-box;
 
 		.list-item {

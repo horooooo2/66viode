@@ -1,18 +1,17 @@
 <template>
 	<view class="article_home">
-		<scroll-view
-			scroll-y
-			:refresher-enabled="true"
-			:refresher-triggered="isRefreshing"
-			@refresherrefresh="onRefresh"
-		>
+		<scroll-view scroll-y :refresher-enabled="true" :refresher-triggered="isRefreshing"
+			@refresherrefresh="onRefresh">
 			<view class="status_bar"></view>
 			<Sidebar ref="sidebarRef"></Sidebar>
 			<view class="header">
 				<view class="logo" @click="onClick">66 Video</view>
 				<view v-if="isLogin" class="right" @click="toPath('/pages/user/index')">
 					<Surplus></Surplus>
-					<view class="avatar"><image class="avatarUrl" :src="userInfo.avatar ? userInfo.avatar : '/static/images/mine/avatar.png'" mode=""></image></view>
+					<view class="avatar">
+						<image class="avatarUrl"
+							:src="userInfo.avatar ? userInfo.avatar : '/static/images/mine/avatar.png'" mode=""></image>
+					</view>
 				</view>
 				<view v-else class="button">
 					<view class="login" @click="toPath('/pages/login/index?type=1')">登录</view>
@@ -95,7 +94,9 @@
 </template>
 
 <script>
-	import {apiGetUserInfo} from '@/common/api/user.js'
+	import {
+		apiGetUserInfo
+	} from '@/common/api/user.js'
 	import Sidebar from '@/components/Sidebar/index.vue'
 	import CustomTabbar from '@/components/custom-tabbar.vue'
 	import Surplus from "@/components/Surplus/index.vue"
@@ -105,7 +106,9 @@
 		apiGetArticleCategories,
 		apiGetArticleList,
 	} from '@/common/api/content.js'
-	import { useUserStore } from '@/store/user'
+	import {
+		useUserStore
+	} from '@/store/user'
 
 	export default {
 		components: {
@@ -117,6 +120,9 @@
 		},
 		data() {
 			return {
+				page: 1, // 当前页
+				limit: 10, // 每页数量
+				hasMore: true, // 是否还有更多
 				listData: [], // 数据
 				total: 0,
 				isRefreshing: false,
@@ -167,10 +173,10 @@
 		},
 		computed: {
 			userStore() {
-			  return useUserStore()
+				return useUserStore()
 			},
 			isLogin() {
-			  return this.userStore.isLogin
+				return this.userStore.isLogin
 			},
 			dateName() {
 				return this.dateOptions.filter(item => item.value == this.date)[0].name
@@ -181,20 +187,36 @@
 		},
 		onShow() {
 			uni.$on('showCenterPopup', this.showCenterPopup);
+			this.canReset && this.refreshList();
 		},
 		onHide() {
 			uni.$off('showCenterPopup', this.showCenterPopup);
+		},
+		// 监听页面触底事件
+		onReachBottom() {
+			if (this.hasMore) {
+				this.page++;
+				this.getList();
+			}
+		},
+		// 下拉刷新
+		onPullDownRefresh() {
+			this.refreshList();
 		},
 		created() {
 			this.fetchCategories();
 			this.getUserInfo();
 		},
 		methods: {
-			handleTabChange(){
+			handleTabChange() {
 
 			},
-			async getUserInfo(){
-				const {code,msg,data} = await apiGetUserInfo();
+			async getUserInfo() {
+				const {
+					code,
+					msg,
+					data
+				} = await apiGetUserInfo();
 				this.userInfo = data
 			},
 			// 打开侧边栏
@@ -249,35 +271,45 @@
 				});
 				this.getList();
 			},
-			
+
 			getList() {
 				apiGetArticleList({
 					category_id: this.category_id,
 					order: this.order,
 					date: this.date,
-					page: 1,
-					limit: 10
+					page: this.page,
+					limit: this.limit
 				}).then(res => {
 					let data = res.data;
 					this.total = data.total;
-					this.listData = data.list;
+
+					// 分页累加，而不是直接覆盖
+					if (this.page === 1) {
+						this.listData = data.list;
+					} else {
+						this.listData = this.listData.concat(data.list);
+					}
+
+					// 判断是否还有更多
+					this.hasMore = this.listData.length < this.total;
+
 					this.isRefreshing = false;
+					uni.stopPullDownRefresh(); // 停止下拉刷新动画
 				}).catch(() => {
 					this.isRefreshing = false;
+					uni.stopPullDownRefresh();
 				})
-			},	
-			// 刷新列表
-			refreshList() {
-				this.listData = [] // 先置空列表,显示加载进度
-				setTimeout(() => {
-					this.getList()
-				}, 120)
 			},
+			// 刷新列表（下拉或切换筛选时）
+			refreshList() {
+				this.page = 1;
+				this.hasMore = true;
+				this.listData = [];
+				this.getList();
+			},
+
 			onRefresh() {
-				this.isRefreshing = true;
-				setTimeout(() => {
-					this.getList();
-				}, 100);
+				this.refreshList();
 			},
 		}
 	}
@@ -316,6 +348,7 @@
 					height: 64rpx;
 					border-radius: 50%;
 					background: linear-gradient(0deg, #D018F5 0%, #FA3296 100%);
+
 					.avatarUrl {
 						width: 100%;
 						height: 100%;
