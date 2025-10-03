@@ -2,7 +2,7 @@
 	<view class="nav">
 		<view class="nav_wrap">
 			<view class="nav_list">
-				<tui-tab sliderHeight="0" backgroundColor="transparent" color="#BBB" selectedColor="#FF1A8C" bold :tabs="tabs"
+				<tui-tab sliderHeight="0" backgroundColor="transparent" :current="current" color="#BBB" selectedColor="#FF1A8C" bold :tabs="tabs"
 					scroll @change="changeTab"></tui-tab>
 				<!-- <view class="nav_item" :class="val.id == navData?.listActive ? 'nav_active':''" v-for="val in (navData?.list || [])" :key="val.name" @click="changeNav('listActive',val)">{{val.name}}</view> -->
 			</view>
@@ -30,6 +30,10 @@
 	  navData: {
 	    type: Object,
 	    default: null
+	  },
+	  current: {
+	    type: Number,
+	    default: 0
 	  }
 	})
 	const tabs = computed(()=>{

@@ -3,7 +3,7 @@
 		<view class="title">{{title}} <text class="count" space="ensp"> {{count}}</text></view>
 		
 		<view>
-			<view class="list_item" v-for="val in listData" :key="val.title">
+			<view class="list_item" v-for="val in (listActive == 'all' ? listData.slice(0,5) : listData)" :key="val.title" @click="toLink(val.module,val.id)">
 				<view class="img_box">
 					<image class="img_item" mode="aspectFill" :src="val.mobile_image || val.pc_image"></image>
 				</view>
@@ -21,7 +21,7 @@
 				</view>
 			</view>
 		</view>
-		<view class="more" v-if="listData.length>5">
+		<view class="more" v-if="listData.length>0 && listActive==='all'" @click="emit('change','listActive',listData[0].module)">
 			<uni-icons class="search_icons" type="search" size="24rpx" color="#804060"></uni-icons>
 			<view>更多{{title}}</view>
 		</view>
@@ -35,7 +35,7 @@
 	const props = defineProps({
 		keyword: {
 			type: String,
-			default: '小红'
+			default: ''
 		},
 		title: {
 			type: String,
@@ -44,6 +44,10 @@
 		count: {
 			type: String,
 			default: ''
+		},
+		listActive: {
+			type: String,
+			default: 'all'
 		},
 		listData:{
 			type: Object,
@@ -54,12 +58,23 @@
 			]
 		}
 	})
+	const emit = defineEmits(["change"]);
 	onMounted(()=>{
 		console.log('props==',props.keyword)
 	})
-	watchEffect(()=>{
-		console.log(props.keyword)
-	})
+	const toLink = (type, id) => {
+		let url = '';
+		if (type === 'video' || type === 'image' || type === 'novel') {
+			url = `/pages/detail/anime?id=${id}&type=${type}`;
+		}  else if(type==='article'){
+			url = `/pages/detail/article?id=${id}`;
+		}
+
+		if (!url) return;
+		uni.navigateTo({
+			url: url
+		})
+	}
 	
 </script>
 

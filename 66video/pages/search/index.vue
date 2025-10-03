@@ -3,12 +3,12 @@
 		<uni-search-bar placeholder="搜索" v-model="searchTxt" cancelButton="always" bgColor="#202020" textColor="#fff" @input="search" @cancel="cancel" />
 		
 		<view class="wrap">
-			<navVue :navData="navData" @change="navChange"/>
+			<navVue :navData="navData" :current="navData.list.findIndex(val => val.id === navData.listActive)" @change="navChange"/>
 			<emptyVue v-if="none" class="empty" />
 			<view v-else>
 				<div v-for="(keys) in Object.keys(navData.listData || {}) || []" :key="keys">
-					<list2Vue v-if="['video','article'].includes(keys) && navData.listData[keys].length" :title="navData.list.filter(val => val.id === keys)[0].name"  :listData="navData.listData[keys]"  :count="navData.listData[keys].length" :keyword="searchTxt"/>
-					<list1Vue v-if="['image','novel'].includes(keys) && navData.listData[keys].length" :title="navData.list.filter(val => val.id === keys)[0].name" :listData="navData.listData[keys]" :count="navData.listData[keys].length" :keyword="searchTxt"/>
+					<list2Vue v-if="['video','article'].includes(keys) && navData.listData[keys].length" :title="navData.list.filter(val => val.id === keys)[0].name"  :listData="navData.listData[keys]" :listActive="navData.listActive" :count="navData.listData[keys].length" :keyword="searchTxt" @change="navChange"/>
+					<list1Vue v-if="['image','novel'].includes(keys) && navData.listData[keys].length" :title="navData.list.filter(val => val.id === keys)[0].name" :listData="navData.listData[keys]" :listActive="navData.listActive" :count="navData.listData[keys].length" :keyword="searchTxt" @change="navChange"/>
 				</div>
 			</view>
 		</view>
@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import {ref,reactive} from 'vue';
+import {ref,reactive,onUnmounted} from 'vue';
 import { apiSearchFun } from '@/common/api/content.js'
 import emptyVue from './components/empty.vue';
 import navVue from './components/nav.vue';
@@ -24,6 +24,7 @@ import list1Vue from './components/list1.vue';
 import list2Vue from './components/list2.vue';
 const none = ref(false);
 const searchTxt = ref('');
+let searchTimer = null; // 节流定时器
 const navData = reactive({
 	page: 1,
 	limit:20,
@@ -56,13 +57,24 @@ const navData = reactive({
 const search=(val) =>{	
 	if(val==''){
 		none.value = true;
+		// 清空搜索结果
+		navData.listData = {};
 		return;
 	}
 	console.log('value=',val);
 	console.log('searchTxt.value=',searchTxt.value);
 
 	searchTxt.value = val;
-	SearchFun();
+	
+	// 清除之前的定时器
+	if (searchTimer) {
+		clearTimeout(searchTimer);
+	}
+	
+	// 设置节流，500ms后执行搜索
+	searchTimer = setTimeout(() => {
+		SearchFun();
+	}, 300);
 }
 
 const SearchFun=()=>{
@@ -70,7 +82,6 @@ const SearchFun=()=>{
 		none.value = true;
 		return;
 	}
-
 	apiSearchFun({
 		keyword: searchTxt.value.trim(),
 		page: navData.page,
@@ -118,11 +129,25 @@ const navChange=(type,val)=>{
 	SearchFun();
 }
 
+// 组件销毁时清理定时器
+onUnmounted(() => {
+	if (searchTimer) {
+		clearTimeout(searchTimer);
+		searchTimer = null;
+	}
+})
+
 </script>
 
 <style lang="scss" scoped>
 	.empty{
 		margin-top: 200rpx;
+	}
+	.searching-tip {
+		text-align: center;
+		padding: 40rpx 0;
+		color: #999;
+		font-size: 28rpx;
 	}
 	.search{
 		background: #111;
