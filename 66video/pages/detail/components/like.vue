@@ -75,9 +75,13 @@ const toogleLike = async () => {
 	
 	if (isLiked.value) {
 		// 取消点赞
-		const ids = likeList.value.filter(val => val.content_id == props.detailData.data.id).map(val => val.id);
+		// const ids = likeList.value.filter(val => val.content_id == props.detailData.data.id).map(val => val.id);
+		// const res = await apiRemoveLike({
+		// 	ids: ids.join(','),
+		// });
+		const ids = likeList.value.filter(val => val.content_id == props.detailData.data.id).map(val => { return {type:props.detailData.type,id:val.id} });
 		const res = await apiRemoveLike({
-			ids: ids.join(','),
+			data_list: ids,
 		});
 		if (res.code === 0) {
 			emmits('getDetail');
