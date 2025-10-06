@@ -258,7 +258,7 @@ export default {
 		},
 		deleteSelectedFun() {
 			// let selectedIds = this.likeList.filter(val => val.isChecked).map(val => val.id);
-			let selectedIds = this.likeList.filter(val => val.isChecked).map(val => { return {type:val.content_type,id:val.id} });
+			let selectedIds = this.likeList.filter(val => val.isChecked).map(val => { return {type:val.content_type,id:val.content_id} });
 			console.log('selectedIds=', selectedIds);
 			if (selectedIds.length === 0) {
 				uni.showToast({
@@ -269,7 +269,7 @@ export default {
 			}
 			uni.showModal({
 				title: '提示',
-				content: `确定删除选中的${selectedIds.length}个收藏吗？`,
+				content: `确定取消选中的${selectedIds.length}个收藏吗？`,
 				success: async (res) => {
 					if (res.confirm) {
 						let delRes = await apiRemoveLike({
@@ -279,7 +279,7 @@ export default {
 						});
 						if (delRes.code === 0) {
 							uni.showToast({
-								title: '删除成功',
+								title: '取消收藏成功',
 								icon: 'success'
 							});
 							this.isShowFooter = false;
@@ -287,7 +287,7 @@ export default {
 							this.getList();
 						} else {
 							uni.showToast({
-								title: delRes.msg || '删除失败',
+								title: delRes.msg || '取消收藏失败',
 								icon: 'none'
 							});
 						}

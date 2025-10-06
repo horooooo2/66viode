@@ -79,16 +79,20 @@ const toogleLike = async () => {
 		// const res = await apiRemoveLike({
 		// 	ids: ids.join(','),
 		// });
-		const ids = likeList.value.filter(val => val.content_id == props.detailData.data.id).map(val => { return {type:props.detailData.type,id:val.id} });
+		const ids = likeList.value.filter(val => val.content_id == props.detailData.data.id).map(val => { return {type:props.detailData.type,id:val.content_id} });
 		const res = await apiRemoveLike({
 			data_list: ids,
 		});
 		if (res.code === 0) {
 			emmits('getDetail');
 			getLikeList();
+			uni.showToast({
+				title: res.msg || "取消收藏成功",
+				icon: "none"
+			});
 		} else {
 			uni.showToast({
-				title: res.msg || "取消点赞失败",
+				title: res.msg || "取消收藏失败",
 				icon: "none"
 			});
 		}
@@ -101,9 +105,13 @@ const toogleLike = async () => {
 		if (res.code === 0) {
 			emmits('getDetail');
 			getLikeList();
+			uni.showToast({
+				title: "收藏成功",
+				icon: "none"
+			});
 		} else {
 			uni.showToast({
-				title: res.msg || "点赞失败",
+				title: res.msg || "收藏失败",
 				icon: "none"
 			});
 		}
