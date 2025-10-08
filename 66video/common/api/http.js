@@ -40,11 +40,11 @@ const responseInterceptor = (response) => {
     const userStore = useUserStore()
     userStore.logout()
     uni.showToast({
-      title: '请重新登录',
+      title: '请先登录',
       icon: 'none',
       duration: 2000
     })
-    return Promise.reject(new Error('请重新登录'))
+    return Promise.reject(new Error('请先登录'))
   }
   
   return response.data

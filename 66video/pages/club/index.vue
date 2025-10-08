@@ -10,8 +10,8 @@
 					<text>zack</text>
 				</view>
 				<view class="vip-box">
-					<view class="flag">吃瓜会员</view>
-					<view class="status">未开通</view>
+					<view class="status" v-if="!userInfo.vip_status.is_vip">未开通</view>
+					<view class="status" v-else>已开通</view>
 					<view class="button">积分兑换</view>
 				</view>
 			</view>
@@ -67,25 +67,29 @@
 </template>
 
 <script>
-	import {apiGetVipInfo} from '@/common/api/user.js'
+	import {apiGetUserInfo} from '@/common/api/user.js'
 	import NavBar from '@/components/NavBar/index.vue'
 	export default {
 		components: {
 			NavBar
 		},
+		data(){
+			return {
+				userInfo: {
+					vip_status: {
+						is_vip: false
+					}
+				}
+			}
+		},
 		created() {
-			this.getVipInfo();
+			this.getUserInfo();
 		},
 		methods: {
-			async getVipInfo() {
-				const {
-					code,
-					msg,
-					data
-				} = await apiGetVipInfo();
-				this.vipInfo = data
-				console.log('data==', data);
-			}
+			async getUserInfo(){
+				const {code,msg,data} = await apiGetUserInfo();
+				this.userInfo = data
+			},
 		}
 	}
 </script>
@@ -109,7 +113,7 @@
 
 			.banner {
 				width: 100%;
-				height: 400rpx;
+				height: 460rpx;
 				padding: 24rpx 32rpx 36rpx;
 				box-sizing: border-box;
 				display: flex;
@@ -145,10 +149,10 @@
 				.vip-box {
 					position: relative;
 					width: 100%;
-					height: 260rpx;
+					height: 400rpx;
 					border-radius: 20rpx;
-					border: 2rpx solid #6B578D;
-					background: linear-gradient(94deg, rgba(94, 50, 165, 0.90) 2.56%, rgba(54, 23, 98, 0.90) 99.76%);
+					background: url("/static/images/mine/Frame 427318765.png") no-repeat;
+					background-size: 100% 100%;
 
 					.flag {
 						position: absolute;

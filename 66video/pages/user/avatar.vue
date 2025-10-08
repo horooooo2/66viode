@@ -5,7 +5,7 @@
 			<view class="title">头像</view>
 			<view class="submit" @click="onSubmit">完成</view>
 		</view>
-		<view class="avatar-container">
+		<!-- <view class="avatar-container">
 			<image 
 				class="img" 
 				:class="{ selected: selectedAvatar === '/static/images/avatar/img1.png' }"
@@ -111,7 +111,7 @@
 				mode="widthFix"
 				@click="selectAvatar('/static/images/avatar/img15.png')"
 			></image>
-		</view>
+		</view> -->
 		
 		<!-- 上传自定义头像功能 -->
 		<view class="upload-section">

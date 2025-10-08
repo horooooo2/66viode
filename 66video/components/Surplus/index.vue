@@ -1,7 +1,7 @@
 <template>
 	<view class="surplus">
 		<text>{{ userInfo.points }}</text>
-		<!-- <image class="icon-add" src="/static/images/icon-add.png" mode=""></image> -->
+		<image class="icon-add" src="/static/images/icon-add.png" mode=""></image>
 	</view>
 </template>
 

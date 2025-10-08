@@ -160,7 +160,9 @@ export default {
 	onShow() {
 		uni.$on('showCenterPopup', this.showCenterPopup)
 		this.fetchCategories()
-		this.getUserInfo()
+		if(this.isLogin) {
+			this.getUserInfo()
+		}
 	},
 	onHide() {
 		uni.$off('showCenterPopup', this.showCenterPopup)
@@ -305,6 +307,7 @@ export default {
 						width: 100%;
 						height: 100%;
 						display: block;
+						border-radius: 50%;
 					}
 				}
 			}

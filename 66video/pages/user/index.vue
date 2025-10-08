@@ -45,16 +45,16 @@
 					<view class="vip-left">
 						<view class="vip-top">
 							<image class="level" src="/static/images/mine/icon-vip.png" mode=""></image>
-							<text>VIP10</text>
+							<text v-if="!userInfo.vip_status.is_vip">升级吃瓜VIP会员</text>
+							<text v-else>吃瓜VIP会员</text>
 						</view>
 						<view class="vip-progress">
 							<tui-progress :percent="60" radius="20rpx" :width="12"
 								activeColor="linear-gradient(89deg, #E5C477 0.68%, #FAF1DC 98.8%)"
 								backgroundColor="#980FB1"></tui-progress>
 						</view>
-						<view class="vip-bottom">
-							<view class="bottom-left">2000XP 升至VIP11</view>
-							<view class="bottom-right">120XP</view>
+						<view class="vip-bottom" v-if="!userInfo.vip_status.is_vip">
+							<view class="bottom-left">立即开通</view>
 						</view>
 					</view>
 					<view class="vip-button">
@@ -123,7 +123,11 @@
 	export default {
 		data(){
 			return{
-				userInfo: ''
+				userInfo: {
+					vip_status: {
+						is_vip: false
+					}
+				}
 			}
 		},
 		created() {

@@ -90,7 +90,9 @@
 		background: #111;
 		display: flex;
 		flex-direction: column;
-
+		* img{
+			width: 100%;
+		}
 		.eat-container {
 			width: 100%;
 			min-height: 0;

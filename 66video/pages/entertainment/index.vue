@@ -180,7 +180,9 @@
 		created() {
 			this.fetchCategories();
 			this.getList();
-			this.getUserInfo();
+			if(this.isLogin) {
+				this.getUserInfo()
+			}
 		},
 		methods: {
 			async getUserInfo(){
