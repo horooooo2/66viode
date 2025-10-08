@@ -4,32 +4,34 @@
 			赞助
 		</view>
 		<view class="sponsor_item">
-			<view class="s_i">
-				<image class="s_img" mode="heightFix" src="/static/images/detail/wx.png"></image>
-				<view class="s_i_txt">微信</view>
+			<view class="s_i" v-for="(item, index) in dataList" :key="index" @click="onClick(item.link)">
+				<image class="s_img" mode="heightFix" :src="item.icon"></image>
+				<view class="s_i_txt">{{ item.name }}</view>
 			</view>
-			<view class="s_i">
-				<image class="s_img" mode="heightFix" src="/static/images/detail/wx.png"></image>
-				<view class="s_i_txt">微信</view>
-			</view>
-			<view class="s_i">
-				<image class="s_img" mode="heightFix" src="/static/images/detail/wx.png"></image>
-				<view class="s_i_txt">微信</view>
-			</view>
-			<view class="s_i">
-				<image class="s_img" mode="heightFix" src="/static/images/detail/wx.png"></image>
-				<view class="s_i_txt">微信</view>
-			</view>
-			<view class="s_i">
-				<image class="s_img" mode="heightFix" src="/static/images/detail/wx.png"></image>
-				<view class="s_i_txt">微信</view>
-			</view>
-			
 		</view>
 	</view>
 </template>
 
-<script>
+<script setup>
+	import { ref, onMounted } from 'vue'
+	import { apiSponsor } from '@/common/api/content.js'
+	
+	const dataList = ref([])
+	
+	onMounted(() => {
+		getSponsorData();
+	})
+	
+	const getSponsorData = async () => {
+		let res = await apiSponsor()
+		if (res.code === 0 && res.data) {
+			dataList.value = res.data
+		}
+	}
+	
+	const onClick = (url) => {
+		location.href = url
+	}
 </script>
 
 <style lang="scss"scoped>
@@ -45,8 +47,9 @@
 			background: #191919;
 			border-radius: 12rpx;
 			display: flex;
-			justify-content: space-between;
+			// justify-content: space-between;
 			flex-wrap: wrap;
+			gap: 40rpx;
 			.s_i{
 				width: 120rpx;
 				padding: 10rpx 2rpx;

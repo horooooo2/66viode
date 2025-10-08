@@ -108,3 +108,13 @@ export const apiRemoveLike = (params) =>{
 export const apiSearchFun = (params) =>{
 	return http.get('/search/action',params);
 }
+
+// 获取猜你喜欢
+export const apiGuess = (params) => {
+	return http.get('/recommend/guess', params);
+}
+
+// 获取赞助列表
+export const apiSponsor = () => {
+	return http.get('/sponsor/list');
+}

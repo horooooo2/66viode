@@ -3,66 +3,76 @@
 		猜你喜欢
 	</view>
 	<view class="recommend">
-		<view class="recommend_item">
-			<image class="recommend_img" mode="aspectFill" src="/static/images/detail/img.png"></image>
+		<view class="recommend_item" v-for="(item, index) in guessList" :key="index">
+			<image class="recommend_img" mode="aspectFill" :src="item.pc_image"></image>
 			<view class="recommend_count">
 				<uni-icons type="eye" size="12" color="#fff"></uni-icons>
-				<text>999</text>
+				<text>{{ item.view_count }}</text>
 			</view>
-			<view class="recommend_name">名字</view>
-		</view>
-		<view class="recommend_item">
-			<image class="recommend_img" mode="aspectFill" src="/static/images/detail/img.png"></image>
-			<view class="recommend_count">
-				<uni-icons type="eye" size="12" color="#fff"></uni-icons>
-				<text>999</text>
-			</view>
-			<view class="recommend_name">名字</view>
-		</view>
-		<view class="recommend_item">
-			<image class="recommend_img" mode="aspectFill" src="/static/images/detail/img.png"></image>
-			<view class="recommend_count">
-				<uni-icons type="eye" size="12" color="#fff"></uni-icons>
-				<text>999</text>
-			</view>
-			<view class="recommend_name">名字</view>
+			<view class="recommend_name">{{ item.title }}</view>
 		</view>
 	</view>
 
 </template>
 
 <script setup>
-
+	import { ref, defineProps, onMounted } from 'vue'
+	import { apiGuess } from '@/common/api/content.js'
+	const props = defineProps({
+		detailData: {
+			type: Object,
+			default: () => ({})
+		}
+	})
 	
+	const guessList = ref([])
+	
+	onMounted(() => {
+		getGuess();
+	})
+	
+	const getGuess = async () => {
+		let res = await apiGuess({ module: props.detailData.type, limit: 3 })
+		if (res.code === 0 && res.data) {
+			guessList.value = res.data
+		}
+	}
 </script>
 
 <style lang="scss" scoped>
-	.recommend_title{
+	.recommend_title {
 		margin-top: 40rpx;
 		color: #fff;
 		font-size: 24rpx;
 	}
-	.recommend{
+
+	.recommend {
 		margin-top: 22rpx;
-		display: flex;
-		justify-content: space-around;
-		.recommend_item{
-			width: 31%;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 20rpx;
+		// justify-content: space-around;
+
+		.recommend_item {
+			width: 100%;
 			position: relative;
-			
+
 		}
-		.recommend_img{
+
+		.recommend_img {
 			width: 100%;
 			height: 300rpx;
 			border-radius: 18rpx;
 		}
-		.recommend_count{
+
+		.recommend_count {
 			position: absolute;
 			left: 10rpx;
 			bottom: 50rpx;
 			font-size: 20rpx;
 		}
-		.recommend_name{
+
+		.recommend_name {
 			font-size: 22rpx;
 			padding: 0rpx 4rpx;
 			text-overflow: ellipsis;

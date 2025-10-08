@@ -40,7 +40,7 @@
 		
 			<Like :detailData="detailData" @getDetail="getDetail" />
 			<List :detailData="detailData" v-if="detailData.type !== 'video'" />
-			<Recommend />
+			<Recommend :detailData="detailData" />
 			<Share />
 			<Sponsor />
 			<Critique :detailData="detailData"/>
