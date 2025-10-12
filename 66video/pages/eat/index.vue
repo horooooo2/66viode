@@ -57,7 +57,10 @@
 
 			<!-- 数据列表 -->
 			<list :list="listData"></list>
-			<Empty v-if="listData.length === 0" />
+			<div v-if="listData.length === 0">
+				<Empty />
+			</div>
+			
 
 			<!-- 底部加载提示 -->
 			<view v-if="hasMore" class="loading">加载中...</view>

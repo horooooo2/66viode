@@ -4,7 +4,7 @@
 	</view>
 	<view class="recommend">
 		<view class="recommend_item" v-for="(item, index) in guessList" :key="index">
-			<image class="recommend_img" mode="aspectFill" :src="item.pc_image"></image>
+			<image class="recommend_img" mode="center" :src="item.pc_image"></image>
 			<view class="recommend_count">
 				<uni-icons type="eye" size="12" color="#fff"></uni-icons>
 				<text>{{ item.view_count }}</text>
@@ -48,15 +48,14 @@
 
 	.recommend {
 		margin-top: 22rpx;
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 20rpx;
-		// justify-content: space-around;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: start;
 
 		.recommend_item {
-			width: 100%;
+			width: 31%;
 			position: relative;
-
+			margin: 0 8rpx;
 		}
 
 		.recommend_img {
