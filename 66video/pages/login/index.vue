@@ -17,7 +17,10 @@
 			<uni-icons class="right_arrow" type="right" size="14" color="#DB7FDB"></uni-icons>
 		</view>
 		
-		<view class="_kf">联系我们</view>
+		<view class="_kf">
+			<uni-icons @click="back" type="chatboxes" size="16" color="#777"></uni-icons>
+			联系我们
+		</view>
 	</view>
 </template>
 

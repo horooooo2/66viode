@@ -15,7 +15,7 @@
 				<view v-if="isLogin" class="right" @click="toPath('/pages/user/index')">
 					<Surplus></Surplus>
 					<view class="avatar">
-						<image class="avatarUrl" :src="userInfo.avatar || '/static/images/mine/avatar.png'" />
+						<image class="avatarUrl" mode="aspectFill" :src="userInfo.avatar || '/static/images/mine/avatar.png'" />
 					</view>
 				</view>
 				<view v-else class="button">

@@ -347,6 +347,12 @@
 					border-radius: 50%;
 					background: linear-gradient(0deg, #D018F5 0%, #FA3296 100%);
 				}
+				.avatarUrl {
+						width: 100%;
+						height: 100%;
+						display: block;
+						border-radius: 50%;
+					}
 			}
 
 			.button {
