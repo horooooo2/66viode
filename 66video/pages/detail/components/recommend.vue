@@ -4,7 +4,7 @@
 	</view>
 	<view class="recommend">
 		<view class="recommend_item" v-for="(item, index) in guessList" :key="index">
-			<image class="recommend_img" mode="center" :src="item.pc_image"></image>
+			<image class="recommend_img" mode="aspectFill" :src="item.pc_image"></image>
 			<view class="recommend_count">
 				<uni-icons type="eye" size="12" color="#fff"></uni-icons>
 				<text>{{ item.view_count }}</text>

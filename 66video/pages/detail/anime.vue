@@ -60,7 +60,6 @@ import List from './components/list.vue'
 import Recommend from './components/recommend.vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { apiGetImageDetail,apiGetImageChapters,apiGetNovelDetail,apiGetNovelChapters,apiGetVideoDetail } from '@/common/api/content.js'
-
 const detailData = reactive({
 	id: '',
 	type: '', // video, image, novel
@@ -91,6 +90,18 @@ const getDetail = async () => {
 	}
 	if(res.code === 0 && res.data){
 		detailData.data = res.data;
+	}else{
+		uni.showToast({
+			title: res.msg || '获取详情失败',
+			icon: 'none',
+			duration: 2000
+		});
+		if( res.msg == -1 ){
+			setTimeout(()=>{
+				uni.navigateBack();
+			},2500);
+		}
+		
 	}
 }
 
