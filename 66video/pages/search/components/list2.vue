@@ -51,9 +51,12 @@
 		listData:{
 			type: Object,
 			default: [
-				{img:'/static/images/search/video.png',name:'恋爱实习生',jianjie:'为未来不在遥远，外面多少风雨，未来不在怕',count:'10w',time:'1年前'},
-				{img:'/static/images/search/video.png',name:'狐妖小红娘',jianjie:'狐妖小红娘',count:'15.2w',time:'1年前'},
-				{img:'/static/images/search/video.png',name:'恋爱实习生的的',jianjie:'狐妖小红娘的是稍等的分',count:'11.2w',time:'1年前'},
+				// {img:'/static/images/search/video.png',name:'恋爱实习生',
+				// jianjie:'为未来不在遥远，外面多少风雨，未来不在怕',count:'10w',time:'1年前'},
+				// {img:'/static/images/search/video.png',name:'狐妖小红娘',
+				// jianjie:'狐妖小红娘',count:'15.2w',time:'1年前'},
+				// {img:'/static/images/search/video.png',name:'恋爱实习生的的',
+				// jianjie:'狐妖小红娘的是稍等的分',count:'11.2w',time:'1年前'},
 			]
 		}
 	})

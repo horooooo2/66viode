@@ -139,6 +139,7 @@
 		.d_title {
 			color: #fff;
 			font-size: 28rpx;
+			text-align: center;
 		}
 
 		.d_time {

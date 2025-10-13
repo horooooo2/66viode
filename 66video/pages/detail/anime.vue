@@ -32,9 +32,9 @@
 					</view>
 				</view>
 				<view class="labels">
-					<text class="labels_i">#纯爱</text>
-					<text class="labels_i">#纯爱</text>
-					<text class="labels_i">#纯爱</text>
+					<text class="labels_i" v-for="tag in detailData.data?.hash_tags" :key="tag">#{{ tag }}</text>
+					<!-- <text class="labels_i">#纯爱</text>
+					<text class="labels_i">#纯爱</text> -->
 				</view>
 			</view>
 		
