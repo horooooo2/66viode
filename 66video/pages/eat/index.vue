@@ -11,8 +11,8 @@
 			<view class="status_bar"></view>
 			<Sidebar ref="sidebarRef"></Sidebar>
 			<view class="header">
-				<view class="logo" @click="onClick">66 Video</view>
-				<view v-if="isLogin" class="right" @click="toPath('/pages/user/index')">
+				<view class="logo" @click="onClick"><image class="avatarUrl" src="/static/images/left-menu-icon.png" style="width: 20px;height: 20px;" />66 Video</view>
+				<view v-if="isLogin" class="right" @click="toPath('/pages/points/index')">
 					<Surplus></Surplus>
 					<view class="avatar">
 						<image class="avatarUrl" mode="aspectFill" :src="userInfo.avatar || '/static/images/mine/avatar.png'" />
@@ -66,7 +66,7 @@
 			<view v-if="hasMore" class="loading">加载中...</view>
 			<view v-else class="no-more">没有更多数据了</view>
 
-			<custom-tabbar :current="1" @change="handleTabChange"></custom-tabbar>
+			<custom-tabbar :current="2" @change="handleTabChange"></custom-tabbar>
 		</scroll-view>
 
 		<!-- 排序弹窗 -->
@@ -294,6 +294,12 @@ export default {
 				font-size: 16px;
 				font-weight: bold;
 				color: #fff;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				image{
+					margin-right: 10px;
+				}
 			}
 
 			.right {

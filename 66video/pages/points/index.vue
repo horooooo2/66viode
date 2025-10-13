@@ -1,6 +1,5 @@
 <template>
 	<view class="points">
-		<NavBar :isTitle="false" fallbackUrl='/pages/user/index'></NavBar>
 		 <scroll-view
 			scroll-y
 			:refresher-enabled="true"
@@ -18,11 +17,11 @@
 			<view class="points-container">
 				<view class="point-menus">
 					<view class="menus-box">
-						<view class="menu-item">
+						<!-- <view class="menu-item">
 							<image class="icon" src="/static/images/points/icon_cz.png" mode=""></image>
 							<text>创作</text>
-						</view>
-						<view class="menu-item">
+						</view> -->
+						<view class="menu-item" @click="toLink('/pages/friends/index')">
 							<image class="icon" src="/static/images/points/icon_yqhy.png" mode=""></image>
 							<text>邀请好友</text>
 						</view>
@@ -43,6 +42,7 @@
 				</view>
 			</view>
 		</scroll-view>
+		<custom-tabbar :current="0" @change="handleTabChange"></custom-tabbar>
 	</view>
 </template>
 
@@ -51,6 +51,7 @@
 	import Surplus from "@/components/Surplus/index.vue"
 	import Empty from "@/pages/search/components/empty.vue";
 	import list from "./components/list.vue"
+	import CustomTabbar from '@/components/custom-tabbar.vue'
 	import {
 		apiGoodsList
 	} from '@/common/api/goods.js'
@@ -58,6 +59,7 @@
 		components: {
 			Surplus,
 			list,
+			CustomTabbar,
 			Empty,
 			NavBar
 		},
@@ -170,7 +172,7 @@
 				.menus-box {
 					width: 100%;
 					display: grid;
-					grid-template-columns: repeat(4, 1fr);
+					grid-template-columns: repeat(3, 1fr);
 					gap: 68rpx;
 					border-radius: 20rpx;
 					background: #333;
@@ -178,7 +180,6 @@
 					box-sizing: border-box;
 
 					.menu-item {
-						width: 104rpx;
 						display: flex;
 						flex-direction: column;
 						align-items: center;

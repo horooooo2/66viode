@@ -17,7 +17,6 @@
 		height: 100%;
 		display: flex;
 		flex-flow: column;
-		justify-content: center;
 		align-items: center;
 		.empty_img{
 			width: 200rpx;

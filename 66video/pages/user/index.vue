@@ -1,8 +1,5 @@
 <template>
 	<view class="user">
-		<view class="leftIcon">
-			<uni-icons type="left" size="26" color="#fff" @click="goBack()"></uni-icons>
-		</view>
 		<view class="header-box">
 			<view class="header">
 				<view class="avatar" @click="toLink('/pages/user/avatar')">
@@ -111,15 +108,16 @@
 					<text>在线客服</text>
 				</view>
 			</view>
-			
 			<view class="button" @click="logoutFun">退出登录</view>
 		</view>
+		<custom-tabbar :current="4"></custom-tabbar>
 	</view>
 </template>
 
 <script>
 	import {apiLogout,apiGetUserInfo} from '@/common/api/user.js'
 	import { useUserStore } from '@/store/user'
+	import CustomTabbar from '@/components/custom-tabbar.vue'
 	export default {
 		data(){
 			return{
@@ -130,6 +128,7 @@
 				}
 			}
 		},
+		components: { CustomTabbar },
 		created() {
 			this.getUserInfo();
 		},

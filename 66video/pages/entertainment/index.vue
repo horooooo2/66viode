@@ -2,7 +2,7 @@
 	<view class="entertainment">
 		<view class="status_bar"></view>
 		<view class="header">
-			<view class="logo" @click="onClick">66 Video</view>
+			<view class="logo" @click="onClick"><image class="avatarUrl" src="/static/images/left-menu-icon.png" style="width: 20px;height: 20px;" />66 Video</view>
 			<view v-if="isLogin" class="right" @click="toPath('/pages/user/index')">
 				<Surplus></Surplus>
 				<view class="avatar"><image class="avatarUrl" :src="userInfo.avatar ? userInfo.avatar : '/static/images/mine/avatar.png'" mode=""></image></view>
@@ -91,7 +91,7 @@
 				
 			</view>
 		</uni-popup>
-		<custom-tabbar :current="2" @change="handleTabChange"></custom-tabbar>
+		<custom-tabbar :current="1" @change="handleTabChange"></custom-tabbar>
 		<Sidebar ref="sidebarRef"></Sidebar>
 	</view>
 </template>
@@ -336,6 +336,12 @@
 				font-size: 16px;
 				font-weight: bold;
 				color: #fff;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				image{
+					margin-right: 10px;
+				}
 			}
 			.right {
 				display: flex;
@@ -348,11 +354,11 @@
 					background: linear-gradient(0deg, #D018F5 0%, #FA3296 100%);
 				}
 				.avatarUrl {
-						width: 100%;
-						height: 100%;
-						display: block;
-						border-radius: 50%;
-					}
+					width: 100%;
+					height: 100%;
+					display: block;
+					border-radius: 50%;
+				}
 			}
 
 			.button {

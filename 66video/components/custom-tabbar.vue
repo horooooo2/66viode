@@ -23,14 +23,8 @@
 		data() {
 			return {
 				list: [{
-						pagePath: "/pages/home/index",
-						text: "菜单",
-						iconPath: "/static/images/tabbar/foot1.png",
-						selectedIconPath: "/static/images/tabbar/foot1_active.png"
-					},
-					{
-						pagePath: "/pages/eat/index",
-						text: "吃瓜",
+						pagePath: "/pages/points/index",
+						text: "商城",
 						iconPath: "/static/images/tabbar/foot2.png",
 						selectedIconPath: "/static/images/tabbar/foot2_active.png"
 					},
@@ -41,10 +35,22 @@
 						selectedIconPath: "/static/images/tabbar/foot3_active.png"
 					},
 					{
+						pagePath: "/pages/eat/index",
+						text: "首页",
+						iconPath: "/static/images/tabbar/foot1.png",
+						selectedIconPath: "/static/images/tabbar/foot1_active.png"
+					},
+					{
 						pagePath: "/pages/active/index",
 						text: "活动",
 						iconPath: "/static/images/tabbar/foot4.png",
 						selectedIconPath: "/static/images/tabbar/foot4_active.png"
+					},
+					{
+						pagePath: "/pages/user/index",
+						text: "我的",
+						iconPath: "/static/images/tabbar/foot5.png",
+						selectedIconPath: "/static/images/tabbar/foot5_active.png"
 					}
 
 				]
@@ -53,9 +59,9 @@
 		methods: {
 			switchTab(index) {
 				console.log(index)
-				if(!index){
-					return this.$refs.sidebarRef && this.$refs.sidebarRef.open()
-				}
+				// if(!index){
+				// 	return this.$refs.sidebarRef && this.$refs.sidebarRef.open()
+				// }
 				if (this.current === index) return;
 
 				uni.navigateTo({

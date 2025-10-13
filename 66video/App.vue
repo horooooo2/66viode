@@ -13,12 +13,19 @@
 </script>
 
 <style>
+	body{
+		background: #202020!important;
+	}
+	page ,.custom-tabbar {
+	  max-width: 480px; /* 设置最大宽度 */
+	  margin: 0 auto; /* 居中显示 */
+	  background-color: #f5f5f5;
+	}
 	/*每个页面公共css */
 	.status_bar {
 		height: var(--status-bar-height);
 		width: 100%;
 	}
-
 	* {
 		padding: 0;
 		margin: 0;
