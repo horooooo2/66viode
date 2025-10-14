@@ -6,28 +6,40 @@
 			<text>赞助</text>
 		</view>
 		<view class="d-container">
-			<view class="card" v-for="i in 8" :key="i">
-				<image class="icon" src="/static/images/sidebar/image 3.png" mode=""></image>
-				<text>微信</text>
+			<view class="card" v-for="(item, index) in dataList" :key="index" @click="onClick(item.link)">
+				<image class="icon" :src="item.icon" mode=""></image>
+				<text>{{ item.name }}</text>
 			</view>
 		</view>
 	</tui-drawer>
 </template>
 
 <script>
+	import { apiSponsor } from '@/common/api/content.js'
 	export default {
 		data() {
 			return {
-				visible: false
+				visible: false,
+				dataList: []
 			}
 		},
 		methods: {
 			open() {
+				this.getSponsorData();
 				this.visible = true
 			},
 			close() {
 				this.visible = false
 			},
+			async getSponsorData() {
+				let res = await apiSponsor()
+				if (res.code === 0 && res.data) {
+					this.dataList = res.data
+				}
+			},
+			onClick(url) {
+				location.href = url
+			}
 		}
 	}
 </script>
