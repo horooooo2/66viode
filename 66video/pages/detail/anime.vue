@@ -41,7 +41,7 @@
 			<Like :detailData="detailData" @getDetail="getDetail" />
 			<List :detailData="detailData" v-if="detailData.type !== 'video'" />
 			<Recommend :detailData="detailData" />
-			<Share />
+			<Share :detailData="detailData"/>
 			<Sponsor />
 			<Critique :detailData="detailData"/>
 		</view>
@@ -96,7 +96,7 @@ const getDetail = async () => {
 			icon: 'none',
 			duration: 2000
 		});
-		if( res.msg == -1 ){
+		if( res.code == -1 ){
 			setTimeout(()=>{
 				uni.navigateBack();
 			},2500);

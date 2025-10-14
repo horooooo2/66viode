@@ -19,7 +19,7 @@
 
 			<Like :detailData="detailData" @getDetail="getData" />
 			<!-- <Share /> -->
-			<!-- <Sponsor /> -->
+			<Sponsor />
 			<Critique :detailData="detailData" />
 		</view>
 	</view>
@@ -78,6 +78,11 @@
 					icon: 'none',
 					duration: 2000
 				});
+				if( res.code == -1 ){
+					setTimeout(()=>{
+						uni.navigateBack();
+					},2500);
+				}
 			}
 		})
 	}

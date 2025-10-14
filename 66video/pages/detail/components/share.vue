@@ -5,7 +5,7 @@
 			<text space='ensp'> 分享到...</text>
 		</view>
 		<view class="share_item">
-			<view class="s_i">
+			<view class="s_i" @click="shareFun('weixin')">
 				<view class="s_i_wrap">
 					<image class="s_img" mode="heightFix" src="/static/images/detail/qq.png"></image>
 				</view>
@@ -27,7 +27,34 @@
 	</view>
 </template>
 
-<script>
+<script setup>
+	import { ref, reactive, defineEmits, defineProps, watchEffect,onMounted } from 'vue'
+	import { apiShareRecord } from '@/common/api/content.js'
+	const props = defineProps({
+		detailData: {
+			type: Object,
+			default: () => ({})
+		}
+	})
+	const shareFun=(type)=>{
+		console.log('props.detailData=',props.detailData);
+		
+		apiShareRecord({ content_type: props.detailData.type, content_id: props.detailData.id }).then(res => {
+			console.log('res==',res);
+			
+			if (res.code === 0) {
+				// uni.showToast({
+				// 	title: '分享成功',
+				// 	icon: 'none',
+				// 	duration: 2000
+				// });
+			} else {
+			
+			}
+		});
+	}
+
+
 </script>
 
 <style lang="scss"scoped>

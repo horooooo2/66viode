@@ -118,3 +118,8 @@ export const apiGuess = (params) => {
 export const apiSponsor = () => {
 	return http.get('/sponsor/list');
 }
+
+//分享
+export const apiShareRecord = (params) =>{
+	return http.post('/share/record',params);
+}
