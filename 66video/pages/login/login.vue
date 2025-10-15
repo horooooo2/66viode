@@ -10,7 +10,7 @@
 		</view>
 		<button class="r_submit" @click="submitFun" :class="isOK ? 'isOK':''">登录</button>
 	</view>
-	<!-- <DialogVue v-model:isShow="isShow" @dialogConfirm="dialogConfirm"/> -->
+	<DialogVue v-model:isShow="isShow" @dialogConfirm="dialogConfirm"/>
 	
 	
 </template>
@@ -19,12 +19,17 @@
 	import { computed,reactive,ref } from 'vue';
 	import {apiLogin} from '@/common/api/user.js'
 	import { useUserStore } from '@/store/user'
-	// import DialogVue from './dialog.vue';
+	import DialogVue from './dialog.vue';
 	
 	const userStore = useUserStore()
 	
 	const checkRef = ref(uni.getStorageSync('storage_remember_username')? true:false);
 	const isShow = ref(false);
+	
+	const dialogConfirm = () => {
+		console.log('222222')
+	}
+	
 	const params = reactive({
 		username: uni.getStorageSync('storage_remember_username') || '',
 		password:'',
@@ -33,12 +38,13 @@
 		return params.username && params.password
 	});
 	const changeCheck = ()=>{
-		checkRef.value = !checkRef.value 
+		checkRef.value = !checkRef.value
 	}
 	const submitFun=async()=>{
 		console.log('checkRef==',checkRef.value);
-		if(!isOK.value) return;
 		// isShow.value = true;
+		if(!isOK.value) return;
+		
 		
 		const {code,msg,data} = await apiLogin({...params,loading:true});
 		uni.showToast({ title: msg, icon:'none', duration: 2000 });
