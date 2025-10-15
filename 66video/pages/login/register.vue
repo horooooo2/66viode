@@ -41,6 +41,7 @@
 <script setup>
 	import { computed,reactive,ref,onMounted,watch,onUnmounted } from 'vue';
 	import {apiSendCode,apiRegister} from '@/common/api/user.js'
+	import { onLoad } from '@dcloudio/uni-app'
 	// import DialogVue from './dialog.vue';
 	const checkVal = ref(false);
 	const isShow = ref(false);
@@ -58,6 +59,14 @@
 		countdownStr:'',
 		timeKey:null,
 	})
+	// 获取URL参数中的邀请码
+    onLoad((options) => {
+        console.log('URL参数:', options)
+        if (options.invite_code) {
+            params.invite_code = options.invite_code
+            console.log('获取到的邀请码:', options.invite_code)
+        }
+    })
 	onMounted(()=>{
 		 let timestamp = uni.getStorageSync('storage_sms_code') || 0;
 		 console.log('timestamp==',timestamp)

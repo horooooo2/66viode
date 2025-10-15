@@ -4,7 +4,7 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     userData: (() => {
       const stored = uni.getStorageSync('storage_user_data');
-	  console.log(stored)
+      console.log('userData', stored)
       try {
         return stored ? stored : null;
       } catch (e) {
@@ -18,7 +18,7 @@ export const useUserStore = defineStore('user', {
     isLogin: (state) => !!state?.userData?.token,
     // 可以添加更多getter
     userToken: (state) => state?.userData?.token || '',
-    userName: (state) => state?.userData?.name || ''
+    userName: (state) => state?.userData?.name || '',
   },
   
   actions: {

@@ -18,7 +18,7 @@
 			</view>
 
 			<Like :detailData="detailData" @getDetail="getData" />
-			<!-- <Share /> -->
+			<Share :detailData="detailData"/>
 			<Sponsor />
 			<Critique :detailData="detailData" />
 		</view>
