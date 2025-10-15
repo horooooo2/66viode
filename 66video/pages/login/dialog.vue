@@ -46,7 +46,12 @@ const dialogConfirm=()=>{
 }
 
 </script>
-
+<style>
+	#app .r_input .uni-easyinput__content {
+		background-color: transparent !important;
+	}
+	
+</style>
 <style lang="scss" scoped>
 	.my_dialog{
 		:deep(){
@@ -89,7 +94,7 @@ const dialogConfirm=()=>{
 			margin-top: 24rpx;
 			padding: 10rpx;
 			background: #333;
-			height: 70rpx;
+			height: 80rpx;
 			border-radius: 15rpx;
 			display: flex;
 			align-items: center;
@@ -98,6 +103,10 @@ const dialogConfirm=()=>{
 			}
 			.r_input{
 				color: #ddd !important;
+				margin-bottom: 0 !important;
+				.uni-easyinput__content {
+					background-color: transparent !important;
+				}
 			}
 		}
 		.err_msg{
