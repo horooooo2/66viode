@@ -3,7 +3,7 @@
 		<NavBar title="选择收货地址" fallbackUrl='/pages/points/index'></NavBar>
 		<view class="address-container">
 			<view class="address-label">我的收货地址</view>
-			<view class="address-add" @click="toLink('/pages/address/add')">未找到任何地址</view>
+			<view class="address-add" @click="toLink('/pages/address/add')">添加收货地址</view>
 			<view class="address-list">
 				<template v-for="(item,index) in listData" :key="index">
 					<tui-swipe-action :actions="actions" backgroundColor="transparent"

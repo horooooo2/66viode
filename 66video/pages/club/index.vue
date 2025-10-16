@@ -3,12 +3,12 @@
 		<view class="club-main">
 			<NavBar title="VIP俱乐部"></NavBar>
 			<view class="banner">
-				<view class="userinfo">
+				<!-- <view class="userinfo">
 					<view class="avatar">
 						<image src="/static/images/mine/avatar.png" mode=""></image>
 					</view>
 					<text>zack</text>
-				</view>
+				</view> -->
 				<view class="vip-box">
 					<view class="status" v-if="!userInfo.vip_status.is_vip">未开通</view>
 					<view class="status" v-else>已开通</view>

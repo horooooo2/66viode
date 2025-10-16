@@ -54,8 +54,7 @@
 		{
 			"path": "pages/server/index",
 			"style": {
-				"navigationBarTitleText": "服务协议",
-				"navigationStyle": "default"
+				"navigationBarTitleText": "服务协议"
 			}
 		},
 		{

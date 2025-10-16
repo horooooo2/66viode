@@ -39,7 +39,7 @@
 		.list-item {
 			position: relative;
 			width: 100%;
-			height: 260rpx;
+			height: 320rpx;
 			border-radius: 20rpx;
 
 			.flag {

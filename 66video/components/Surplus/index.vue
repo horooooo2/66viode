@@ -1,5 +1,5 @@
 <template>
-	<view class="surplus">
+	<view class="surplus" @click="toPath('/pages/points/index')">
 		<text>{{ userInfo.points }}</text>
 		<image class="icon-add" src="/static/images/icon-add.png" mode=""></image>
 	</view>
@@ -11,7 +11,11 @@ import { useUserStore } from '@/store/user'
 const userStore = useUserStore()
 
 const userInfo = computed(() => userStore.userData || {})
-
+const toPath = (path) => {
+  uni.navigateTo({
+    url: path
+  })
+}
 </script>
 
 

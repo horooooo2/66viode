@@ -12,9 +12,9 @@
 			<Sidebar ref="sidebarRef"></Sidebar>
 			<view class="header">
 				<view class="logo" @click="onClick"><image class="avatarUrl" src="/static/images/left-menu-icon.png" style="width: 20px;height: 20px;" />66 Video</view>
-				<view v-if="isLogin" class="right" @click="toPath('/pages/points/index')">
+				<view v-if="isLogin" class="right">
 					<Surplus></Surplus>
-					<view class="avatar">
+					<view class="avatar" @click="toPath('/pages/user/index')">
 						<image class="avatarUrl" mode="aspectFill" :src="userInfo.avatar || '/static/images/mine/avatar.png'" />
 					</view>
 				</view>
