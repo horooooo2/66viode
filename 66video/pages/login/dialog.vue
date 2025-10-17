@@ -4,8 +4,8 @@
 			<view class="dialog_wrap">
 				<view class="dialog_tips">请按照提示操作</view>
 				<view class="dialog_input">
-					<uni-easyinput class="r_input"  v-model="code" :inputBorder="false"  :clearable="false"  trim  placeholder="请输入图形验证码" placeholderStyle="color: #777" ></uni-easyinput>
-					<image class="code_img" mode="heightFix" src="/static/images/login/code.png"></image>
+					<uni-easyinput class="d_input"  v-model="code" :inputBorder="false"  :clearable="false"  trim  placeholder="请输入图形验证码" placeholderStyle="color: #777" ></uni-easyinput>
+					<image class="code_img" mode="heightFix" :src="captchaImage" @click="getCaptchat"></image>
 				</view>
 				<view class="err_msg" v-if="false">验证码错误</view>
 				
@@ -16,6 +16,8 @@
 
 <script setup> 
 import {defineProps,defineEmits,watch,ref} from 'vue'
+import { apiGetCaptcha } from '@/common/api/user.js'
+
 const props = defineProps({
 	isShow:{
 		type: Boolean,
@@ -31,27 +33,36 @@ watch(
 	console.log('newValue==',newValue);
 	if (newValue){
 		dialogRef.value.open();
+		getCaptchat()
 	}else{
 		dialogRef.value.close();
 	}
   }
 );
 
+const captchaImage = ref('')
+const captchaKey = ref('')
+
+const getCaptchat = () => {
+	apiGetCaptcha().then(res => {
+		captchaImage.value = res.data.image
+		captchaKey.value = res.data.key
+	})
+}
+
 const dialogClose=()=>{
 	dialogRef.value.close();
 	emit("update:isShow", false);
 }
 const dialogConfirm=()=>{
-	emit("dialogConfirm", code);
+	if (!code.value) {
+		uni.showToast({ title: '请输入验证码', icon:'none', duration: 2000 });
+		return
+	}
+	emit("dialogConfirm", code, captchaKey);
 }
 
 </script>
-<style>
-	#app .r_input .uni-easyinput__content {
-		background-color: transparent !important;
-	}
-	
-</style>
 <style lang="scss" scoped>
 	.my_dialog{
 		:deep(){
@@ -100,13 +111,10 @@ const dialogConfirm=()=>{
 			align-items: center;
 			.code_img{
 				height: 100%;
+				max-width: 180rpx;
 			}
-			.r_input{
-				color: #ddd !important;
+			.d_input{
 				margin-bottom: 0 !important;
-				.uni-easyinput__content {
-					background-color: transparent !important;
-				}
 			}
 		}
 		.err_msg{

@@ -26,26 +26,24 @@
 	const checkRef = ref(uni.getStorageSync('storage_remember_username')? true:false);
 	const isShow = ref(false);
 	
-	const dialogConfirm = () => {
-		console.log('222222')
-	}
-	
 	const params = reactive({
 		username: uni.getStorageSync('storage_remember_username') || '',
 		password:'',
+		captcha_code: '',
+		captcha_key: ''
 	})
 	const isOK = computed(()=>{
 		return params.username && params.password
 	});
+	
+	
 	const changeCheck = ()=>{
 		checkRef.value = !checkRef.value
 	}
-	const submitFun=async()=>{
-		console.log('checkRef==',checkRef.value);
-		// isShow.value = true;
-		if(!isOK.value) return;
-		
-		
+	
+	const dialogConfirm = async(captchaCode, captchaKey) => {
+		params.captcha_code = captchaCode
+		params.captcha_key = captchaKey
 		const {code,msg,data} = await apiLogin({...params,loading:true});
 		uni.showToast({ title: msg, icon:'none', duration: 2000 });
 		if(code == 0){
@@ -60,6 +58,13 @@
 		}else{
 			uni.removeStorageSync('storage_remember_username');
 		}
+	}
+	
+	const submitFun=async()=>{
+		console.log('checkRef==',checkRef.value);
+		
+		if(!isOK.value) return;
+		isShow.value = true;
 	}
 	
 	// const dialogConfirm = (code)=>{

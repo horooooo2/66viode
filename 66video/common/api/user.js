@@ -106,3 +106,8 @@ export const apiGetUserInfo = (params) =>{
 export const apiGetVipInfo = (params) =>{
 	return http.get('/vip/info',params);
 }
+
+// 获取图形验证码
+export const apiGetCaptcha = (params) =>{
+	return http.get('/captcha/get',params);
+}
