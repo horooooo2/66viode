@@ -31,7 +31,7 @@
 				</view>
 			</view>
 			<view v-if="isEmpty" class="empty-box">
-				<image class="empty-img" src="/static/images/search/empty.png" mode="widthFix"></image>
+				<image class="empty-img" src="/static/images/search/empty2.png" mode="widthFix"></image>
 				<view class="empty-text">
 					敬请期待
 				</view>
@@ -184,6 +184,7 @@
 						icon: 'none',
 						duration: 2000
 					});
+					this.getTaskActive();
 				});
 			},
 			// 获取任务列表 - 依赖groupId和tagId

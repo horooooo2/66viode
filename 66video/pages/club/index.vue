@@ -12,7 +12,7 @@
 				<view class="vip-box">
 					<view class="status" v-if="!userInfo.vip_status.is_vip">未开通</view>
 					<view class="status" v-else>已开通</view>
-					<view class="button">积分兑换</view>
+					<view class="button" @click="toPath('/pages/points/index')">积分兑换</view>
 				</view>
 			</view>
 			<view class="container">
@@ -86,6 +86,11 @@
 			this.getUserInfo();
 		},
 		methods: {
+			toPath: function(path) {
+				uni.navigateTo({
+					url: path
+				})
+			},
 			async getUserInfo(){
 				const {code,msg,data} = await apiGetUserInfo();
 				this.userInfo = data

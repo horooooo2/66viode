@@ -203,6 +203,7 @@
 		background-image: url("/static/images/friends/img_bg.png");
 		background-repeat: no-repeat;
 		background-size: 100%;
+		overflow: auto;
 
 		.container {
 			min-height: 0;

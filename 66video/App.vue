@@ -39,7 +39,6 @@
 <style>
 	body {
 		background: #202020 !important;
-		overflow: hidden !important;
 	}
 
 	page,

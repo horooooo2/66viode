@@ -458,3 +458,8 @@ export default {
 		}
 	}
 </style>
+<style scoped>
+	body{
+		overflow: hidden!important;
+	}
+</style>
