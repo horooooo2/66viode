@@ -13,17 +13,22 @@
 			<Surplus v-else></Surplus>
 		</view>
 		<view class="d-container">
-			<view class="card" @click="onClick('svideo')">
+			<view class="card" @click="toPath('/pages/entertainment/index?type=2')">
 				<image class="icon" src="/static/images/sidebar/sp.png" mode=""></image>
 				<text>视频</text>
 				<image class="arrow" src="/static/images/sidebar/icon-xiala.png" mode=""></image>
 			</view>
-			<view class="card" @click="onClick('cartoon')">
+			<view class="card" @click="toPath('/pages/entertainment/index?type=0')">
 				<image class="icon" src="/static/images/sidebar/dm.png" mode=""></image>
 				<text>动漫</text>
 				<image class="arrow" src="/static/images/sidebar/icon-xiala.png" mode=""></image>
 			</view>
-			<view class="card" @click="onClick('novel')">
+			<view class="card" @click="toPath('/pages/eat/index?type=1')">
+				<image class="icon" src="/static/images/sidebar/cg.png" mode=""></image>
+				<text>吃瓜</text>
+				<image class="arrow" src="/static/images/sidebar/icon-xiala.png" mode=""></image>
+			</view>
+			<view class="card" @click="toPath('/pages/entertainment/index?type=1')">
 				<image class="icon" src="/static/images/sidebar/xs.png" mode=""></image>
 				<text>小说</text>
 				<image class="arrow" src="/static/images/sidebar/icon-xiala.png" mode=""></image>

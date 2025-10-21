@@ -16,7 +16,7 @@
 			<input class="input" type="text" placeholder="搜索视频关键词" @click="toPath('/pages/search/index')"></input>
 		</view>
 
-		<tui-tab sliderHeight="0" backgroundColor="transparent" color="#BBB" selectedColor="#D018F5" bold :tabs="tabs"
+		<tui-tab sliderHeight="0" backgroundColor="transparent" :current="isType" color="#BBB" selectedColor="#D018F5" bold :tabs="tabs"
 			scroll @change="tabChange"></tui-tab>
 
 		<view class="tui-banner-swiper">
@@ -159,6 +159,7 @@
 					'video': []
 				},
 				listData: [],
+				isType: 0
 			}
 		},
 		computed: {
@@ -183,6 +184,9 @@
 			if(this.isLogin) {
 				this.getUserInfo()
 			}
+		},
+		onLoad(options) {
+			this.isType = options.type
 		},
 		methods: {
 			async getUserInfo(){
@@ -540,5 +544,10 @@
 		.typePopup{
 			z-index: 99999;
 		}
+	}
+</style>
+<style scoped>
+	body{
+		overflow: hidden!important;
 	}
 </style>
