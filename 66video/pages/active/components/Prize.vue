@@ -1,23 +1,17 @@
 <template>
 	<view class="prize">
-		<view class="card" v-for="(item, index) in prizeList" :key="index">
-			<view class="prize-item" @click="missionClaim(item)">
-				<view class="box-card" :class="{ 'active-card': isPrizeActive(index) }">
-					<image class="icon-check" :src="iconUrl(index)" mode="widthFix"></image>
-					<text>{{ isPrizeActive(index) ? '已领取' : '未领取'}}</text>
-				</view>
-				<image class="dot" :src="dotUrl(index)" mode=""></image>
-				<view class="coin-num" :class="{ point: isPrizeActive(index) }">{{ item.active_target }}</view>
+		<view class="prize-item" v-for="i in 6" :key="i" :style="{ 'background-image': `url(${prizeBgStyle(i)})`}" @click="missionClaim(i)">
+			<view class="coin-num" :class="[i === 1 ? 'claimed-num' : i === 2 || i === 3 ? 'claiming-num' : 'unclaimed-num']">999</view>
+			<view v-if="i === 3" class="progress">
+				<view class="progress-bar" :style="{ width: '30%' }"></view>
 			</view>
-			<view v-if="!isLaster(index)" class="line" :class="{ 'active-line': isPrizeActive(index) }"></view>
+			<view v-if="i === 1 || i === 2 || i === 3" class="text" :class="{ 'unclaimed-text': i === 2, 'claiming-text': i === 3 }">{{ i === 1 ? '已领取' : i === 2 ? '领取' : '积攒中' }}</view>
 		</view>
 	</view>
 </template>
 
 <script>
-	import {
-		apiMissionClaim
-	} from '@/common/api/active.js'
+	import { apiMissionClaim } from '@/common/api/active.js'
 	export default {
 		props: {
 			prizeList: {
@@ -30,47 +24,26 @@
 			}
 		},
 		computed: {
-			isLaster() {
+			prizeBgStyle() {
 				return (index) => {
-					return this.prizeList.length > 0 && index === this.prizeList.length - 1;
+					return index === 1 ? '/static/images/activity/claimed-bg.png' : index === 2 || index === 3 ? '/static/images/activity/claiming-bg.png' : '/static/images/activity/unclaimed-bg.png'
 				}
 			},
-			iconUrl() {
-				return (index) => {
-					return this.isPrizeActive(index) ? '/static/images/activity/icon_Check.png' :
-						'/static/images/activity/image131.png'
-				}
-			},
-			dotUrl() {
-				return (index) => {
-					return this.isPrizeActive(index) ? '/static/images/activity/Ellipse 3.png' :
-						'/static/images/activity/Ellipse 5.png'
-				}
-			},
-			isPrizeActive() {
-				return (index) => {
-					return this.prizeIndex === index
-				}
-			}
-		},
-		data() {
-			return {
-				prizeIndex: null
-			}
 		},
 		methods: {
 			missionClaim(item) {
 				console.log(item)
-				return apiMissionClaim({
-					active_id: this.prizeData.id,
-					stage: item.stage
-				}).then((res) => {
-					uni.showToast({
-						title: res.msg,
-						icon: 'none',
-						duration: 2000
-					});
-				});
+				return
+				// return apiMissionClaim({
+				// 	active_id: this.prizeData.id,
+				// 	stage: item.stage
+				// }).then((res) => {
+				// 	uni.showToast({
+				// 		title: res.msg,
+				// 		icon: 'none',
+				// 		duration: 2000
+				// 	});
+				// });
 			},
 		}
 	}
@@ -79,11 +52,12 @@
 <style lang="scss" scoped>
 	.prize {
 		width: 100%;
-		padding: 28rpx 20rpx;
+		padding: 20rpx;
 		box-sizing: border-box;
 		border-radius: 20rpx;
 		background: #202020;
 		display: flex;
+		gap: 12rpx;
 		overflow-x: scroll;
 		scrollbar-width: none;
 
@@ -91,81 +65,54 @@
 			display: none;
 		}
 
-		.card {
-			position: relative;
-		}
-
-		.line {
-			position: absolute;
-			top: 96rpx;
-			left: 30rpx;
-			width: 142rpx;
-			height: 4rpx;
-			background: #FFE6FF;
-			z-index: 0;
-		}
-
-		.active-line {
-			background: linear-gradient(90deg, #FF19B2 0.17%, #FF1966 101.4%);
-		}
-
 		.prize-item {
+			flex-shrink: 0;
+			position: relative;
+			width: 104rpx;
+			height: 134rpx;
 			display: flex;
 			flex-direction: column;
 			align-items: center;
-			gap: 12rpx;
-			margin-right: 60rpx;
-
-			&:last-child {
-				margin-right: 0;
-			}
-
-			.box-card {
-				width: 76rpx;
-				height: 76rpx;
-				border-radius: 20rpx;
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				background: linear-gradient(270deg, #D018F5 0%, #FA3296 100%);
-
-				.icon-check {
-					width: 32rpx;
-					display: block;
-					margin-bottom: 4rpx;
-				}
-
-				text {
-					color: #ccc;
-					text-align: center;
-					font-size: 20rpx;
-					font-weight: 400;
-					line-height: 24rpx;
-				}
-			}
-
-			.active-card {
-				background: #444;
-			}
-
-			.dot {
-				position: relative;
-				width: 20rpx;
-				height: 20rpx;
-				z-index: 9;
-			}
-
+			background-repeat: no-repeat;
+			background-size: 100% 100%;
+			
 			.coin-num {
-				color: #ddd;
-				text-align: center;
-				font-size: 20rpx;
-				font-weight: 400;
-				line-height: 24rpx;
+				font-size: 36rpx;
+				font-weight: 900;
+				padding-top: 6rpx;
 			}
-
-			.point {
-				color: #F0B643;
+			.unclaimed-num {
+				color: #fff;
+				padding-top: 66rpx;
+			}
+			.claiming-num {
+				color: #FF302B;
+			}
+			.claimed-num {
+				color: #8B8B8B;
+			}
+			.text {
+				font-size: 24rpx;
+				font-weight: 400;
+				margin-top: 40rpx;
+				color: #fff;
+			}
+			.unclaimed-text {
+				color: #FDDD5C;
+			}
+			.claiming-text {
+				margin-top: 35rpx;
+			}
+			.progress {
+				width: 68rpx;
+				height: 8rpx;
+				background-color: #D1C3AC;
+				border-radius: 20rpx;
+			}
+			.progress-bar {
+				height: 8rpx;
+				background-color: #FF4141;
+				border-radius: 20rpx;
 			}
 		}
 	}

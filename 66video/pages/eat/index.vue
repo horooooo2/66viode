@@ -9,6 +9,9 @@
 			style="height: 100vh"
 		>
 			<view class="status_bar"></view>
+			<view class="appbox">
+				<image src="/static/images/app.png" mode="widthFix"></image>
+			</view>
 			<Sidebar ref="sidebarRef"></Sidebar>
 			<view class="header">
 				<view class="logo" @click="onClick"><image class="avatarUrl" src="/static/images/left-menu-icon.png" style="width: 20px;height: 20px;" />66 Video</view>
@@ -281,6 +284,15 @@ export default {
 		background-position: top center;
 		background-repeat: no-repeat;
 		background-size: cover;
+		
+		.appbox {
+			width: 100%;
+			margin-bottom: 10rpx;
+			uni-image {
+				width: 100%;
+				display: block;
+			}
+		}
 
 		.header {
 			width: 100%;
