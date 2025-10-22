@@ -1,24 +1,22 @@
 <template>
 	<view class="article_home">
-		<scroll-view
-			scroll-y
-			:refresher-enabled="true"
-			:refresher-triggered="isRefreshing"
-			@refresherrefresh="onRefresh"
-			@scrolltolower="loadMore"
-			style="height: 100vh"
-		>
+		<scroll-view scroll-y :refresher-enabled="true" :refresher-triggered="isRefreshing"
+			@refresherrefresh="onRefresh" @scrolltolower="loadMore" style="height: 100vh">
 			<view class="status_bar"></view>
 			<view class="appbox">
 				<image src="/static/images/app.png" mode="widthFix"></image>
 			</view>
 			<Sidebar ref="sidebarRef"></Sidebar>
 			<view class="header">
-				<view class="logo" @click="onClick"><image class="avatarUrl" src="/static/images/left-menu-icon.png" style="width: 20px;height: 20px;" />66 Video</view>
+				<view class="logo" @click="onClick">
+					<image class="avatarUrl" src="/static/images/left-menu-icon.png"
+						style="width: 20px;height: 20px;" />66 Video
+				</view>
 				<view v-if="isLogin" class="right">
 					<Surplus></Surplus>
 					<view class="avatar" @click="toPath('/pages/user/index')">
-						<image class="avatarUrl" mode="aspectFill" :src="userInfo.avatar || '/static/images/mine/avatar.png'" />
+						<image class="avatarUrl" mode="aspectFill"
+							:src="userInfo.avatar || '/static/images/mine/avatar.png'" />
 					</view>
 				</view>
 				<view v-else class="button">
@@ -63,7 +61,7 @@
 			<div v-if="listData.length === 0">
 				<Empty />
 			</div>
-			
+
 
 			<!-- 底部加载提示 -->
 			<view v-if="hasMore" class="loading">加载中...</view>
@@ -91,187 +89,278 @@
 		</tui-bottom-popup>
 
 		<!-- 日期弹窗 -->
-		<tui-bottom-popup backgroundColor="#202020" z-index="1002" :height="450" :show="datePopup"
-			@close="closeDatePopup">
-			<view class="sort-box">
-				<view class="sort-title">发布日期</view>
-				<tui-radio-group :value="date" @change="onClickDate">
-					<tui-label v-for="(item,index) in dateOptions" :key="index">
-						<tui-list-cell>
-							<view class="thorui-align__center sort-item">
-								<view class="sort-label">{{item.name}}</view>
-								<tui-radio :value="item.value" color="#D018F5" borderColor="#c5c9d1" />
-							</view>
-						</tui-list-cell>
-					</tui-label>
-				</tui-radio-group>
+		<tui-bottom-popup backgroundColor="#202020" z-index="1002" :show="datePopup" @close="closeDatePopup">
+			<view class="sort-box" :class="{ 'with-picker': showPicker }">
+
+				<view class="header">
+					<view class="title">发布日期</view>
+					<view class="close">
+						<view class="btn" @click.stop="clearAll">清除全部</view>
+						<image src="/static/images/index/close.png" mode="" @click="closeDatePopup"></image>
+					</view>
+				</view>
+				<view class="date-header" @click="showPicker = !showPicker">
+					<view class="title"> <text>日期：</text>{{ displayDate }}</view>
+					<image src="/static/images/index/icon-down.png" mode=""></image>
+				</view>
+				<view class="date-radio-group">
+					<view class="date-radio active" v-for="(item,index) in dateOptions" :key="index">
+						{{ item.name }}
+					</view>
+				</view>
+
+				<DatePicker v-if="showPicker" :value="selectedDate" @confirm="onDateConfirm"
+					@cancel="showPicker = false" />
 			</view>
+
+
+
 		</tui-bottom-popup>
+
+
+
 	</view>
 </template>
 
 <script>
-import { apiGetUserInfo } from '@/common/api/user.js'
-import Sidebar from '@/components/Sidebar/index.vue'
-import CustomTabbar from '@/components/custom-tabbar.vue'
-import Surplus from "@/components/Surplus/index.vue"
-import Empty from "@/pages/search/components/empty.vue"
-import list from "./components/list.vue"
-import { apiGetArticleCategories, apiGetArticleList } from '@/common/api/content.js'
-import { useUserStore } from '@/store/user'
+	import {
+		apiGetUserInfo
+	} from '@/common/api/user.js'
+	import Sidebar from '@/components/Sidebar/index.vue'
+	import CustomTabbar from '@/components/custom-tabbar.vue'
+	import Surplus from "@/components/Surplus/index.vue"
+	import Empty from "@/pages/search/components/empty.vue"
+	import list from "./components/list.vue"
+	import {
+		apiGetArticleCategories,
+		apiGetArticleList
+	} from '@/common/api/content.js'
+	import {
+		useUserStore
+	} from '@/store/user'
+	import DatePicker from './components/DatePicker.vue'
 
-export default {
-	components: { Sidebar, CustomTabbar, Surplus, list, Empty },
-	data() {
-		return {
-			page: 1,
-			limit: 10,
-			hasMore: true,
-			listData: [],
-			total: 0,
-			isRefreshing: false,
-			category_id: '',
-			categories: [],
-
-			current: 0,
-			background: [
-				{ img: '/static/images/index/banner.png' },
-				{ img: '/static/images/index/banner.png' },
-				{ img: '/static/images/index/banner.png' }
-			],
-
-			order: 'new',
-			userInfo: '',
-			orderPopup: false,
-			orderOptions: [
-				{ name: '受欢迎', value: 'hot' },
-				{ name: '新发布', value: 'new' }
-			],
-
-			date: 'month',
-			datePopup: false,
-			dateOptions: [
-				{ name: '今日', value: 'today' },
-				{ name: '本周', value: 'week' },
-				{ name: '最近30天', value: 'month' }
-			]
-		}
-	},
-	computed: {
-		userStore() { return useUserStore() },
-		isLogin() { return this.userStore.isLogin },
-		dateName() { return this.dateOptions.find(item => item.value == this.date).name },
-		orderName() { return this.orderOptions.find(item => item.value == this.order).name }
-	},
-	onShow() {
-		uni.$on('showCenterPopup', this.showCenterPopup)
-		this.fetchCategories()
-		if(this.isLogin) {
-			this.getUserInfo()
-		}
-	},
-	onHide() {
-		uni.$off('showCenterPopup', this.showCenterPopup)
-	},
-	methods: {
-		handleTabChange() {},
-		async getUserInfo() {
-			const { data } = await apiGetUserInfo()
-			this.userInfo = data
+	export default {
+		components: {
+			Sidebar,
+			CustomTabbar,
+			Surplus,
+			list,
+			Empty,
+			DatePicker
 		},
-		onClick() {
-			this.$refs.sidebarRef && this.$refs.sidebarRef.open()
-		},
-		bannerChange(e) { this.current = e.detail.current },
+		data() {
+			return {
+				showPicker: false,
+				selectedDate: '2024-05-31',
+				page: 1,
+				limit: 10,
+				hasMore: true,
+				listData: [],
+				total: 0,
+				isRefreshing: false,
+				category_id: '',
+				categories: [],
 
-		// 切换分类
-		onClickCategories(e) {
-			this.category_id = e.item.id
-			this.refreshList()
-		},
+				current: 0,
+				background: [{
+						img: '/static/images/index/banner.png'
+					},
+					{
+						img: '/static/images/index/banner.png'
+					},
+					{
+						img: '/static/images/index/banner.png'
+					}
+				],
 
-		// 排序
-		onClickOrder(item) {
-			this.order = item.detail.value
-			this.closeOrderPopup()
-			this.refreshList()
-		},
-		closeOrderPopup() { this.orderPopup = false },
+				order: 'new',
+				userInfo: '',
+				orderPopup: false,
+				orderOptions: [{
+						name: '受欢迎',
+						value: 'hot'
+					},
+					{
+						name: '新发布',
+						value: 'new'
+					}
+				],
 
-		// 日期
-		onClickDate(item) {
-			this.date = item.detail.value
-			this.closeDatePopup()
-			this.refreshList()
-		},
-		closeDatePopup() { this.datePopup = false },
-
-		toPath(path) { uni.navigateTo({ url: path }) },
-
-		// 分类数据
-		fetchCategories() {
-			apiGetArticleCategories().then(res => {
-				if (res.code === 0) {
-					this.categories = [{ id: '', name: '推荐' }, ...res.data]
-				}
-				this.getList()
-			})
-		},
-
-		// 列表数据
-		getList(cb) {
-			apiGetArticleList({
-				category_id: this.category_id,
-				order: this.order,
-				date: this.date,
-				page: this.page,
-				limit: this.limit
-			})
-			.then(res => {
-				let data = res.data
-				this.total = data.total
-
-				if (this.page === 1) {
-					this.listData = data.list
-				} else {
-					this.listData = this.listData.concat(data.list)
-				}
-
-				this.hasMore = this.listData.length < this.total
-				this.isRefreshing = false
-				cb && cb()
-			})
-			.catch(() => {
-				this.isRefreshing = false
-				cb && cb()
-			})
-		},
-
-		// 下拉刷新
-		onRefresh() {
-			this.isRefreshing = true
-			this.page = 1
-			this.hasMore = true
-			this.getList(() => { this.isRefreshing = false })
-		},
-
-		// 上拉加载
-		loadMore() {
-			if (this.hasMore) {
-				this.page++
-				this.getList()
+				date: 'month',
+				datePopup: false,
+				dateOptions: [{
+						name: '今日',
+						value: 'today'
+					},
+					{
+						name: '本周',
+						value: 'week'
+					},
+					{
+						name: '最近30天',
+						value: 'month'
+					}
+				]
 			}
 		},
+		computed: {
+			userStore() {
+				return useUserStore()
+			},
+			isLogin() {
+				return this.userStore.isLogin
+			},
+			dateName() {
+				return this.dateOptions.find(item => item.value == this.date).name
+			},
+			orderName() {
+				return this.orderOptions.find(item => item.value == this.order).name
+			},
+			displayDate() {
+				return this.selectedDate || '请选择日期'
+			}
+		},
+		onShow() {
+			uni.$on('showCenterPopup', this.showCenterPopup)
+			this.fetchCategories()
+			if (this.isLogin) {
+				this.getUserInfo()
+			}
+		},
+		onHide() {
+			uni.$off('showCenterPopup', this.showCenterPopup)
+		},
+		methods: {
+			onDateConfirm(date) {
+				console.log('确认选择:', date)
+				this.selectedDate = date
+				this.showPicker = false
+			},
+			clearAll() {
+				// 清除：设为空或设成默认
+				this.startDate = ''
+				this.endDate = ''
+			},
+			closeDatePopup() {
+				this.datePopup = false
+				this.pickerVisible = false
+			},
+			handleTabChange() {},
+			async getUserInfo() {
+				const {
+					data
+				} = await apiGetUserInfo()
+				this.userInfo = data
+			},
+			onClick() {
+				this.$refs.sidebarRef && this.$refs.sidebarRef.open()
+			},
+			bannerChange(e) {
+				this.current = e.detail.current
+			},
 
-		// 手动刷新
-		refreshList() {
-			this.page = 1
-			this.hasMore = true
-			this.listData = []
-			this.getList()
+			// 切换分类
+			onClickCategories(e) {
+				this.category_id = e.item.id
+				this.refreshList()
+			},
+
+			// 排序
+			onClickOrder(item) {
+				this.order = item.detail.value
+				this.closeOrderPopup()
+				this.refreshList()
+			},
+			closeOrderPopup() {
+				this.orderPopup = false
+			},
+
+			// 日期
+			onClickDate(item) {
+				this.date = item.detail.value
+				this.closeDatePopup()
+				this.refreshList()
+			},
+			closeDatePopup() {
+				this.datePopup = false
+			},
+
+			toPath(path) {
+				uni.navigateTo({
+					url: path
+				})
+			},
+
+			// 分类数据
+			fetchCategories() {
+				apiGetArticleCategories().then(res => {
+					if (res.code === 0) {
+						this.categories = [{
+							id: '',
+							name: '推荐'
+						}, ...res.data]
+					}
+					this.getList()
+				})
+			},
+
+			// 列表数据
+			getList(cb) {
+				apiGetArticleList({
+						category_id: this.category_id,
+						order: this.order,
+						date: this.date,
+						page: this.page,
+						limit: this.limit
+					})
+					.then(res => {
+						let data = res.data
+						this.total = data.total
+
+						if (this.page === 1) {
+							this.listData = data.list
+						} else {
+							this.listData = this.listData.concat(data.list)
+						}
+
+						this.hasMore = this.listData.length < this.total
+						this.isRefreshing = false
+						cb && cb()
+					})
+					.catch(() => {
+						this.isRefreshing = false
+						cb && cb()
+					})
+			},
+
+			// 下拉刷新
+			onRefresh() {
+				this.isRefreshing = true
+				this.page = 1
+				this.hasMore = true
+				this.getList(() => {
+					this.isRefreshing = false
+				})
+			},
+
+			// 上拉加载
+			loadMore() {
+				if (this.hasMore) {
+					this.page++
+					this.getList()
+				}
+			},
+
+			// 手动刷新
+			refreshList() {
+				this.page = 1
+				this.hasMore = true
+				this.listData = []
+				this.getList()
+			}
 		}
 	}
-}
 </script>
 
 
@@ -284,10 +373,11 @@ export default {
 		background-position: top center;
 		background-repeat: no-repeat;
 		background-size: cover;
-		
+
 		.appbox {
 			width: 100%;
 			margin-bottom: 10rpx;
+
 			uni-image {
 				width: 100%;
 				display: block;
@@ -309,7 +399,8 @@ export default {
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				image{
+
+				image {
 					margin-right: 10px;
 				}
 			}
@@ -436,6 +527,86 @@ export default {
 			padding: 28rpx 40rpx 40rpx;
 			box-sizing: border-box;
 
+			.with-picker {
+				padding-bottom: 320rpx;
+			}
+
+
+
+			.header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				padding: 0;
+
+				.title {
+					color: #fff;
+					font-size: 32rpx;
+				}
+
+				.close {
+					display: flex;
+					align-items: center;
+
+					.btn {
+						color: rgba(255, 26, 140, 1);
+						font-size: 32rpx;
+					}
+
+					image {
+						width: 48rpx;
+						height: 48rpx;
+						margin-left: 20rpx;
+					}
+				}
+			}
+
+			.date-header {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				border-radius: 16rpx;
+				background: #333;
+				padding: 8rpx 12rpx;
+				margin-bottom: 40rpx;
+
+				.title {
+					color: #fff;
+					font-weight: 400;
+
+					text {
+						margin-right: 8rpx;
+					}
+				}
+
+				image {
+					width: 48rpx;
+					height: 48rpx;
+				}
+			}
+
+			.date-radio-group {
+				display: flex;
+				align-items: center;
+
+				.date-radio {
+					border-radius: 20rpx;
+					border: 2rpx solid #F4F5F7;
+					padding: 8rpx 20rpx;
+					color: #F4F5F7;
+					margin-right: 24rpx;
+
+					&:last-child {
+						margin-right: 0;
+					}
+
+					&.active {
+						color: #FF1A8C;
+						border: 2rpx solid #FF1A8C;
+					}
+				}
+			}
+
 			.sort-title {
 				color: #ddd;
 				font-size: 32rpx;
@@ -468,10 +639,14 @@ export default {
 				}
 			}
 		}
+
+
+
+
 	}
 </style>
 <style scoped>
-	body{
-		overflow: hidden!important;
+	body {
+		overflow: hidden !important;
 	}
 </style>

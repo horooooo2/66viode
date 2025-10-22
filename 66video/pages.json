@@ -20,6 +20,12 @@
 			}
 		},
 		{
+			"path": "pages/user/sendPost",
+			"style": {
+				"navigationBarTitleText": "发帖"
+			}
+		},
+		{
 			"path": "pages/active/index",
 			"style": {
 				"navigationBarTitleText": "活动",
