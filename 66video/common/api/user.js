@@ -111,3 +111,7 @@ export const apiGetVipInfo = (params) =>{
 export const apiGetCaptcha = (params) =>{
 	return http.get('/captcha/get',params);
 }
+// 广告
+export const apiAdList = (params) =>{
+	return http.get('/ad/list',params);
+}

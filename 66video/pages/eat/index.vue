@@ -116,21 +116,21 @@
 
 
 		</tui-bottom-popup>
-
-
-
+		<AdPopup :adData="adList" />
 	</view>
 </template>
 
 <script>
 	import {
-		apiGetUserInfo
+		apiGetUserInfo,
+		apiAdList
 	} from '@/common/api/user.js'
 	import Sidebar from '@/components/Sidebar/index.vue'
 	import CustomTabbar from '@/components/custom-tabbar.vue'
 	import Surplus from "@/components/Surplus/index.vue"
 	import Empty from "@/pages/search/components/empty.vue"
 	import list from "./components/list.vue"
+	import AdPopup from '@/components/AdPopup.vue'
 	import {
 		apiGetArticleCategories,
 		apiGetArticleList
@@ -143,6 +143,7 @@
 	export default {
 		components: {
 			Sidebar,
+			AdPopup,
 			CustomTabbar,
 			Surplus,
 			list,
@@ -157,6 +158,7 @@
 				limit: 10,
 				hasMore: true,
 				listData: [],
+				adList: [],
 				total: 0,
 				isRefreshing: false,
 				category_id: '',
@@ -224,6 +226,7 @@
 		onShow() {
 			uni.$on('showCenterPopup', this.showCenterPopup)
 			this.fetchCategories()
+			this.getApiAdList()
 			if (this.isLogin) {
 				this.getUserInfo()
 			}
@@ -331,6 +334,20 @@
 					.catch(() => {
 						this.isRefreshing = false
 						cb && cb()
+					})
+			},
+			// 广告
+			getApiAdList() {
+				apiAdList({
+						position: 'home_alert'
+					})
+					.then(res => {
+						if (res.code === 0 && res.data.alert && res.data.alert.length > 0) {
+							this.adList = res.data.alert
+						}
+					})
+					.catch((e) => {
+						console.log(e)
 					})
 			},
 

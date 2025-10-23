@@ -38,7 +38,6 @@
 				try {
 					const res = await apiGetVideoList();
 					if (res.code === 0) this.listData = res.data.list;
-					console.log(this.listData); // 此时有数据
 				} catch (error) {
 					console.error('请求失败:', error);
 				}
