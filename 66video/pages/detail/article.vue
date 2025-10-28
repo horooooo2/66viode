@@ -7,30 +7,12 @@
 					{{store?.user?.userData?.name}}</text></view>
 			<view class="d_cont" v-for="(item, index) in detailData.data?.content" :key="index">
 				<rich-text v-if="item.type === 'richtext'" :nodes="item?.content"></rich-text>
-				<view v-if="item?.content?.show_type === 2">
-					<view v-if="userInfo?.vip_status?.is_vip">
-						<view class="video-box" v-if="item.type === 'video'">
-							<videoDom
-								:detailData="{ data: { content: item?.content?.url, mobile_image: detailData.data.mobile_image } }" />
-							<view class="video-label">
-								<view class="video-label-item">
-									<view class="text" v-for="val in detailData.data.hash_tags" :key="val">#{{ val }}</view>
-								</view>
-							</view>
-						</view>
-					</view>
-					<view v-else>
-						<p style="text-align: center;">请开通会员后再观看视频</p>
-					</view>
-				</view>
-				<view v-else>
-					<view class="video-box" v-if="item.type === 'video'">
-						<videoDom
-							:detailData="{ data: { content: item?.content?.url, mobile_image: detailData.data.mobile_image } }" />
-						<view class="video-label">
-							<view class="video-label-item">
-								<view class="text" v-for="val in detailData.data.hash_tags" :key="val">#{{ val }}</view>
-							</view>
+				<view class="video-box" v-if="item.type === 'video'">
+					<videoDom
+						:detailData="{ data: { content: item?.content?.url, mobile_image: detailData.data.mobile_image, show_type: item?.content?.show_type } }" />
+					<view class="video-label">
+						<view class="video-label-item">
+							<view class="text" v-for="val in detailData.data.hash_tags" :key="val">#{{ val }}</view>
 						</view>
 					</view>
 				</view>
@@ -79,14 +61,12 @@
 	const isLogin = computed(() => userStore.isLogin)
 	const userInfo = uni.getStorageSync('storage_user_data')
 	onLoad((options) => {
-		console.log('onload options=', options);
 		if (options.id) {
 			detailData.id = options.id;
 			detailData.type = options.type || 'article';
 			getData();
 		}
 	})
-	console.log(userInfo)
 	const getData = () => {
 		apiGetArticleDetail({
 			id: route.query.id

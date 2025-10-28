@@ -4,7 +4,7 @@
 		<view class="header">
 			<view class="left-panel">
 				<image class="back" src="/static/images/sidebar/icon_Back.png" mode="" @click="close"></image>
-				<image class="logo" src="/static/images/sidebar/LOGO.png" mode=""></image>
+				<image class="avatarUrl" :src="logo" style="width: 20px; height: 20px" />
 			</view>
 			<view v-if="!isLogin" class="button">
 				<view class="login" @click="toPath('/pages/login/index?type=1')">登录</view>
@@ -112,7 +112,8 @@
 				visible: false,
 				listData1: [],
 				listData2: [],
-				listData3: []
+				listData3: [],
+				logo: ''
 			}
 		},
 		computed: {
@@ -125,6 +126,7 @@
 		},
 		created() {
 			// this.loadData();
+			this.logo = uni.getStorageSync('logo');
 		},
 		methods: {
 			toPath: function(path) {

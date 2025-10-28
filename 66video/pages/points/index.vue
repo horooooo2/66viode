@@ -8,7 +8,7 @@
 		>
 			<view class="status_bar"></view>
 			<view class="header">
-				<image class="logo" src="/static/images/points/CHIGUALOGO.png" mode="widthFix"></image>
+				<image class="logo" :src="logo" mode="widthFix"></image>
 				<!-- <view class="right">
 					<Surplus></Surplus>
 					<view class="avatar"></view>
@@ -70,6 +70,7 @@
 				// 控制onShow事件是否刷新订单列表
 				canReset: false,
 				total: 0,
+				logo: ''
 			}
 		},
 		onShow() {
@@ -78,6 +79,7 @@
 		},
 		created() {
 			this.getList();
+			this.logo = uni.getStorageSync('logo');
 		},
 		methods: {
 			// 刷新列表
@@ -135,8 +137,8 @@
 			justify-content: space-between;
 
 			.logo {
-				width: 244rpx;
-				height: 28rpx;
+				width: 40rpx;
+				height: 40rpx;
 			}
 
 			.right {

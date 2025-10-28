@@ -237,7 +237,8 @@ const getInviteRules = async () => {
 			align-items: center;
 
 			.s_img {
-				height: 40rpx;
+				width: 60rpx;
+				height: 60rpx;
 			}
 		}
 

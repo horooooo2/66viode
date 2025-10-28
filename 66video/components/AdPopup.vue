@@ -69,7 +69,7 @@ export default {
         // 重置索引
         this.currentAdIndex = 0
         // 存储关闭状态到本地，避免重复显示
-        uni.setStorageSync('ad_popup_closed', true)
+        // uni.setStorageSync('ad_popup_closed', true)
       }
     },
     // 点击广告图片

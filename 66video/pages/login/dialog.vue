@@ -8,7 +8,6 @@
 					<image class="code_img" mode="heightFix" :src="captchaImage" @click="getCaptchat"></image>
 				</view>
 				<view class="err_msg" v-if="false">验证码错误</view>
-				
 			</view>
 		</uni-popup-dialog>
 	</uni-popup>

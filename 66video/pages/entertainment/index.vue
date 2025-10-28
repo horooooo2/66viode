@@ -2,10 +2,18 @@
 	<view class="entertainment">
 		<view class="status_bar"></view>
 		<view class="header">
-			<view class="logo" @click="onClick"><image class="avatarUrl" src="/static/images/left-menu-icon.png" style="width: 20px;height: 20px;" />66 Video</view>
+			<view class="logo" @click="onClick">
+				<image class="avatarUrl" src="/static/images/left-menu-icon.png" style="width: 20px;height: 20px;" />
+				<image class="avatarUrl" :src="logo" v-if="logo"
+					style="width: 20px; height: 20px" />
+					<span v-else>66 吃瓜</span>
+			</view>
 			<view v-if="isLogin" class="right" @click="toPath('/pages/user/index')">
 				<Surplus></Surplus>
-				<view class="avatar"><image class="avatarUrl" :src="userInfo.avatar ? userInfo.avatar : '/static/images/mine/avatar.png'" mode=""></image></view>
+				<view class="avatar">
+					<image class="avatarUrl" :src="userInfo.avatar ? userInfo.avatar : '/static/images/mine/avatar.png'"
+						mode=""></image>
+				</view>
 			</view>
 			<view v-else class="button">
 				<view class="login" @click="toPath('/pages/login/index?type=1')">登录</view>
@@ -16,10 +24,10 @@
 			<input class="input" type="text" placeholder="搜索视频关键词" @click="toPath('/pages/search/index')"></input>
 		</view>
 
-		<tui-tab sliderHeight="0" backgroundColor="transparent" :current="isType" color="#BBB" selectedColor="#D018F5" bold :tabs="tabs"
-			scroll @change="tabChange"></tui-tab>
+		<tui-tab sliderHeight="0" backgroundColor="transparent" :current="isType" color="#BBB" selectedColor="#D018F5"
+			bold :tabs="tabs" scroll @change="tabChange"></tui-tab>
 
-		<view class="tui-banner-swiper">
+		<!-- <view class="tui-banner-swiper">
 			<swiper class="tui-banner__height" @change="bannerChange" circular :indicator-dots="false" autoplay
 				:interval="4000" :duration="150">
 				<block v-for="(item,index) in background" :key="index">
@@ -28,7 +36,7 @@
 					</swiper-item>
 				</block>
 			</swiper>
-		</view>
+		</view> -->
 
 		<view class="filter">
 			<view class="filter-box" @click="popupShow = true">
@@ -62,7 +70,8 @@
 						<tui-list-cell>
 							<view class="thorui-align__center sort-item">
 								<view class="sort-label">{{item.name}}</view>
-								<tui-radio :checked="item.checked" :value="item.value" color="#D018F5" borderColor="#c5c9d1">
+								<tui-radio :checked="item.checked" :value="item.value" color="#D018F5"
+									borderColor="#c5c9d1">
 								</tui-radio>
 							</view>
 						</tui-list-cell>
@@ -71,8 +80,8 @@
 			</view>
 		</tui-bottom-popup>
 
-		
-		<uni-popup ref="typePopup" class="typePopup" type="bottom" safe-area background-color="rgb(32, 32, 32)" >
+
+		<uni-popup ref="typePopup" class="typePopup" type="bottom" safe-area background-color="rgb(32, 32, 32)">
 			<view class="sort-box">
 				<view class="sort-title">类目</view>
 				<div class="type-list">
@@ -81,14 +90,15 @@
 							<tui-list-cell>
 								<view class="thorui-align__center sort-item">
 									<view class="sort-label">{{item.name}}</view>
-									<tui-radio :checked="item.checked" :value="`${item.value}`" color="#D018F5" borderColor="#c5c9d1">
+									<tui-radio :checked="item.checked" :value="`${item.value}`" color="#D018F5"
+										borderColor="#c5c9d1">
 									</tui-radio>
 								</view>
 							</tui-list-cell>
 						</tui-label>
 					</tui-radio-group>
 				</div>
-				
+
 			</view>
 		</uni-popup>
 		<custom-tabbar :current="1" @change="handleTabChange"></custom-tabbar>
@@ -97,7 +107,10 @@
 </template>
 
 <script>
-	import {apiGetUserInfo} from '@/common/api/user.js'
+	import {
+		apiGetUserInfo,
+		apiSiteInfo
+	} from '@/common/api/user.js'
 	import Sidebar from '@/components/Sidebar/index.vue'
 	import CustomTabbar from '@/components/custom-tabbar.vue'
 	import Surplus from "@/components/Surplus/index.vue"
@@ -110,7 +123,9 @@
 		apiGetVideoList,
 		apiGetNovelList
 	} from '@/common/api/content.js'
-	import { useUserStore } from '@/store/user'
+	import {
+		useUserStore
+	} from '@/store/user'
 	export default {
 		components: {
 			Sidebar,
@@ -122,7 +137,17 @@
 			return {
 				current: 0,
 				currentTab: 'image',
-				tabs: [{name: '动漫频道',id: 'image'}, {name: '小说频道',id: 'novel'}, {name: '影视频道',id: 'video'}],
+				logo: '',
+				tabs: [{
+					name: '动漫频道',
+					id: 'image'
+				}, {
+					name: '小说频道',
+					id: 'novel'
+				}, {
+					name: '影视频道',
+					id: 'video'
+				}],
 				background: [{
 						img: '/static/images/index/banner.png'
 					},
@@ -164,10 +189,10 @@
 		},
 		computed: {
 			userStore() {
-			  return useUserStore()
+				return useUserStore()
 			},
 			isLogin() {
-			  return this.userStore.isLogin
+				return this.userStore.isLogin
 			},
 			listParams() {
 				return {
@@ -181,7 +206,8 @@
 		created() {
 			this.fetchCategories();
 			this.getList();
-			if(this.isLogin) {
+			this.getSiteInfo();
+			if (this.isLogin) {
 				this.getUserInfo()
 			}
 		},
@@ -189,8 +215,12 @@
 			this.isType = options.type
 		},
 		methods: {
-			async getUserInfo(){
-				const {code,msg,data} = await apiGetUserInfo();
+			async getUserInfo() {
+				const {
+					code,
+					msg,
+					data
+				} = await apiGetUserInfo();
 				this.userInfo = data
 			},
 			// 打开侧边栏
@@ -213,7 +243,13 @@
 			bannerChange(e) {
 				this.current = e.detail.current;
 			},
-
+			async getSiteInfo() {
+				const {
+					data
+				} = await apiSiteInfo();
+				uni.setStorageSync('logo', data.info.logo);
+				this.logo = data.info.logo
+			},
 			hiddenPopup() {
 				this.popupShow = false
 			},
@@ -226,12 +262,13 @@
 				this.getList();
 			},
 			typeRadioChange(e) {
-				if( e.detail.value === this.typeSelectValue.value ){
+				if (e.detail.value === this.typeSelectValue.value) {
 					return;
 				}
 				this.typeSelectValue = {
 					parentId: this.currentTab,
-					name: this.typeRadioItems[this.currentTab].find(item => item.value === parseInt(e.detail.value))?.name || '全部',
+					name: this.typeRadioItems[this.currentTab].find(item => item.value === parseInt(e.detail.value))
+						?.name || '全部',
 					value: e.detail.value
 				};
 				this.$refs.typePopup.close();
@@ -294,11 +331,20 @@
 				console.log('listParams==', this.listParams);
 				let res = {};
 				if (this.currentTab === 'image') {
-					res = await apiGetImageList({ ...this.listParams, loading: true })
+					res = await apiGetImageList({
+						...this.listParams,
+						loading: true
+					})
 				} else if (this.currentTab === 'video') {
-					res = await apiGetVideoList({ ...this.listParams, loading: true })
+					res = await apiGetVideoList({
+						...this.listParams,
+						loading: true
+					})
 				} else if (this.currentTab === 'novel') {
-					res = await apiGetNovelList({ ...this.listParams, loading: true })
+					res = await apiGetNovelList({
+						...this.listParams,
+						loading: true
+					})
 				}
 				if (res.code === 0) {
 					this.listData = res.data.list;
@@ -310,7 +356,7 @@
 					url: `/pages/detail/anime?id=${item.id}&type=${this.currentTab}`
 				})
 			},
-				
+
 		}
 	}
 </script>
@@ -324,7 +370,8 @@
 		background-position: top center;
 		background-repeat: no-repeat;
 		background-size: cover;
-		.entertainment_empty{
+
+		.entertainment_empty {
 			color: #fff;
 		}
 
@@ -343,20 +390,23 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-				image{
+
+				image {
 					margin-right: 10px;
 				}
 			}
+
 			.right {
 				display: flex;
 				gap: 20rpx;
-			
+
 				.avatar {
 					width: 64rpx;
 					height: 64rpx;
 					border-radius: 50%;
 					background: linear-gradient(0deg, #D018F5 0%, #FA3296 100%);
 				}
+
 				.avatarUrl {
 					width: 100%;
 					height: 100%;
@@ -390,11 +440,12 @@
 				}
 			}
 		}
-		
+
 		.search {
 			width: 100%;
 			padding: 0 32rpx;
 			box-sizing: border-box;
+
 			.input {
 				width: 100%;
 				height: 72rpx;
@@ -406,6 +457,7 @@
 				padding: 0 32rpx;
 				box-sizing: border-box;
 			}
+
 			.uni-input-placeholder {
 				color: #828282;
 				left: 50%;
@@ -468,6 +520,7 @@
 			gap: 32rpx 16rpx;
 			padding: 32rpx 30rpx;
 			box-sizing: border-box;
+
 			.list-item {
 				position: relative;
 				width: 100%;
@@ -537,17 +590,19 @@
 				}
 			}
 		}
+
 		.type-list {
 			height: 400rpx;
 			overflow-y: auto;
 		}
-		.typePopup{
+
+		.typePopup {
 			z-index: 99999;
 		}
 	}
 </style>
 <style scoped>
-	body{
-		overflow: hidden!important;
+	body {
+		overflow: hidden !important;
 	}
 </style>

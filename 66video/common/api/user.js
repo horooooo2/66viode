@@ -115,3 +115,7 @@ export const apiGetCaptcha = (params) =>{
 export const apiAdList = (params) =>{
 	return http.get('/ad/list',params);
 }
+// 广告
+export const apiSiteInfo = (params) =>{
+	return http.get('/site/info',params);
+}
