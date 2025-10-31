@@ -1,6 +1,7 @@
 <template>
 	<view class="entertainment">
 		<view class="status_bar"></view>
+		<appDownload></appDownload>
 		<view class="header">
 			<view class="logo" @click="onClick">
 				<image class="avatarUrl" src="/static/images/left-menu-icon.png" style="width: 20px;height: 20px;" />
@@ -113,6 +114,7 @@
 	} from '@/common/api/user.js'
 	import Sidebar from '@/components/Sidebar/index.vue'
 	import CustomTabbar from '@/components/custom-tabbar.vue'
+	import appDownload from "@/components/appDownload.vue";
 	import Surplus from "@/components/Surplus/index.vue"
 	import Empty from "@/pages/search/components/empty.vue"
 	import {
@@ -130,6 +132,7 @@
 		components: {
 			Sidebar,
 			CustomTabbar,
+			appDownload,
 			Surplus,
 			Empty
 		},

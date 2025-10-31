@@ -1,9 +1,6 @@
 <template>
   <view v-if="showPopup && currentAd" class="popup-overlay">
     <view class="popup-container">
-      <!-- 关闭按钮 -->
-      <view class="close-btn" @click="closeCurrentAd">×</view>
-      
       <!-- 广告图片 -->
       <image 
         class="ad-image" 
@@ -11,11 +8,16 @@
         mode="aspectFit"
         @click="handleAdClick"
       />
+      <!-- 关闭按钮 -->
+      <view class="close-btn" @click="closeCurrentAd">×</view>
     </view>
   </view>
 </template>
 
 <script>
+// 广告状态管理常量
+const AD_STORAGE_KEY = 'ad_popup_closed'
+
 export default {
   props: {
     adData: {
@@ -44,55 +46,131 @@ export default {
     // 监听广告数据变化
     adData: {
       handler(newVal) {
-		  console.log(newVal)
+        console.log('广告数据更新:', newVal)
         if (newVal && newVal.length > 0) {
-          // 检查是否已经关闭过
-          const isClosed = uni.getStorageSync('ad_popup_closed')
-          if (!isClosed) {
-            this.showPopup = true
-            this.currentAdIndex = 0
-          }
+          this.checkAdStatus()
         }
       },
       immediate: true
     }
   },
   methods: {
+    // 检查广告显示状态
+    checkAdStatus() {
+      const isClosed = this.getAdClosedStatus()
+      if (isClosed) {
+        this.showPopup = false
+      } else {
+        this.showPopup = true
+        this.currentAdIndex = 0
+      }
+    },
+    
+    // 获取广告关闭状态
+    getAdClosedStatus() {
+      try {
+        // 使用 sessionStorage 替代 localStorage
+        // #ifdef H5
+        const adCloseData = sessionStorage.getItem(AD_STORAGE_KEY)
+        // #endif
+        
+        // #ifndef H5
+        // 在非H5环境下，uni没有sessionStorage，使用localStorage但添加页面关闭监听
+        const adCloseData = uni.getStorageSync(AD_STORAGE_KEY)
+        // #endif
+        
+        if (!adCloseData) return false
+        
+        const data = JSON.parse(adCloseData)
+        return data.closed === true
+      } catch (error) {
+        console.error('解析广告状态失败:', error)
+        this.clearAdStatus()
+        return false
+      }
+    },
+    
+    // 清除广告状态
+    clearAdStatus() {
+      // #ifdef H5
+      sessionStorage.removeItem(AD_STORAGE_KEY)
+      // #endif
+      
+      // #ifndef H5
+      uni.removeStorageSync(AD_STORAGE_KEY)
+      // #endif
+    },
+    
     // 关闭当前广告
     closeCurrentAd() {
       // 如果还有下一个广告
       if (this.currentAdIndex < this.adData.length - 1) {
         this.currentAdIndex++
       } else {
-        // 最后一个广告，关闭弹窗
-        this.showPopup = false
-        // 重置索引
-        this.currentAdIndex = 0
-        // 存储关闭状态到本地，避免重复显示
-        // uni.setStorageSync('ad_popup_closed', true)
+        this.closeAdPopup()
       }
     },
+    
+    // 关闭广告弹窗
+    closeAdPopup() {
+      this.showPopup = false
+      this.currentAdIndex = 0
+      this.setAdClosedStatus()
+    },
+    
+    // 设置广告关闭状态
+    setAdClosedStatus() {
+      const closeData = {
+        closed: true
+      }
+      
+      // #ifdef H5
+      sessionStorage.setItem(AD_STORAGE_KEY, JSON.stringify(closeData))
+      // #endif
+      
+      // #ifndef H5
+      uni.setStorageSync(AD_STORAGE_KEY, JSON.stringify(closeData))
+      
+      // 在非H5环境下监听页面卸载事件
+      if (typeof window !== 'undefined') {
+        window.addEventListener('beforeunload', this.clearAdStatus)
+      }
+      // #endif
+    },
+    
     // 点击广告图片
     handleAdClick() {
       if (this.currentAd && this.currentAd.url) {
-        // 跳转到广告链接
-        // #ifdef H5
-        window.open(this.currentAd.url, '_blank')
-        // #endif
-        
-        // #ifndef H5
-        uni.navigateTo({
-          url: `/pages/webview/webview?url=${encodeURIComponent(this.currentAd.url)}`
-        })
-        // #endif
-        
-        // 点击后关闭当前广告
-        this.closeCurrentAd()
+        this.navigateToAd()
+        this.closeAdPopup()
       }
+    },
+    
+    // 跳转到广告链接
+    navigateToAd() {
+      // #ifdef H5
+      window.open(this.currentAd.url, '_blank')
+      // #endif
+      
+      // #ifndef H5
+      uni.navigateTo({
+        url: `/pages/webview/webview?url=${encodeURIComponent(this.currentAd.url)}`
+      })
+      // #endif
     }
+  },
+  
+  // 在非H5环境下，组件销毁时清除状态
+  beforeUnmount() {
+    // #ifndef H5
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('beforeunload', this.clearAdStatus)
+    }
+    // #endif
   }
 }
 </script>
+
 
 <style scoped>
 .popup-overlay {
@@ -122,12 +200,9 @@ export default {
 }
 
 .close-btn {
-  position: absolute;
-  top: 0;
-  right: -40rpx;
   width: 60rpx;
   height: 60rpx;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 255, 255, 0.5);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -137,6 +212,7 @@ export default {
   font-weight: bold;
   cursor: pointer;
   z-index: 10000;
+  margin: 0 auto;
 }
 
 .close-btn:hover {

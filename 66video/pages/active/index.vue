@@ -1,5 +1,6 @@
 <template>
 	<view class="activity">
+		<appDownload></appDownload>
 		<view class="banner">
 			<view class="banner-main">
 				<view class="top-panel">
@@ -85,6 +86,7 @@
 	import Prize from "./components/Prize.vue"
 	import RulePopup from "./components/RulePopup.vue"
 	import PrizePopup from "./components/PrizePopup.vue"
+	import appDownload from "@/components/appDownload.vue";
 	import TagPopup from "./components/TagPopup.vue"
 	import CustomTabbar from '@/components/custom-tabbar.vue'
 	import {
@@ -101,6 +103,7 @@
 			Prize,
 			RulePopup,
 			PrizePopup,
+			appDownload,
 			TagPopup,
 			CustomTabbar
 		},

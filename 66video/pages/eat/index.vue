@@ -3,10 +3,8 @@
 		<scroll-view scroll-y :refresher-enabled="true" :refresher-triggered="isRefreshing"
 			@refresherrefresh="onRefresh" @scrolltolower="loadMore" style="height: 100vh">
 			<view class="status_bar"></view>
-			<view class="appbox">
-				<image src="/static/images/app.png" mode="widthFix"></image>
-			</view>
 			<Sidebar ref="sidebarRef"></Sidebar>
+			<appDownload />
 			<view class="header">
 				<view class="logo" @click="onClick">
 					<image class="avatarUrl" src="/static/images/left-menu-icon.png"
@@ -61,7 +59,7 @@
 
 			<!-- 数据列表 -->
 			<list :list="listData"></list>
-			<div v-if="listData.length === 0">
+			<div v-if="listData.length === 0 && !loading">
 				<Empty />
 			</div>
 
@@ -136,6 +134,7 @@
 		apiAdList
 	} from "@/common/api/user.js";
 	import Sidebar from "@/components/Sidebar/index.vue";
+	import appDownload from "@/components/appDownload.vue";
 	import CustomTabbar from "@/components/custom-tabbar.vue";
 	import Surplus from "@/components/Surplus/index.vue";
 	import Empty from "@/pages/search/components/empty.vue";
@@ -155,6 +154,7 @@
 			Sidebar,
 			AdPopup,
 			CustomTabbar,
+			appDownload,
 			Surplus,
 			list,
 			Empty,
@@ -172,6 +172,7 @@
 				limit: 10,
 				hasMore: true,
 				listData: [],
+				loading: false,
 				adList: [],
 				total: 0,
 				isRefreshing: false,
@@ -272,6 +273,9 @@
 			uni.$off("showCenterPopup", this.showCenterPopup);
 		},
 		methods: {
+			appClose(){
+				this.appShow = false
+			},
 			onDateConfirm(date) {
 				console.log("确认选择:", date);
 				console.log("当前步骤:", this.dateSelectionStep);
@@ -411,6 +415,7 @@
 
 			// 列表数据
 			getList(cb) {
+				this.loading = true
 				apiGetArticleList({
 						category_id: this.category_id,
 						order: this.order,
@@ -419,6 +424,7 @@
 						limit: this.limit,
 					})
 					.then((res) => {
+						this.loading = false
 						let data = res.data;
 						this.total = data.total;
 
@@ -490,16 +496,6 @@
 		background-position: top center;
 		background-repeat: no-repeat;
 		background-size: cover;
-
-		.appbox {
-			width: 100%;
-			margin-bottom: 10rpx;
-
-			uni-image {
-				width: 100%;
-				display: block;
-			}
-		}
 
 		.header {
 			width: 100%;
@@ -761,6 +757,10 @@
 					font-size: 28rpx;
 				}
 			}
+		}
+		.loading{
+			text-align: center;
+			color: #828282;
 		}
 	}
 </style>

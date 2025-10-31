@@ -5,7 +5,8 @@
 			<view class="card" @click="toLink('/pages/user/avatar')">
 				<view class="label">头像</view>
 				<view class="right">
-					<image class="avatar" :src="userInfo.value.avatar" mode="widthFix"></image>
+					<image class="avatar" mode="widthFix"
+						:src="userInfo.value.avatar || '/static/images/mine/avatar.png'" />
 					<image class="arrow" src="/static/images/setting/icon_arrow.png" mode="widthFix"></image>
 				</view>
 			</view>

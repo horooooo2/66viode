@@ -1,5 +1,6 @@
 <template>
 	<view class="points">
+		<appDownload></appDownload>
 		 <scroll-view
 			scroll-y
 			:refresher-enabled="true"
@@ -51,6 +52,7 @@
 	import Surplus from "@/components/Surplus/index.vue"
 	import Empty from "@/pages/search/components/empty.vue";
 	import list from "./components/list.vue"
+	import appDownload from "@/components/appDownload.vue";
 	import CustomTabbar from '@/components/custom-tabbar.vue'
 	import {
 		apiGoodsList
@@ -60,6 +62,7 @@
 			Surplus,
 			list,
 			CustomTabbar,
+			appDownload,
 			Empty,
 			NavBar
 		},
