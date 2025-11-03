@@ -21,7 +21,7 @@
 							:detailData="{ data: { content: item?.content?.url, mobile_image: detailData.data.mobile_image, show_type: item?.content?.show_type } }" />
 						<view class="video-label">
 							<view class="video-label-item">
-								<view class="text" v-for="val in detailData.data.hash_tags" :key="val">#{{ val }}</view>
+								<view class="text" v-for="val in detailData.data.hash_tags" :key="val" @click="toPath('/pages/search/index?content=' + val)">#{{ val }}</view>
 							</view>
 						</view>
 					</view>
@@ -121,6 +121,11 @@
 				duration: 2000
 			});
 		}
+	}
+	const toPath = (path) => {
+		uni.navigateTo({
+			url: path
+		})
 	}
 </script>
 <style lang="scss" scoped>
