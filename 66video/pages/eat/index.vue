@@ -7,10 +7,9 @@
 			<appDownload />
 			<view class="header">
 				<view class="logo" @click="onClick">
-					<image class="avatarUrl" src="/static/images/left-menu-icon.png"
+					<image src="/static/images/left-menu-icon.png"
 						style="width: 20px; height: 20px" />
-					<image class="avatarUrl" :src="logo" v-if="logo"
-						style="width: 20px; height: 20px" />
+					<image :src="logo" v-if="logo" />
 						<span v-else>66 吃瓜</span>
 				</view>
 				<view v-if="isLogin" class="right">
@@ -352,6 +351,9 @@
 					data
 				} = await apiSiteInfo();
 				uni.setStorageSync('logo', data.info.logo);
+				if(data.download.length > 0) {
+					uni.setStorageSync('app_data', data.download[0]);
+				}
 				this.logo = data.info.logo
 			},
 			onClick() {
@@ -514,6 +516,8 @@
 				justify-content: center;
 
 				image {
+					height: 50rpx;
+					width: 200rpx;
 					margin-right: 10px;
 				}
 			}

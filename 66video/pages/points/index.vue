@@ -18,10 +18,10 @@
 			<view class="points-container">
 				<view class="point-menus">
 					<view class="menus-box">
-						<!-- <view class="menu-item">
+						<view class="menu-item">
 							<image class="icon" src="/static/images/points/icon_cz.png" mode=""></image>
 							<text>创作</text>
-						</view> -->
+						</view>
 						<view class="menu-item" @click="toLink('/pages/friends/index')">
 							<image class="icon" src="/static/images/points/icon_yqhy.png" mode=""></image>
 							<text>邀请好友</text>
@@ -140,8 +140,8 @@
 			justify-content: space-between;
 
 			.logo {
-				width: 40rpx;
-				height: 40rpx;
+				height: 50rpx;
+				width: 200rpx;
 			}
 
 			.right {
@@ -177,7 +177,7 @@
 				.menus-box {
 					width: 100%;
 					display: grid;
-					grid-template-columns: repeat(3, 1fr);
+					grid-template-columns: repeat(4, 1fr);
 					gap: 68rpx;
 					border-radius: 20rpx;
 					background: #333;
@@ -198,7 +198,7 @@
 
 						text {
 							color: #fff;
-							font-size: 26rpx;
+							font-size: 22rpx;
 						}
 					}
 				}

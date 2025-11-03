@@ -7,12 +7,22 @@
 					{{store?.user?.userData?.name}}</text></view>
 			<view class="d_cont" v-for="(item, index) in detailData.data?.content" :key="index">
 				<rich-text v-if="item.type === 'richtext'" :nodes="item?.content"></rich-text>
-				<view class="video-box" v-if="item.type === 'video'">
-					<videoDom
-						:detailData="{ data: { content: item?.content?.url, mobile_image: detailData.data.mobile_image, show_type: item?.content?.show_type } }" />
-					<view class="video-label">
-						<view class="video-label-item">
-							<view class="text" v-for="val in detailData.data.hash_tags" :key="val">#{{ val }}</view>
+				<view v-if="(item?.content?.show_type == 1 && !userInfo) || (item?.content?.show_type == 2 && !userInfo?.vip_status?.is_vip)">
+					<view class="play_demo" @click="playDemo()">
+						<image :src="detailData.data.mobile_image"></image>
+						<image class="play" src="/static/images/play_icon.png"></image>
+						<view class="back"></view>
+						<image class="logo" :src="logo" v-if="logo" />
+					</view>
+				</view>
+				<view v-else>
+					<view class="video-box" v-if="item.type === 'video'">
+						<videoDom
+							:detailData="{ data: { content: item?.content?.url, mobile_image: detailData.data.mobile_image, show_type: item?.content?.show_type } }" />
+						<view class="video-label">
+							<view class="video-label-item">
+								<view class="text" v-for="val in detailData.data.hash_tags" :key="val">#{{ val }}</view>
+							</view>
 						</view>
 					</view>
 				</view>
@@ -60,6 +70,7 @@
 	})
 	const isLogin = computed(() => userStore.isLogin)
 	const userInfo = uni.getStorageSync('storage_user_data')
+	const logo = uni.getStorageSync('logo')
 	onLoad((options) => {
 		if (options.id) {
 			detailData.id = options.id;
@@ -95,6 +106,21 @@
 				}
 			}
 		})
+	}
+	const playDemo = () => {
+		if(!userInfo.value) {
+			return uni.showToast({
+				title: '请登录后再进行观看',
+				icon: 'none',
+				duration: 2000
+			});
+		} else {
+			return uni.showToast({
+				title: '请开通vip后再进行观看',
+				icon: 'none',
+				duration: 2000
+			});
+		}
 	}
 </script>
 <style lang="scss" scoped>
@@ -172,6 +198,39 @@
 			padding: 20rpx 0;
 			color: #fff;
 			font-size: 24rpx;
+			.play_demo{
+				position: relative;
+				width: 100%;
+				height: 560rpx;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				image{
+					position: absolute;
+					z-index: 999;
+					margin: 0!important;
+					padding: 0;
+				}
+				.play{
+					z-index: 99999;
+					width: 120rpx;
+					height: 120rpx;
+				}
+				.logo{
+					right: 60rpx;
+					top: 60rpx;
+					width: 150rpx;
+					height: 60rpx;
+					z-index: 99999;
+				}
+				.back{
+					background: rgba(0,0,0,0.3);
+					width: 100%;
+					height: 100%;
+					position: absolute;
+					z-index: 9999;
+				}
+			}
 		}
 	}
 </style>
