@@ -1,17 +1,22 @@
 <template>
 	<view class="prize">
-		<view class="prize-item" v-for="i in 6" :key="i" :style="{ 'background-image': `url(${prizeBgStyle(i)})`}" @click="missionClaim(i)">
-			<view class="coin-num" :class="[i === 1 ? 'claimed-num' : i === 2 || i === 3 ? 'claiming-num' : 'unclaimed-num']">999</view>
-			<view v-if="i === 3" class="progress">
-				<view class="progress-bar" :style="{ width: '30%' }"></view>
+		<view class="prize-item" v-for="(item, index) in prizeList" :key="index"
+			:style="{ 'background-image': `url(${prizeBgStyle(item.user_status)})`}" @click="missionClaim(item)">
+			<view class="coin-num" :class="coinClass(item.user_status)">{{ item.active_target }}</view>
+			<view v-if="item.user_status === -1" class="progress">
+				<view class="progress-bar" :style="{ width: progressPercent(item) + '%' }"></view>
 			</view>
-			<view v-if="i === 1 || i === 2 || i === 3" class="text" :class="{ 'unclaimed-text': i === 2, 'claiming-text': i === 3 }">{{ i === 1 ? '已领取' : i === 2 ? '领取' : '积攒中' }}</view>
+			<view class="text" :class="{ 'unclaimed-text': item.user_status === 1 }">
+				{{ statusText(item.user_status) }}
+			</view>
 		</view>
 	</view>
 </template>
 
 <script>
-	import { apiMissionClaim } from '@/common/api/active.js'
+	import {
+		apiMissionClaim
+	} from '@/common/api/active.js'
 	export default {
 		props: {
 			prizeList: {
@@ -24,26 +29,63 @@
 			}
 		},
 		computed: {
+			// 背景图根据状态返回
 			prizeBgStyle() {
-				return (index) => {
-					return index === 1 ? '/static/images/activity/claimed-bg.png' : index === 2 || index === 3 ? '/static/images/activity/claiming-bg.png' : '/static/images/activity/unclaimed-bg.png'
+				return (status) => {
+					switch (status) {
+						case 1:
+							return '/static/images/activity/claimed-bg.png' // 已领取
+						case 0:
+							return '/static/images/activity/claiming-bg.png' // 可领取
+						case -1:
+							return '/static/images/activity/claiming-bg.png'
+						default:
+							return ''
+							// return '/static/images/activity/unclaimed-bg.png'
+					}
 				}
-			},
+			}
 		},
 		methods: {
+			coinClass(status) {
+				switch (status) {
+					case 1:
+						return 'claimed-num'
+					case 0:
+						return 'claiming-num'
+					case -1:
+					default:
+						return 'claiming-num'
+				}
+			},
+			statusText(status) {
+				switch (status) {
+					case 1:
+						return '已领取'
+					case 0:
+						return '领取'
+					case -1:
+						return '积攒中'
+					default:
+						return ''
+				}
+			},
+			progressPercent(item) {
+				let percent = (item.active_point / item.active_target) * 100
+				return percent > 100 ? 100 : percent
+			},
 			missionClaim(item) {
-				console.log(item)
-				return
-				// return apiMissionClaim({
-				// 	active_id: this.prizeData.id,
-				// 	stage: item.stage
-				// }).then((res) => {
-				// 	uni.showToast({
-				// 		title: res.msg,
-				// 		icon: 'none',
-				// 		duration: 2000
-				// 	});
-				// });
+				if (item.user_status !== 1) return
+				return apiMissionClaim({
+					active_id: this.prizeData.id,
+					stage: item.stage
+				}).then((res) => {
+					uni.showToast({
+						title: res.msg,
+						icon: 'none',
+						duration: 2000
+					});
+				});
 			},
 		}
 	}
@@ -75,40 +117,48 @@
 			align-items: center;
 			background-repeat: no-repeat;
 			background-size: 100% 100%;
-			
+
 			.coin-num {
 				font-size: 36rpx;
 				font-weight: 900;
 				padding-top: 6rpx;
 			}
+
 			.unclaimed-num {
 				color: #fff;
 				padding-top: 66rpx;
 			}
+
 			.claiming-num {
 				color: #FF302B;
 			}
+
 			.claimed-num {
 				color: #8B8B8B;
 			}
+
 			.text {
 				font-size: 24rpx;
 				font-weight: 400;
 				margin-top: 40rpx;
 				color: #fff;
 			}
+
 			.unclaimed-text {
 				color: #FDDD5C;
 			}
+
 			.claiming-text {
 				margin-top: 35rpx;
 			}
+
 			.progress {
 				width: 68rpx;
 				height: 8rpx;
 				background-color: #D1C3AC;
 				border-radius: 20rpx;
 			}
+
 			.progress-bar {
 				height: 8rpx;
 				background-color: #FF4141;

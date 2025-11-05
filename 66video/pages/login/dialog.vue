@@ -49,6 +49,10 @@ const getCaptchat = () => {
 	})
 }
 
+defineExpose({
+	getCaptchat
+})
+
 const dialogClose=()=>{
 	dialogRef.value.close();
 	emit("update:isShow", false);

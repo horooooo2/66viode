@@ -10,7 +10,7 @@
 		</view>
 		<button class="r_submit" @click="submitFun" :class="isOK ? 'isOK':''">登录</button>
 	</view>
-	<DialogVue v-model:isShow="isShow" @dialogConfirm="dialogConfirm"/>
+	<DialogVue ref="captchaDialog" v-model:isShow="isShow" @dialogConfirm="dialogConfirm"/>
 	
 	
 </template>
@@ -41,6 +41,8 @@
 		checkRef.value = !checkRef.value
 	}
 	
+	const captchaDialog = ref(null)
+	
 	const dialogConfirm = async(captchaCode, captchaKey) => {
 		params.captcha_code = captchaCode
 		params.captcha_key = captchaKey
@@ -52,6 +54,8 @@
 			uni.navigateTo({
 				url: '/pages/eat/index'
 			});
+		} else {
+			captchaDialog.value.getCaptchat()
 		}
 		if( checkRef.value ){
 			uni.setStorageSync('storage_remember_username', params.username);		
