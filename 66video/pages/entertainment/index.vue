@@ -4,9 +4,8 @@
 		<appDownload></appDownload>
 		<view class="header">
 			<view class="logo" @click="onClick">
-				<image class="avatarUrl" src="/static/images/left-menu-icon.png" style="width: 20px;height: 20px;" />
-				<image class="avatarUrl" :src="logo" v-if="logo"
-					style="width: 20px; height: 20px" />
+				<image src="/static/images/left-menu-icon.png" style="width: 20px;height: 20px;" />
+				<image :src="logo" v-if="logo" />
 					<span v-else>66 吃瓜</span>
 			</view>
 			<view v-if="isLogin" class="right" @click="toPath('/pages/user/index')">
@@ -393,8 +392,10 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-
+			
 				image {
+					height: 50rpx;
+					width: 200rpx;
 					margin-right: 10px;
 				}
 			}

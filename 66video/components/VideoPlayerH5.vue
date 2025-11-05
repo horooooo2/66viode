@@ -13,7 +13,7 @@
 	<view class="video-container" id="player_box">
 		<video-player class="video-player  vjs-big-play-centered" :class="['player_box', { loading: !state }]"
 			:fluid="true" :sources="config.sources" :poster="config.poster" crossorigin="anonymous" playsinline
-			:playbackRates="[1, 1.5, 2]" :playbackRate="1" :height="210" :loop="false" :volume="0.6" controls
+			:playbackRates="[1, 1.5, 2]" :playbackRate="1" :height="210" :loop="false" :volume="0.6" controls preload="none"
 			@mounted="handleMounted">
 		</video-player>
 	</view>
@@ -64,17 +64,13 @@
 			}
 		}
 
-		console.log('Final type:', type);
 
 		return {
 			sources: [{
 				src: src,
 				type: type || 'application/x-mpegurl',
-				// src: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-				// type: props.detailData?.data?.type || 'application/x-mpegurl' || 'video/mp4' || 'video/webm',
 			}, ],
-			// poster: props.detailData?.data?.video_cover || props.detailData?.data?.mobile_image || props.detailData?.data?.pc_image || '',
-			// poster: "http://66cg.6980.cc/upload/default/20250809/c6aea3500f6191891fd02a72468fecce.jpeg",
+			poster: props.detailData?.data?.mobile_image
 		};
 	});
 
@@ -103,24 +99,24 @@
 
 		// 添加错误监听
 		if (payload.player) {
-			payload.player.on('play', () => {
-				if (props.detailData?.data?.show_type == 1 && !userInfo) {
-					uni.showToast({
-						title: '请登录后再观看',
-						icon: 'none',
-						duration: 2000
-					});
-					payload.player.pause(); // 阻止播放
-				}
-				if (props.detailData?.data?.show_type == 2 && !userInfo?.vip_status?.is_vip) {
-					uni.showToast({
-						title: '请开通VIP后进行观看',
-						icon: 'none',
-						duration: 2000
-					});
-					payload.player.pause(); // 阻止播放
-				}
-			});
+			// payload.player.on('play', () => {
+			// 	if (props.detailData?.data?.show_type == 1 && !userInfo) {
+			// 		uni.showToast({
+			// 			title: '请登录后再观看',
+			// 			icon: 'none',
+			// 			duration: 2000
+			// 		});
+			// 		payload.player.pause(); // 阻止播放
+			// 	}
+			// 	if (props.detailData?.data?.show_type == 2 && !userInfo?.vip_status?.is_vip) {
+			// 		uni.showToast({
+			// 			title: '请开通VIP后进行观看',
+			// 			icon: 'none',
+			// 			duration: 2000
+			// 		});
+			// 		payload.player.pause(); // 阻止播放
+			// 	}
+			// });
 			payload.player.on('error', (error) => {
 				console.error('Video player error:', error);
 				console.error('Current source:', config.value.sources[0]);

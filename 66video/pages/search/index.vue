@@ -17,6 +17,7 @@
 
 <script setup>
 import {ref,reactive,onUnmounted} from 'vue';
+import { onLoad } from '@dcloudio/uni-app'
 import { apiSearchFun } from '@/common/api/content.js'
 import emptyVue from './components/empty.vue';
 import navVue from './components/nav.vue';
@@ -121,7 +122,9 @@ const SearchFun=()=>{
 	})
 }
 const cancel=()=>{
-	uni.navigateBack();
+	uni.navigateTo({
+		url: '/pages/eat/index'
+	})
 }
 
 const navChange=(type,val)=>{
@@ -134,6 +137,13 @@ onUnmounted(() => {
 	if (searchTimer) {
 		clearTimeout(searchTimer);
 		searchTimer = null;
+	}
+})
+// 组件销毁时清理定时器
+onLoad((option) => {
+	console.log(option)
+	if(option.content) {
+		search(option.content)
 	}
 })
 
