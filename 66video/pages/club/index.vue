@@ -1,5 +1,6 @@
 <template>
 	<view class="club">
+		<view class="status_bar"></view>
 		<view class="club-main">
 			<NavBar title="VIP俱乐部"></NavBar>
 			<view class="banner">

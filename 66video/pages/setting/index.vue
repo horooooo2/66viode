@@ -1,5 +1,6 @@
 <template>
 	<view class="setting">
+		<view class="status_bar"></view>
 		<NavBar title="设置"></NavBar>
 		<view class="setting-container">
 			<view class="card-list">

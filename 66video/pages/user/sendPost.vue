@@ -1,5 +1,6 @@
 <template>
 	<view class="post-page">
+		<view class="status_bar"></view>
 		<view class="nav">
 			<text class="nav-cancel" @tap="onCancel">取消</text>
 			<text class="nav-publish" @tap="onPublish">发帖</text>

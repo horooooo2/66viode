@@ -140,7 +140,7 @@
 			.text {
 				font-size: 24rpx;
 				font-weight: 400;
-				margin-top: 40rpx;
+				margin-top: 28rpx;
 				color: #fff;
 			}
 

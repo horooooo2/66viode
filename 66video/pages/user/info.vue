@@ -1,5 +1,6 @@
 <template>
 	<view class="info">
+		<view class="status_bar"></view>
 		<NavBar title="个人资料"></NavBar>
 		<view class="info-container">
 			<view class="card" @click="toLink('/pages/user/avatar')">

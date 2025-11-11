@@ -1,5 +1,6 @@
 <template>
 	<view class="task">
+		<view class="status_bar"></view>
 		<NavBar title="任务记录"></NavBar>
 		<view class="container">
 			<view class="list">

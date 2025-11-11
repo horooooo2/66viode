@@ -2,15 +2,15 @@
 	<view class="like">
 		<view class="like_item" :class="isLiked ? 'liek_item_actvie' : '' " @click="toogleLike">
 			<uni-icons type="heart" size="16" :color="isLiked?'#FF1A8C':'#BBBBBB'"></uni-icons>
-			<text>{{detailData.data.like_count || '0'}}喜欢</text>
+			<text>{{detailData?.data?.like_count || '0'}}喜欢</text>
 		</view>
 		<view class="like_item">
 			<uni-icons type="eye" size="16" color="#BBBBBB"></uni-icons>
-			<text>{{detailData.data.view_count || '0'}} {{ detailData.type == 'video'? '观看':'阅读' }}</text>
+			<text>{{detailData?.data?.view_count || '0'}} {{ detailData.type == 'video'? '观看':'阅读' }}</text>
 		</view>
 		<view class="like_item">
 			<uni-icons type="chat" size="16" color="#BBBBBB"></uni-icons>
-			<text>{{detailData.data.comment_count || '0'}}评论</text>
+			<text>{{detailData?.data?.comment_count || '0'}}评论</text>
 		</view>
 	</view>
 </template>

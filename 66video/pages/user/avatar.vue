@@ -1,5 +1,6 @@
 <template>
 	<view class="avatar">
+		<view class="status_bar"></view>
 		<view class="navbar">
 			<view class="cancel" @click="onBack">取消</view>
 			<view class="title">头像</view>

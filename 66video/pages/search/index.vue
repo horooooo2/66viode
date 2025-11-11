@@ -1,5 +1,6 @@
 <template>
 	<view class="search">
+		<view class="status_bar"></view>
 		<uni-search-bar placeholder="搜索" v-model="searchTxt" cancelButton="always" bgColor="#202020" textColor="#fff" @input="search" @cancel="cancel" />
 		
 		<view class="wrap">

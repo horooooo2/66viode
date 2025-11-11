@@ -4,59 +4,63 @@
 			<uni-icons type="redo" size="18" color="#BBBBBB"></uni-icons>
 			<text space="ensp"> 分享到...</text>
 		</view>
-		<view class="share_item" @click="transShowCode()">
-			<view class="s_i" @click="shareFun('weixin')">
+		<view class="share_item">
+			<!-- QQ -->
+			<view class="s_i" @click="shareToQQ">
 				<view class="s_i_wrap">
 					<image class="s_img" mode="heightFix" src="/static/images/detail/qq.png"></image>
 				</view>
 				<view class="s_i_txt">QQ</view>
 			</view>
-			<view class="s_i">
+			
+			<!-- 微信 -->
+			<view class="s_i" @click="shareToWechat">
 				<view class="s_i_wrap">
 					<image class="s_img" mode="heightFix" src="/static/images/friends/wx.png"></image>
 				</view>
 				<view class="s_i_txt">微信</view>
 			</view>
-			<view class="s_i">
+			
+			<!-- 抖音 -->
+			<view class="s_i" @click="shareToDouyin">
 				<view class="s_i_wrap">
 					<image class="s_img" mode="heightFix" src="/static/images/friends/dy.png"></image>
 				</view>
 				<view class="s_i_txt">抖音</view>
 			</view>
-			<view class="s_i">
+			
+			<!-- 闪聊 -->
+			<!-- <view class="s_i" @click="shareToFlashChat">
 				<view class="s_i_wrap">
 					<image class="s_img" mode="heightFix" src="/static/images/friends/sl.png"></image>
 				</view>
 				<view class="s_i_txt">闪聊</view>
+			</view> -->
+			
+			<!-- Telegram -->
+			<view class="s_i" @click="shareToTelegram">
+				<view class="s_i_wrap">
+					<image class="s_img" mode="heightFix" src="/static/images/friends/tg.png"></image>
+				</view>
+				<view class="s_i_txt">Telegram</view>
 			</view>
-			<view class="s_i">
+			
+			<!-- 链接 -->
+			<view class="s_i" @click="copyInviteLink">
 				<view class="s_i_wrap">
 					<image class="s_img" mode="heightFix" src="/static/images/friends/lj.png"></image>
 				</view>
 				<view class="s_i_txt">链接</view>
 			</view>
-			<view class="s_i">
+			
+			<!-- 海报 -->
+			<!--<view class="s_i" @click="generatePoster">
 				<view class="s_i_wrap">
 					<image class="s_img" mode="heightFix" src="/static/images/friends/hb.png"></image>
 				</view>
 				<view class="s_i_txt">海报</view>
-			</view>
+			</view> -->
 		</view>
-		<tui-popup class="yq-popup" :show="transShow" style="background-color: rgba(0, 0, 0, 0.8)">
-			<view class="popup-main">
-				<image class="close" src="/static/images/friends/icon_Close.png" mode="" @click="transShow = false">
-				</image>
-				<view class="popup-content">
-					<view class="qrcode-container">
-						<canvas v-if="transShow" canvas-id="qrcodeCanvas" class="qrcode-canvas"></canvas>
-					</view>
-					<image class="popup-cover" :src="detailData.data.mobile_image || detailData.data.pc_image" mode="widthFix"></image>
-					<text>链接已生成 或复制链接给好友</text>
-				</view>
-				<image @click="copyInviteLink()" class="popup-button" src="/static/images/friends/button-ljfx.png"
-					mode="widthFix"></image>
-			</view>
-		</tui-popup>
 	</view>
 </template>
 
@@ -71,9 +75,6 @@ import {
 	computed
 } from "vue";
 import { apiShareRecord } from "@/common/api/content.js";
-import {
-	apiGetInviteRules
-} from '@/common/api/goods.js'
 import UQRCode from 'uqrcodejs';
 import { useUserStore } from '@/store/user'
 
@@ -84,92 +85,167 @@ const props = defineProps({
 		default: () => ({}),
 	},
 });
-const transShow = ref(false);
-const invite_url = ref('');
 
-const inviteUrl = computed(() => {
-	return (invite_url.value || window.location.origin) + '/#/pages/login/index?type=2&invite_code=' + (userStore.userData?.points || '');
-});
-const transShowCode = () => {
-	transShow.value = true;
-	getInviteRules();
-};
-
-const shareFun = (type) => {
-	console.log("props.detailData=", props.detailData);
-
-	apiShareRecord({
-		content_type: props.detailData.type,
-		content_id: props.detailData.id,
-	}).then((res) => {
-		console.log("res==", res);
-
-		if (res.code === 0) {
-			// uni.showToast({
-			// 	title: '分享成功',
-			// 	icon: 'none',
-			// 	duration: 2000
-			// });
-		} else {
-		}
-	});
-};
-//生成二维码
-const generateQRCode = () => {
-	try {
-		// 确保正确导入UQRCode
-
-		// 创建二维码实例
-		const qrcode = new UQRCode();
-
-		// 设置二维码内容
-		qrcode.data = inviteUrl.value;
-
-		// 设置二维码大小
-		qrcode.size = 130;
-
-		// 设置二维码级别
-		qrcode.errorCorrectLevel = UQRCode.errorCorrectLevel.H;
-
-		// 生成二维码
-		qrcode.make();
-
-		// 获取canvas上下文
-		const ctx = uni.createCanvasContext('qrcodeCanvas', this);
-
-		// 关键步骤1：先清空canvas
-		ctx.clearRect(0, 0, 130, 130);
-
-		// 关键步骤2：设置白色背景
-		ctx.setFillStyle('#FFFFFF');
-		ctx.fillRect(0, 0, 130, 130);
-
-		// 将二维码绘制到canvas
-		qrcode.canvasContext = ctx;
-		qrcode.drawCanvas();
-
-		// 关键步骤3：使用 ctx.draw(true) 保留绘制
-		ctx.draw(true, () => {
-			console.log('二维码绘制完成');
-		});
-
-	} catch (error) {
-		console.error('生成二维码失败:', error);
-		uni.showToast({
-			title: '生成失败: ' + error.message,
-			icon: 'none'
-		});
+// 分享数据配置
+const shareData = computed(() => {
+	return {
+		title: props.detailData?.title || '分享标题',
+		desc: props.detailData?.description || '分享描述',
+		url: inviteUrl.value,
+		image: props.detailData?.cover_image || '/static/images/share-default.jpg'
 	}
+})
+
+// 邀请链接
+const inviteUrl = computed(() => {
+	const baseUrl = location.origin
+	const sharePath = `/pages/detail/detail?id=${props.detailData?.id}`
+	return baseUrl + sharePath
+})
+
+// 分享到Telegram
+const shareToTelegram = () => {
+	const text = encodeURIComponent(`${shareData.value.title}\n\n${shareData.value.desc}`)
+	const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareData.value.url)}&text=${text}`
+	
+	// H5环境
+	// #ifdef H5
+	window.open(telegramUrl, '_blank')
+	// #endif
+	
+	// APP环境
+	// #ifdef APP
+	plus.runtime.openURL(telegramUrl, (err) => {
+		if (err) {
+			uni.showToast({
+				title: '打开Telegram失败',
+				icon: 'none'
+			})
+			copyInviteLink() // 失败时复制链接
+		}
+	})
+	// #endif
+	
+	// 记录分享
+	recordShare('telegram')
 }
-//复制分享链接
+
+// 分享到QQ
+const shareToQQ = () => {
+	// H5环境
+	// #ifdef H5
+	const qqUrl = `https://connect.qq.com/widget/shareqq/index.html?url=${encodeURIComponent(shareData.value.url)}&title=${encodeURIComponent(shareData.value.title)}&desc=${encodeURIComponent(shareData.value.desc)}&pics=${encodeURIComponent(shareData.value.image)}`
+	window.open(qqUrl, '_blank')
+	// #endif
+	
+	// APP环境
+	// #ifdef APP
+	uni.share({
+		provider: 'qq',
+		type: 1,
+		title: shareData.value.title,
+		summary: shareData.value.desc,
+		href: shareData.value.url,
+		imageUrl: shareData.value.image,
+		success: () => {
+			uni.showToast({ title: '分享成功', icon: 'success' })
+		},
+		fail: (err) => {
+			console.log('QQ分享失败:', err)
+			uni.showToast({ title: '分享失败', icon: 'none' })
+		}
+	})
+	// #endif
+	
+	recordShare('qq')
+}
+
+// 分享到微信
+const shareToWechat = () => {
+	// APP环境
+	// #ifdef APP
+	uni.share({
+		provider: 'weixin',
+		type: 1,
+		title: shareData.value.title,
+		summary: shareData.value.desc,
+		href: shareData.value.url,
+		imageUrl: shareData.value.image,
+		success: () => {
+			uni.showToast({ title: '分享成功', icon: 'success' })
+		},
+		fail: (err) => {
+			console.log('微信分享失败:', err)
+			uni.showToast({ title: '分享失败', icon: 'none' })
+		}
+	})
+	// #endif
+	
+	// H5环境
+	// #ifdef H5
+	uni.showToast({
+		title: '请使用微信打开分享',
+		icon: 'none'
+	})
+	copyInviteLink()
+	// #endif
+	
+	recordShare('wechat')
+}
+
+// 分享到抖音
+const shareToDouyin = () => {
+	// APP环境
+	// #ifdef APP
+	uni.share({
+		provider: 'douyin',
+		type: 1,
+		title: shareData.value.title,
+		summary: shareData.value.desc,
+		href: shareData.value.url,
+		imageUrl: shareData.value.image,
+		success: () => {
+			uni.showToast({ title: '分享成功', icon: 'success' })
+		},
+		fail: (err) => {
+			console.log('抖音分享失败:', err)
+			uni.showToast({ title: '分享失败', icon: 'none' })
+		}
+	})
+	// #endif
+	
+	// H5环境
+	// #ifdef H5
+	uni.showToast({
+		title: '请在抖音APP内分享',
+		icon: 'none'
+	})
+	copyInviteLink()
+	// #endif
+	
+	recordShare('douyin')
+}
+
+// 分享到闪聊
+const shareToFlashChat = () => {
+	// 这里根据闪聊的具体分享API实现
+	uni.showToast({
+		title: '闪聊分享功能',
+		icon: 'none'
+	})
+	recordShare('flash_chat')
+}
+
+// 复制分享链接
 const copyInviteLink = () => {
 	uni.setClipboardData({
-		data:  inviteUrl.value,
+		data: inviteUrl.value,
 		success: () => {
 			uni.showToast({
 				title: '复制成功',
 				icon: 'success'
 			});
+			recordShare('copy_link')
 		},
 		fail: (err) => {
 			console.error('复制失败:', err);
@@ -180,25 +256,81 @@ const copyInviteLink = () => {
 		}
 	});
 }
-const getInviteRules = async () => {
-	let {
-		code,
-		msg,
-		data
-	} = await apiGetInviteRules()
-	console.log(code, msg, data)
-	if (code == 0) {
-		invite_url.value = data.invite_url;
-		generateQRCode();
-	} else {
-		uni.showToast({
-			title: msg,
-			icon: 'none',
-			duration: 2000
-		});
+
+// 生成海报
+const generatePoster = () => {
+	uni.showToast({
+		title: '生成海报功能',
+		icon: 'none'
+	})
+	// 这里可以实现海报生成逻辑
+	recordShare('poster')
+}
+
+// 记录分享行为
+const recordShare = async (platform) => {
+	try {
+		await apiShareRecord({
+			content_id: props.detailData?.id,
+			share_platform: platform,
+			share_time: new Date().getTime()
+		})
+		console.log(`分享到${platform}记录成功`)
+	} catch (error) {
+		console.error('记录分享失败:', error)
 	}
 }
 </script>
+
+<style scoped>
+/* 保持你原有的样式不变 */
+.share {
+	padding: 20rpx 30rpx;
+}
+
+.share_t {
+	display: flex;
+	align-items: center;
+	margin-bottom: 30rpx;
+	color: #BBBBBB;
+	font-size: 28rpx;
+}
+
+.share_item {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+.s_i {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 30rpx;
+	width: 20%;
+}
+
+.s_i_wrap {
+	width: 80rpx;
+	height: 80rpx;
+	border-radius: 50%;
+	background: #f8f8f8;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 10rpx;
+}
+
+.s_img {
+	height: 40rpx;
+	width: auto;
+}
+
+.s_i_txt {
+	font-size: 24rpx;
+	color: #666;
+}
+</style>
 
 <style lang="scss" scoped>
 .share {
@@ -250,60 +382,4 @@ const getInviteRules = async () => {
 	}
 }
 
-.yq-popup {
-
-	.popup-main {
-		position: relative;
-		width: 686rpx;
-		margin: 0 auto;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-
-		.close {
-			position: absolute;
-			top: -14rpx;
-			right: -14rpx;
-			width: 48rpx;
-			height: 48rpx;
-			z-index: 999999;
-		}
-
-		.popup-content {
-			width: 100%;
-			padding: 26rpx 24rpx;
-			box-sizing: border-box;
-			border-radius: 20rpx;
-			background: #28272A;
-			display: flex;
-			flex-direction: column;
-			gap: 18rpx;
-			position: relative;
-
-			.popup-cover {
-				width: 100%;
-			}
-
-			.qrcode-container {
-				position: absolute;
-				left: 30rpx;
-				bottom: 90rpx;
-				width: 240rpx;
-				height: 240rpx;
-				z-index: 9999;
-			}
-
-			text {
-				color: #ccc;
-				font-size: 24rpx;
-				font-weight: 400;
-			}
-		}
-
-		.popup-button {
-			width: 574rpx;
-			margin-top: 48rpx;
-		}
-	}
-}
 </style>

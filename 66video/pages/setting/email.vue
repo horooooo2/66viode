@@ -1,5 +1,6 @@
 <template>
 	<view class="email">
+		<view class="status_bar"></view>
 		<NavBar title="邮箱"></NavBar>
 		<view class="email-container">
 			<view class="label">邮箱</view>

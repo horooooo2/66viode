@@ -351,6 +351,7 @@
 					data
 				} = await apiSiteInfo();
 				uni.setStorageSync('logo', data.info.logo);
+				uni.setStorageSync('serviceUrl', data.config.service_url);
 				if(data.download.length > 0) {
 					uni.setStorageSync('app_data', data.download[0]);
 				}

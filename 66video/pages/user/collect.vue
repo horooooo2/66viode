@@ -1,5 +1,6 @@
 <template>
 	<view class="collect">
+		<view class="status_bar"></view>
 		<NavBar title="收藏记录">
 			<template #right>
 				<view style="font-size: 28rpx; color: #ddd" @click="toUpdate">管理</view>

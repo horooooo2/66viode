@@ -152,3 +152,11 @@ export const apiAdList = (params) =>{
 export const apiSiteInfo = (params) =>{
 	return http.get('/site/info',params);
 }
+// 广告
+export const apiSiteSocial = (params) =>{
+	return http.get('/site/social',params);
+}
+// 广告
+export const apiNoticeList = (params) =>{
+	return http.get('/notice/list?page=1&limit=99',params);
+}

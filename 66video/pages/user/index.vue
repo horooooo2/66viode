@@ -1,5 +1,6 @@
 <template>
 	<view class="user">
+		<view class="status_bar"></view>
 		<view class="header-box">
 			<view class="header">
 				<view class="avatar" @click="toLink('/pages/user/avatar')">

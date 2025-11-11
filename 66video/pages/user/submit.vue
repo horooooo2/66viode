@@ -1,5 +1,6 @@
 <template>
 	<view class="submit">
+		<view class="status_bar"></view>
 		<view class="navbar">
 			<view class="back" @click="onClickBack">取消</view>
 			<tui-button link plain height="88rpx" width="auto" :disabled="isDisabled" @click="submit">发帖</tui-button>

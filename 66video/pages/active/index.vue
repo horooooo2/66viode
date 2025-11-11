@@ -1,5 +1,6 @@
 <template>
 	<view class="activity">
+		<view class="status_bar"></view>
 		<appDownload></appDownload>
 		<view class="banner">
 			<view class="banner-main">
@@ -10,7 +11,10 @@
 						<image class="arrow" src="/static/images/activity/icon_close.png"></image>
 					</view>
 				</view>
-				<Prize :prizeList="activeCurrentItem.reward_config" :prizeData="activeCurrentItem"></Prize>
+				<Prize v-if="isLogin" :prizeList="activeCurrentItem.reward_config" :prizeData="activeCurrentItem"></Prize>
+				<view @click="toPath()" v-else style="height: 160rpx;width: 100%;background: #202020;border-radius: 10rpx;display: flex;align-items: center;justify-content: center;">
+					<span style="color: #FF1A8C;">登录发现更多精彩</span>
+				</view>
 			</view>
 		</view>
 		<view class="container">
@@ -90,6 +94,9 @@
 	import TagPopup from "./components/TagPopup.vue"
 	import CustomTabbar from '@/components/custom-tabbar.vue'
 	import {
+		useUserStore
+	} from "@/store/user";
+	import {
 		apiTaskActive,
 		apiTaskGroup,
 		apiTaskTag,
@@ -108,8 +115,14 @@
 			CustomTabbar
 		},
 		computed: {
+			userStore() {
+				return useUserStore();
+			},
 			isEmpty() {
 				return this.taskList.length === 0;
+			},
+			isLogin() {
+				return this.userStore.isLogin;
 			}
 		},
 		data() {
@@ -125,10 +138,15 @@
 			}
 		},
 		onLoad() {
-			this.getTaskActive();
+			this.getTaskActive()
 			this.getData();
 		},
 		methods: {
+			toPath: function(path) {
+				uni.navigateTo({
+					url: '/pages/login/index'
+				})
+			},
 			async getData() {
 				this.taskList = []
 				try {

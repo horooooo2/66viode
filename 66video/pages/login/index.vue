@@ -1,5 +1,6 @@
 <template>
 	<view class="page_bg">
+		<view class="status_bar"></view>
 		<!-- <button @click="back">返回</button> -->
 		<uni-icons class="close" @click="back" type="closeempty" size="18" color="#fff"></uni-icons>
 		

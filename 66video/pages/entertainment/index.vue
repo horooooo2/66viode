@@ -6,7 +6,7 @@
 			<view class="logo" @click="onClick">
 				<image src="/static/images/left-menu-icon.png" style="width: 20px;height: 20px;" />
 				<image :src="logo" v-if="logo" />
-					<span v-else>66 吃瓜</span>
+				<span v-else>66 吃瓜</span>
 			</view>
 			<view v-if="isLogin" class="right" @click="toPath('/pages/user/index')">
 				<Surplus></Surplus>
@@ -27,7 +27,7 @@
 		<tui-tab sliderHeight="0" backgroundColor="transparent" :current="isType" color="#BBB" selectedColor="#D018F5"
 			bold :tabs="tabs" scroll @change="tabChange"></tui-tab>
 
-		<!-- <view class="tui-banner-swiper">
+		<view class="tui-banner-swiper">
 			<swiper class="tui-banner__height" @change="bannerChange" circular :indicator-dots="false" autoplay
 				:interval="4000" :duration="150">
 				<block v-for="(item,index) in background" :key="index">
@@ -36,7 +36,7 @@
 					</swiper-item>
 				</block>
 			</swiper>
-		</view> -->
+		</view>
 
 		<view class="filter">
 			<view class="filter-box" @click="popupShow = true">
@@ -392,7 +392,7 @@
 				display: flex;
 				align-items: center;
 				justify-content: center;
-			
+
 				image {
 					height: 50rpx;
 					width: 200rpx;

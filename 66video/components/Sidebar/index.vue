@@ -4,7 +4,7 @@
 		<view class="header">
 			<view class="left-panel">
 				<image class="back" src="/static/images/sidebar/icon_Back.png" mode="" @click="close"></image>
-				<image class="avatarUrl" :src="logo" style="width: 20px; height: 20px" />
+				<image :src="logo" style="width: 200rpx; height: 50rpx" />
 			</view>
 			<view v-if="!isLogin" class="button">
 				<view class="login" @click="toPath('/pages/login/index?type=1')">登录</view>
@@ -52,12 +52,12 @@
 				<text>赞助</text>
 				<image class="arrow" src="/static/images/sidebar/icon-xiala.png" mode=""></image>
 			</view>
-			<view class="card">
+			<view class="card" @click="toService()">
 				<image class="icon" src="/static/images/sidebar/xskf.png" mode=""></image>
 				<text>线上客服</text>
 			</view>
 			<view class="model">
-				<view class="card">
+				<view class="card" @click="onClick('router', '/pages/message/index')">
 					<image class="icon" src="/static/images/sidebar/xxtz.png" mode=""></image>
 					<text>消息通知</text>
 				</view>
@@ -70,7 +70,7 @@
 				<image class="icon" src="/static/images/sidebar/yybb.png" mode=""></image>
 				<text>应用版本</text>
 			</view> -->
-			<image class="banner" src="/static/images/sidebar/banner.png" mode=""></image>
+			<!-- <image class="banner" src="/static/images/sidebar/banner.png" mode=""></image> -->
 			<!-- <view class="card" @click="onClick('language')">
 				<image class="icon" src="/static/images/sidebar/jtze.png" mode=""></image>
 				<text>简体中文</text>
@@ -129,6 +129,9 @@
 			this.logo = uni.getStorageSync('logo');
 		},
 		methods: {
+			toService: function(url) {
+				window.open(uni.getStorageSync('serviceUrl'))
+			},
 			toPath: function(path) {
 				uni.navigateTo({
 					url: path

@@ -1,5 +1,7 @@
 <template>
 	<view class="password">
+		<view class="status_bar"></view>
+		<view class="status_bar"></view>
 		<NavBar title="修改登录密码"></NavBar>
 		<view class="password-container">
 			<view class="label">登录密码</view>

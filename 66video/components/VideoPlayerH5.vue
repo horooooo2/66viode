@@ -12,7 +12,7 @@
 <template>
 	<view class="video-container" id="player_box">
 		<video-player class="video-player  vjs-big-play-centered" :class="['player_box', { loading: !state }]"
-			:fluid="true" :sources="config.sources" :poster="config.poster" crossorigin="anonymous" playsinline
+			:fluid="true" :sources="config.sources" :poster="config.poster" crossorigin="anonymous"
 			:playbackRates="[1, 1.5, 2]" :playbackRate="1" :height="210" :loop="false" :volume="0.6" controls preload="none"
 			@mounted="handleMounted">
 		</video-player>
@@ -137,6 +137,33 @@
 </script>
 
 <style lang="scss" scoped>
+	.player_box {
+	  height: 210px !important; /* 与组件高度一致 */
+	  min-height: 210px !important;
+	  max-height: 210px !important;
+	}
+	
+	.video-player {
+	  height: 210px !important;
+	  min-height: 210px !important;
+	  max-height: 210px !important;
+	}
+	
+	/* 确保视频容器也固定高度 */
+	.video-js {
+	  height: 210px !important;
+	  min-height: 210px !important;
+	  max-height: 210px !important;
+	  padding-top: 0 !important; /* 防止 fluid 模式产生 padding */
+	}
+	
+	/* 视频元素本身固定高度 */
+	.video-js video {
+	  height: 210px !important;
+	  min-height: 210px !important;
+	  max-height: 210px !important;
+	  object-fit: cover; /* 保持比例并填充容器 */
+	}
 	#player_box {
 		width: 100%;
 		outline: none;

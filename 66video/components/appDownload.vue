@@ -1,4 +1,5 @@
 <template>
+	<!-- #ifdef H5 -->
 	<view class="app-download-bar" v-if="appShow && appData">
 		<!-- 左侧关闭按钮 -->
 		<view class="close-btn" @click="appClose()">
@@ -11,16 +12,17 @@
 				<image class="close-icon" :src="appData.icon" mode="widthFix"></image>
 			</view>
 			<view class="app-info">
-				<view class="app-title">{{appData.title}}</view>
-				<view class="app-desc">{{appData.subtitle}}</view>
+				<view class="app-title">吃瓜APP</view>
+				<view class="app-desc">免费！高清！下载安装不迷路！ </view>
 			</view>
 		</view>
 
 		<!-- 右侧下载按钮 -->
 		<view class="download-btn" @click="handleDownload">
-			<text class="btn-text">{{appData.button_text}}</text>
+			<image style="width: 180rpx;margin-top: 10rpx;margin-left: 20rpx;" src="/static/images/download_button.png" mode="widthFix"></image>
 		</view>
 	</view>
+	<!-- #endif -->
 </template>
 
 <script>
@@ -211,7 +213,7 @@
 
 		// 右侧下载按钮
 		.download-btn {
-			background: url('/static/images/app_button.png');
+			// background: url('/static/images/app_button.png');
 			background-size: 100% 100%;
 			border-radius: 30rpx;
 			padding: 12rpx 24rpx;

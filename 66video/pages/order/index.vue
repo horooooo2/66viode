@@ -1,5 +1,6 @@
 <template>
   <view class="order">
+	  <view class="status_bar"></view>
     <!-- 列表数据 -->
     <scroll-view
       scroll-y

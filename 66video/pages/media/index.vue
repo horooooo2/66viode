@@ -1,15 +1,16 @@
 <template>
 	<view class="media">
+		<view class="status_bar"></view>
 		<view class="media-main">
 			<NavBar title="官方媒体"></NavBar>
 			<view class="container">
 				<view class="list">
-					<view class="list-item" v-for="i in 3" :key="i">
+					<view class="list-item" v-for="(item, index) in socialList" :key="index">
 						<view class="item-left">
-							<view class="title">Telegram</view>
-							<view>https：Telegram</view>
+							<view class="title">{{item.platform}}</view>
+							<view>{{item.url}}</view>
 						</view>
-						<view class="button">打开</view>
+						<view class="button" @click="open(item.url)">打开</view>
 					</view>
 				</view>
 			</view>
@@ -18,13 +19,34 @@
 </template>
 
 <script>
+	import {
+		apiSiteSocial,
+	} from "@/common/api/user.js";
 	import NavBar from '@/components/NavBar/index.vue'
 	export default {
 		components: {
 			NavBar
 		},
+		data(){
+			return {
+				socialList: []
+			}
+		},
+		created(){
+			this.getSiteSocial()
+		},
 		methods: {
-
+			getSiteSocial() {
+				apiSiteSocial().then((res) => {
+					if (res.code === 0) {
+						this.socialList = res.data
+						console.log(res)
+					}
+				});
+			},
+			open(url) {
+				window.open(url)
+			},
 		}
 	}
 </script>

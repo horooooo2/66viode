@@ -1,5 +1,6 @@
 <template>
 	<view class="address">
+		<view class="status_bar"></view>
 		<NavBar title="用户服务协议" fallbackUrl='/pages/points/index'></NavBar>
 		<view style="color: #a0a3a3;padding: 20rpx;">
 			欢迎使用我们的应用程序。本隐私政策旨在告知您我们收集、使用和披露的个人信息以及您个人信息的选择权。当您选择使用我们的应用程序时，即表示您同意本政策中描述的信息处理方式。<br />

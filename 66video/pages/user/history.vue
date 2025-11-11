@@ -1,5 +1,6 @@
 <template>
 	<view class="history">
+		<view class="status_bar"></view>
 		<NavBar title="历史"></NavBar>
 		<view class="history-container">
 			<view class="list">

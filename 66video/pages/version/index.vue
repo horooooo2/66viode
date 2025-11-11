@@ -1,5 +1,6 @@
 <template>
 	<view class="version">
+		<view class="status_bar"></view>
 		<NavBar title="关于"></NavBar>
 		<view class="container">
 			<view class="logo"></view>

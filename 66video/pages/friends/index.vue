@@ -1,5 +1,6 @@
 <template>
 	<view class="friends">
+		<view class="status_bar"></view>
 		<NavBar></NavBar>
 		<view class="container">
 			<view class="card">

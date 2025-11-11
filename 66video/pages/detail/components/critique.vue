@@ -19,7 +19,7 @@
 			<input class="uni-input" v-model="sendText" placeholder="说点什么吧..." />
 		</view>
 		<view class="c_btn">
-			<button class="btn share_btn">分享你的作品</button>
+			<!-- <button class="btn share_btn">分享你的作品</button> -->
 			<button class="btn send_btn" v-if="!userStore.isLogin" @click="goLogin">登录</button>
 			<button class="btn send_btn" v-else @click="sendComment">发送评论</button>
 		</view>
@@ -151,7 +151,7 @@ onMounted(() => {
 			display: flex;
 			justify-content: space-between;
 			.share_btn{
-				width: 45%;
+				width: 90%;
 				border-radius: 16rpx;
 				color: #FF1A8C;
 				font-size: 25rpx;
@@ -159,7 +159,7 @@ onMounted(() => {
 				background: transparent;
 			}
 			.send_btn{
-				width: 45%;
+				width: 90%;
 				font-size: 25rpx;
 				border-radius: 16rpx;
 				color: #fff;
