@@ -58,6 +58,24 @@ export const chooseImage = () => {
 	});
 }
 
+// 上传视频
+export const chooseVideo = () => {
+  return new Promise((resolve, reject) => {
+    uni.chooseVideo({
+      sourceType: ['album', 'camera'], // 可以选择相册或拍摄
+      // maxDuration: 60, // 最大拍摄时长，单位秒
+      // camera: 'back', // front 前置，back 后置
+      success: (res) => {
+        // res.tempFilePath 是视频临时路径
+        resolve(res.tempFilePath);
+      },
+      fail: (err) => {
+        reject(err);
+      }
+    });
+  });
+};
+
 //上传头像图片文件
 export const uploadAvatarImage = (imagePath) => {
 	return http.uploadFile('/user/upload_avatar', imagePath);
@@ -91,6 +109,21 @@ export const uploadAvatarImage = (imagePath) => {
 			}
 		});
 	});*/
+}
+
+// 上传视频
+export const uploadVideo = (imagePath) => {
+	return http.uploadFile('/post/uploadVideo', imagePath);
+}
+
+// 上传图片
+export const uploadImage = (imagePath) => {
+	return http.uploadFile('/post/uploadImage', imagePath);
+}
+
+// 发稿
+export const saveArticleApi = (params) =>{
+	return http.post('/post/article',params);
 }
 
 
