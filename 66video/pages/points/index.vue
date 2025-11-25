@@ -11,15 +11,18 @@
 			<view class="status_bar"></view>
 			<view class="header">
 				<image class="logo" :src="logo" mode="widthFix"></image>
-				<!-- <view class="right">
+				<view class="right">
 					<Surplus></Surplus>
-					<view class="avatar"></view>
-				</view> -->
+					<view class="avatar" @click="toPath('/pages/user/index')">
+						<image class="avatarUrl" mode="aspectFill"
+							:src="userInfo.avatar || '/static/images/mine/avatar.png'" />
+					</view>
+				</view>
 			</view>
 			<view class="points-container">
 				<view class="point-menus">
 					<view class="menus-box">
-						<view class="menu-item">
+						<view class="menu-item" @click="toLink('/pages/user/submit')">
 							<image class="icon" src="/static/images/points/icon_cz.png" mode=""></image>
 							<text>创作</text>
 						</view>
@@ -56,6 +59,9 @@
 	import appDownload from "@/components/appDownload.vue";
 	import CustomTabbar from '@/components/custom-tabbar.vue'
 	import {
+		apiGetUserInfo,
+	} from "@/common/api/user.js";
+	import {
 		apiGoodsList
 	} from '@/common/api/goods.js'
 	export default {
@@ -74,24 +80,37 @@
 				// 控制onShow事件是否刷新订单列表
 				canReset: false,
 				total: 0,
-				logo: ''
+				logo: '',
+				userInfo: ""
 			}
 		},
 		onShow() {
 			this.canReset && this.refreshList()
 			this.canReset = false
+			this.getUserInfo();
 		},
 		created() {
 			this.getList();
 			this.logo = uni.getStorageSync('logo');
 		},
 		methods: {
+			async getUserInfo() {
+				const {
+					data
+				} = await apiGetUserInfo();
+				this.userInfo = data;
+			},
 			// 刷新列表
 			refreshList() {
 				this.listData = [] // 先置空列表,显示加载进度
 				setTimeout(() => {
 					this.getList()
 				}, 120)
+			},
+			toPath(path) {
+				uni.navigateTo({
+					url: path,
+				});
 			},
 			onRefresh() {
 				this.isRefreshing = true;
@@ -153,7 +172,14 @@
 					width: 64rpx;
 					height: 64rpx;
 					border-radius: 50%;
-					background: linear-gradient(0deg, #D018F5 0%, #FA3296 100%);
+					background: linear-gradient(0deg, #d018f5 0%, #fa3296 100%);
+				
+					.avatarUrl {
+						width: 100%;
+						height: 100%;
+						display: block;
+						border-radius: 50%;
+					}
 				}
 			}
 		}

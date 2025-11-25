@@ -14,7 +14,7 @@
 		<component :is="isType" />
 		
 		<view class="changeType" @click="changeType">
-			{{ isType == 'Register' ?'已有账号？立即登录':'没有账号？立即注册' }}
+			{{ isType == registerType ?'已有账号？立即登录':'没有账号？立即注册' }}
 			<uni-icons class="right_arrow" type="right" size="14" color="#DB7FDB"></uni-icons>
 		</view>
 		
@@ -45,16 +45,21 @@
 	
 	import Login from './login.vue'
 	import Register from './register.vue'
+	import RegisterEmail from './registerEmail.vue'
 	export default{
-		components: { Login, Register },
+		components: { Login, Register, RegisterEmail },
 		data(){
 			return {
-				isType: 'Login'
+				isType: 'Login',
+				registerType: 'Register'
 			}
 		},
 		onLoad(options) {
+			if(uni.getStorageSync('registerType') == 'email') {
+				this.registerType = 'RegisterEmail'
+			}
 			console.log(options.type)
-			this.isType = options.type == 2 ? 'Register' : 'Login';
+			this.isType = options.type == 2 ? this.registerType : 'Login';
 		},
 		methods:{
 			back(){
@@ -70,7 +75,7 @@
 				// uni.navigateTo({
 				// 	url: '/pages/login/index?type=2'
 				// });
-				this.isType = this.isType == 'Register' ? 'login': 'Register'
+				this.isType = this.isType == this.registerType ? 'login': this.registerType
 			},
 		}
 	}

@@ -352,6 +352,7 @@
 				} = await apiSiteInfo();
 				uni.setStorageSync('logo', data.info.logo);
 				uni.setStorageSync('serviceUrl', data.config.service_url);
+				uni.setStorageSync('registerType', data.config.verify_type);
 				if(data.download.length > 0) {
 					uni.setStorageSync('app_data', data.download[0]);
 				}

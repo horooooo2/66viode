@@ -47,7 +47,7 @@
 		/* 设置最大宽度 */
 		margin: 0 auto;
 		/* 居中显示 */
-		background-color: #f5f5f5;
+		background: #202020 !important;
 	}
 
 	/*每个页面公共css */

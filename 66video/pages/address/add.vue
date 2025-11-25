@@ -1,5 +1,6 @@
 <template>
 	<view class="address-add">
+		<view class="status_bar"></view>
 		<view class="navbar">
 			<view class="back" @click="onClickBack">取消</view>
 			<view class="nav-title">添加收货地址</view>

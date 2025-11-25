@@ -227,10 +227,11 @@
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
+		"navigationBarBackgroundColor": "#202020",
 		"navigationStyle": "custom",
 		"backgroundColor": "#111",
 		"animationType": "none",
+		"animationDuration": 0,
 		"app-plus": {
 			"titleView": false, // 隐藏标题栏（App端）
 			"statusbar": {

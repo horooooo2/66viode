@@ -70,7 +70,7 @@
 				src: src,
 				type: type || 'application/x-mpegurl',
 			}, ],
-			poster: props.detailData?.data?.mobile_image
+			// poster: props.detailData?.data?.mobile_image
 		};
 	});
 

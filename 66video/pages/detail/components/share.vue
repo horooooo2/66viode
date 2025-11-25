@@ -30,12 +30,12 @@
 			</view>
 			
 			<!-- 闪聊 -->
-			<!-- <view class="s_i" @click="shareToFlashChat">
+			 <view class="s_i" @click="shareWhatsappChat">
 				<view class="s_i_wrap">
-					<image class="s_img" mode="heightFix" src="/static/images/friends/sl.png"></image>
+					<image class="s_img" mode="heightFix" src="/static/images/friends/whatsapp.png"></image>
 				</view>
-				<view class="s_i_txt">闪聊</view>
-			</view> -->
+				<view class="s_i_txt">whatsapp</view>
+			</view>
 			
 			<!-- Telegram -->
 			<view class="s_i" @click="shareToTelegram">
@@ -72,7 +72,8 @@ import {
 	defineProps,
 	watchEffect,
 	onMounted,
-	computed
+	computed,
+	watch 
 } from "vue";
 import { apiShareRecord } from "@/common/api/content.js";
 import UQRCode from 'uqrcodejs';
@@ -89,13 +90,17 @@ const props = defineProps({
 // 分享数据配置
 const shareData = computed(() => {
 	return {
-		title: props.detailData?.title || '分享标题',
-		desc: props.detailData?.description || '分享描述',
+		desc: props.detailData?.description || '我正在66吃瓜网观看《'+props.detailData?.title+'》，快来一起看！',
 		url: inviteUrl.value,
-		image: props.detailData?.cover_image || '/static/images/share-default.jpg'
 	}
 })
-
+watch(
+    () => props.detailData,
+    (newVal) => {
+        console.log('data属性:', props.detailData.data)
+    },
+    { immediate: true, deep: true }
+)
 // 邀请链接
 const inviteUrl = computed(() => {
 	const baseUrl = location.origin
@@ -128,6 +133,32 @@ const shareToTelegram = () => {
 	
 	// 记录分享
 	recordShare('telegram')
+}
+// 分享到whatsapp
+const shareWhatsappChat = () => {
+	 const text = `${shareData.value.title}\n\n${shareData.value.desc}`
+	    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text + ' ' + shareData.value.url)}`
+	    
+	    // H5环境
+	    // #ifdef H5
+	    window.open(whatsappUrl, '_blank')
+	    // #endif
+	    
+	    // APP环境
+	    // #ifdef APP
+	    plus.runtime.openURL(whatsappUrl, (err) => {
+	        if (err) {
+	            uni.showToast({
+	                title: '打开WhatsApp失败',
+	                icon: 'none'
+	            })
+	            copyInviteLink() // 失败时复制链接
+	        }
+	    })
+	    // #endif
+	    
+	    // 记录分享
+	    recordShare('whatsapp')
 }
 
 // 分享到QQ
@@ -239,7 +270,7 @@ const shareToFlashChat = () => {
 // 复制分享链接
 const copyInviteLink = () => {
 	uni.setClipboardData({
-		data: inviteUrl.value,
+		data: '我正在66吃瓜网观看《'+props.detailData?.title+'》，快来一起看！点击：' + inviteUrl.value,
 		success: () => {
 			uni.showToast({
 				title: '复制成功',

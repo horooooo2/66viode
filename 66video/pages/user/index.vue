@@ -4,7 +4,8 @@
 		<view class="header-box">
 			<view class="header">
 				<view class="avatar" @click="toLink('/pages/user/avatar')">
-					<image class="avatarUrl" :src="userInfo.avatar ? userInfo.avatar : '/static/images/mine/avatar.png'" mode=""></image>
+					<image class="avatarUrl" :src="userInfo.avatar ? userInfo.avatar : '/static/images/mine/avatar.png'"
+						mode=""></image>
 				</view>
 				<view class="userInfo" @click="toLink('/pages/user/info')">
 					<view class="title-box">
@@ -62,7 +63,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<view class="content">
 			<view class="card">
 				<view class="card-item" @click="toLink('/pages/active/index')">
@@ -83,7 +84,7 @@
 					<image class="card-right" src="/static/images/mine/icon-coin.png" mode="widthFix"></image>
 				</view>
 			</view>
-			
+
 			<view class="cell">
 				<view class="cell-item" @click="toLink('/pages/friends/index')">
 					<image class="icon" src="/static/images/mine/icon-yqhy.png" mode=""></image>
@@ -94,7 +95,7 @@
 					<text>官方媒体</text>
 				</view>
 			</view>
-			
+
 			<view class="cell">
 				<view class="cell-item" @click="toLink('/pages/setting/index')">
 					<image class="icon" src="/static/images/mine/icon-sz.png" mode=""></image>
@@ -116,12 +117,17 @@
 </template>
 
 <script>
-	import {apiLogout,apiGetUserInfo} from '@/common/api/user.js'
-	import { useUserStore } from '@/store/user'
+	import {
+		apiLogout,
+		apiGetUserInfo
+	} from '@/common/api/user.js'
+	import {
+		useUserStore
+	} from '@/store/user'
 	import CustomTabbar from '@/components/custom-tabbar.vue'
 	export default {
-		data(){
-			return{
+		data() {
+			return {
 				userInfo: {
 					vip_status: {
 						is_vip: false
@@ -129,7 +135,9 @@
 				}
 			}
 		},
-		components: { CustomTabbar },
+		components: {
+			CustomTabbar
+		},
 		created() {
 			this.getUserInfo();
 		},
@@ -140,27 +148,48 @@
 				});
 			},
 			toLink(url) {
-				uni.navigateTo({ url })
+				uni.navigateTo({
+					url
+				})
 			},
-			toService() {
-				location.href = 'https://www.baidu.com'
+			toService(url) {
+				// #ifdef APP
+				plus.runtime.openURL(uni.getStorageSync('serviceUrl'))
+				// #endif
+
+				// #ifdef H5
+				window.open(uni.getStorageSync('serviceUrl'), '_blank')
+				// #endif
 			},
 			async logoutFun() {
-			  const userStore = useUserStore()
-			  const { code, msg } = await apiLogout({ loading: true })
-			  uni.showToast({ title: msg, icon: 'none', duration: 2000 })
-			
-			  if (code === 0) {
-			    userStore.logout()
-			
-			    // 跳转到登录页
-			    uni.navigateTo({
-			      url: '/pages/login/index?type=1'
-			    })
-			  }
+				const userStore = useUserStore()
+				const {
+					code,
+					msg
+				} = await apiLogout({
+					loading: true
+				})
+				uni.showToast({
+					title: msg,
+					icon: 'none',
+					duration: 2000
+				})
+
+				if (code === 0) {
+					userStore.logout()
+
+					// 跳转到登录页
+					uni.navigateTo({
+						url: '/pages/login/index?type=1'
+					})
+				}
 			},
-			async getUserInfo(){
-				const {code,msg,data} = await apiGetUserInfo();
+			async getUserInfo() {
+				const {
+					code,
+					msg,
+					data
+				} = await apiGetUserInfo();
 				this.userInfo = data
 			}
 		}
@@ -354,7 +383,7 @@
 				}
 			}
 		}
-		
+
 		.content {
 			width: 100%;
 			min-height: 0;
@@ -363,13 +392,14 @@
 			border-radius: 40rpx 40rpx 0 0;
 			padding: 24rpx 32rpx;
 			box-sizing: border-box;
-			
+
 			.card {
 				width: 100%;
 				display: grid;
 				grid-template-columns: repeat(2, 1fr);
 				gap: 22rpx;
 				margin-bottom: 20rpx;
+
 				.card-item {
 					border-radius: 16rpx;
 					background: #333;
@@ -379,43 +409,52 @@
 					align-items: center;
 					justify-content: space-between;
 					gap: 30rpx;
+
 					.card-left {
 						display: flex;
 						flex-direction: column;
 						gap: 24rpx;
+
 						.task {
 							font-size: 28rpx;
 							color: #FF1A8C;
 						}
+
 						.text {
 							color: #ccc;
 							font-size: 24rpx;
 						}
+
 						.card-title {
 							display: flex;
 							align-items: center;
 							gap: 6rpx;
+
 							.coin {
 								width: 28rpx;
 								height: 28rpx;
 							}
+
 							text {
 								font-size: 28rpx;
 								color: #F0B643;
 							}
 						}
 					}
+
 					.card-right {
 						width: 90rpx;
 						flex-shrink: 0;
 					}
 				}
 			}
+
 			.cell {
 				width: 100%;
 				border-radius: 20rpx;
 				background-color: #333;
 				margin-bottom: 16rpx;
+
 				.cell-item {
 					width: 100%;
 					height: 112rpx;
@@ -423,17 +462,20 @@
 					box-sizing: border-box;
 					display: flex;
 					align-items: center;
+
 					.icon {
 						width: 56rpx;
 						height: 56rpx;
 						margin-right: 16rpx;
 					}
+
 					text {
 						color: #ddd;
 						font-size: 30rpx;
 					}
 				}
 			}
+
 			.button {
 				width: 100%;
 				height: 96rpx;
@@ -447,7 +489,8 @@
 				margin-top: 42rpx;
 			}
 		}
-		.leftIcon{
+
+		.leftIcon {
 			// position: fixed;
 			// top: 0;
 			// left: 0;

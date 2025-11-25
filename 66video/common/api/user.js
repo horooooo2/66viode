@@ -160,3 +160,7 @@ export const apiSiteSocial = (params) =>{
 export const apiNoticeList = (params) =>{
 	return http.get('/notice/list?page=1&limit=99',params);
 }
+// 广告
+export const apiGetGuess = (params) =>{
+	return http.get('/recommend/guess?module=article&limit=6',params);
+}

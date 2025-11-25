@@ -65,13 +65,18 @@
 				<image class="close" src="/static/images/friends/icon_Close.png" mode="" @click="transShow = false">
 				</image>
 				<view class="popup-content">
-					<view class="qrcode-container">
-						<canvas v-if="transShow" canvas-id="qrcodeCanvas" class="qrcode-canvas"></canvas>
+					<view id="canvas_download">
+						<view class="qrcode-container">
+							<canvas v-if="transShow" canvas-id="qrcodeCanvas" class="qrcode-canvas"></canvas>
+						</view>
+						<image class="popup-cover" src="/static/images/friends/img.png" mode="widthFix"></image>
 					</view>
-					<image class="popup-cover" src="/static/images/friends/img.png" mode="widthFix"></image>
-					<text>链接已生成 或复制链接给好友</text>
+					<view class="text">
+						<text>链接已生成 或复制链接给好友</text>
+						<text @click="copyInviteLink()">复制</text>
+					</view>
 				</view>
-				<image @click="copyInviteLink()" class="popup-button" src="/static/images/friends/button-ljfx.png"
+				<image class="popup-button" src="/static/images/friends/button-ljfx.png"
 					mode="widthFix"></image>
 			</view>
 		</tui-popup>
@@ -420,10 +425,13 @@
 						z-index: 9999;
 					}
 
-					text {
+					.text {
 						color: #ccc;
 						font-size: 24rpx;
 						font-weight: 400;
+						display: flex;
+						align-items: center;
+						justify-content: space-between;
 					}
 				}
 

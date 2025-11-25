@@ -6,6 +6,12 @@
 			<view class="d_title">{{ detailData?.data?.title }}</view>
 			<view class="d_time"><text>吃瓜视频 </text>发布于<text>{{ detailData?.data?.created_at }}
 					{{store?.user?.userData?.name}}</text></view>
+			<view class="video-label">
+				<view class="video-label-item">
+					<view class="text" v-for="val in detailData.data.hash_tags" :key="val"
+						@click="toPath('/pages/search/index?content=' + val)">#{{ val }}</view>
+				</view>
+			</view>
 			<view class="d_cont" v-for="(item, index) in detailData.data?.content" :key="index">
 				<rich-text v-if="item.type === 'richtext'" :nodes="item?.content"></rich-text>
 				<view
@@ -21,15 +27,21 @@
 					<view class="video-box" v-if="item.type === 'video'">
 						<videoDom
 							:detailData="{ data: { content: item?.content?.url, mobile_image: detailData.data.mobile_image, show_type: item?.content?.show_type } }" />
-						<view class="video-label">
-							<view class="video-label-item">
-								<view class="text" v-for="val in detailData.data.hash_tags" :key="val"
-									@click="toPath('/pages/search/index?content=' + val)">#{{ val }}</view>
-							</view>
-						</view>
 					</view>
 				</view>
 			</view>
+			<Share :detailData="detailData" />
+			<p style="color: #fff;margin-bottom: 20rpx;margin-top: 20rpx;">推荐</p>
+			<uni-swiper-dot :info="info" :current="current" field="content" mode="round">
+				<swiper class="swiper-box" style="height: 360rpx;">
+					<swiper-item v-for="(item ,index) in currentInfo" :key="index" @click="change(item.id)">
+						<view class="swiper-item" style="color: #fff;position: relative;">
+							<view class="content">{{item.title}}</view>
+							<image :src="item.mobile_image"></image>
+						</view>
+					</swiper-item>
+				</swiper>
+			</uni-swiper-dot>
 			<!-- 登录弹窗 -->
 			<uni-popup ref="popupRef" type="center" style="z-index: 99999;">
 				<view class="login-dialog">
@@ -43,7 +55,6 @@
 				</view>
 			</uni-popup>
 			<Like :detailData="detailData" @getDetail="getData" />
-			<Share :detailData="detailData" />
 			<Sponsor />
 			<Critique :detailData="detailData" />
 		</view>
@@ -63,6 +74,9 @@
 	import {
 		onLoad
 	} from '@dcloudio/uni-app'
+	import {
+		apiGetGuess,
+	} from "@/common/api/user.js";
 	import NavBar from '@/components/NavBar/index.vue'
 	import videoDom from '../video/index.vue'
 	import Like from './components/like.vue'
@@ -81,7 +95,22 @@
 	const closeLoginDialog = () => {
 		popupRef.value.close()
 	}
-
+	const current = ref(0)
+	const currentInfo = ref([])
+	const change = (e) => {
+		uni.navigateTo({
+			url: `/pages/detail/article?id=${e}`
+		})
+	}
+	const getGuess = () => {
+		apiGetGuess()
+			.then((res) => {
+				currentInfo.value = res.data
+			})
+			.catch((e) => {
+				console.log(e);
+			});
+	}
 	const goToLogin = () => {
 		closeLoginDialog()
 		uni.navigateTo({
@@ -127,7 +156,7 @@
 		})
 	}
 	const playDemo = () => {
-		if (!userInfo.value) {
+		if (!userInfo) {
 			openLoginDialog()
 		} else {
 			return uni.showToast({
@@ -148,6 +177,7 @@
 			detailData.id = options.id;
 			detailData.type = options.type || 'article';
 			getData();
+			getGuess()
 		}
 	})
 </script>
@@ -161,6 +191,34 @@
 
 		* img {
 			width: 100%;
+		}
+
+		.video-label {
+			margin-top: 20rpx;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			&-info {
+				position: relative;
+				top: 1rpx;
+				font-size: 24rpx;
+				color: #999;
+				font-weight: 400;
+
+			}
+
+			&-item {
+				display: flex;
+				align-items: center;
+				color: #DB7FDB;
+				font-size: 24rpx;
+				font-weight: 400;
+				margin-left: 10rpx;
+				gap: 8px;
+				// .text {
+				// 	margin-right: 8rpx;
+				// }
+			}
 		}
 
 		.eat-container {
@@ -179,34 +237,6 @@
 					line-height: 40rpx;
 					color: #ddd;
 				}
-
-				.video-label {
-					margin-top: 20rpx;
-					display: flex;
-					align-items: center;
-
-					&-info {
-						position: relative;
-						top: 1rpx;
-						font-size: 24rpx;
-						color: #999;
-						font-weight: 400;
-
-					}
-
-					&-item {
-						display: flex;
-						align-items: center;
-						color: #DB7FDB;
-						font-size: 24rpx;
-						font-weight: 400;
-						margin-left: 10rpx;
-						gap: 8px;
-						// .text {
-						// 	margin-right: 8rpx;
-						// }
-					}
-				}
 			}
 		}
 
@@ -219,6 +249,7 @@
 		.d_time {
 			margin-top: 18rpx;
 			color: #aaa;
+			text-align: center;
 			font-size: 23rpx;
 		}
 
@@ -266,9 +297,7 @@
 			}
 		}
 	}
-</style>
 
-<style scoped>
 	.mask {
 		position: fixed;
 		top: 0;
@@ -329,5 +358,26 @@
 
 	.confirm {
 		color: #FF1A8C;
+	}
+
+	.swiper-box {
+		.content {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			z-index: 9999;
+			padding: 0 50rpx;
+			white-space: pre-line;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: rgba(0, 0, 0, .5);
+		}
+
+		image {
+			width: 100%;
+			height: 360rpx;
+			border-radius: 20rpx;
+		}
 	}
 </style>
