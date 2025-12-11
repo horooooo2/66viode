@@ -3,11 +3,7 @@
 		<uni-easyinput class="r_input"  prefixIcon="person" v-model="params.username" :inputBorder="false"  :clearable="false"  trim  placeholder="请输入账号" placeholderStyle="color: #777" ></uni-easyinput>
 		<uni-easyinput class="r_input"  prefixIcon="locked" type="password"  v-model="params.password" :inputBorder="false"  :clearable="false"  trim  placeholder="请输入密码" placeholderStyle="color: #777" ></uni-easyinput>
 		<uni-easyinput class="r_input"  prefixIcon="locked" type="password"  v-model="params.confirm_password" :inputBorder="false"  :clearable="false"  trim  placeholder="确认密码" placeholderStyle="color: #777" ></uni-easyinput>
-		<uni-easyinput class="r_input"  v-model="params.email" :inputBorder="false"  :clearable="false"  trim  placeholder="请输入邮箱号" placeholderStyle="color: #777" >
-			<template #left>
-				<view class="tui-icon tui-icon-mobile" ></view>
-			</template>
-		</uni-easyinput>
+		<uni-easyinput class="r_input"  prefixIcon="email"  v-model="params.email" :inputBorder="false"  :clearable="false"  trim  placeholder="请输入邮箱号" placeholderStyle="color: #777" ></uni-easyinput>
 		<uni-easyinput class="r_input"  v-model="params.code" :inputBorder="false"  :clearable="false"  trim   placeholder="请输入验证码" placeholderStyle="color: #777" >
 			<template #left>
 				<view class="tui-icon tui-icon-yanzhengmamima" ></view>
@@ -181,7 +177,7 @@
 	padding-left: 7px;
 	font-size: 42rpx;
 }
-.tui-icon-mobile:before {
+.tui-icon-email:before {
 	content: '\e6bd';
 }
 .tui-icon-yanzhengmamima:before {

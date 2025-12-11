@@ -24,8 +24,6 @@
 					<view class="d_works">
 						<view class="d_name">{{ detailData.data.title }}</view>
 						<view class="d_time">
-							<text>SVIP</text>
-							<text>推荐阅读 </text>
 							<text>更新于 {{ detailData.data?.updated_at?.split(" ")?.[0] || '未知时间' }}</text>
 						</view>
 						<view class="d_profile">{{ detailData.data.description || '暂无简介' }}</view>

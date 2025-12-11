@@ -144,23 +144,21 @@ export const apiGetVipInfo = (params) =>{
 export const apiGetCaptcha = (params) =>{
 	return http.get('/captcha/get',params);
 }
-// 广告
 export const apiAdList = (params) =>{
 	return http.get('/ad/list',params);
 }
-// 广告
 export const apiSiteInfo = (params) =>{
 	return http.get('/site/info',params);
 }
-// 广告
 export const apiSiteSocial = (params) =>{
 	return http.get('/site/social',params);
 }
-// 广告
 export const apiNoticeList = (params) =>{
 	return http.get('/notice/list?page=1&limit=99',params);
 }
-// 广告
+export const apiNoticeRead = (params) =>{
+	return http.post('/notice/mark_read',params);
+}
 export const apiGetGuess = (params) =>{
 	return http.get('/recommend/guess?module=article&limit=6',params);
 }

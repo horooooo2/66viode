@@ -51,7 +51,7 @@
 				</view>
 				<view class="filter-box" @click="datePopup = true">
 					<view class="label">发布日期：</view>
-					<view class="value">{{ dateName }}</view>
+					<view class="value">{{ truncateText(dateName) }}</view>
 					<image class="icon" src="/static/images/index/icon_close.png" />
 				</view>
 			</view>
@@ -69,7 +69,7 @@
 		</scroll-view>
 
 		<!-- 排序弹窗 -->
-		<tui-bottom-popup backgroundColor="#202020" z-index="1002" :height="350" :show="orderPopup"
+		<tui-bottom-popup backgroundColor="#202020" z-index="1002" :height="450" :show="orderPopup"
 			@close="closeOrderPopup">
 			<view class="sort-box">
 				<view class="sort-title">排序方式</view>
@@ -190,10 +190,13 @@
 					},
 				],
 
-				order: "new",
+				order: "default",
 				userInfo: "",
 				orderPopup: false,
 				orderOptions: [{
+						name: "默认",
+						value: "default",
+					},{
 						name: "受欢迎",
 						value: "hot",
 					},
@@ -272,6 +275,12 @@
 			uni.$off("showCenterPopup", this.showCenterPopup);
 		},
 		methods: {
+			truncateText(text, length = 6) {
+			      if (!text) return ''
+			      return text.length > length 
+			        ? text.substring(0, length) + '...'
+			        : text
+			    },
 			appClose(){
 				this.appShow = false
 			},

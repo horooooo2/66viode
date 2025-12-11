@@ -53,6 +53,9 @@
 
 		<view class="list">
 			<view class="list-item" v-for="val in listData" :key="val.id" @click="goDetail(val)">
+				<view class="vip" style="top: 10rpx;background: none;left: -8rpx;">
+					<image style="width: 70rpx;height: 35rpx;" src="/static/images/list_vip_icon.png" mode=""></image>
+				</view>
 				<view class="flag">
 					{{val.category_info.name}}
 				</view>
@@ -162,11 +165,15 @@
 				],
 				popupShow: false,
 				userInfo: '',
-				sortSelectValue: 'new',
+				sortSelectValue: '',
 				radioItems: [{
+						name: '全部',
+						value: '',
+						checked: true
+					},{
 						name: '受欢迎的',
 						value: 'hot',
-						checked: true
+						checked: false
 					},
 					{
 						name: '新品发布',
@@ -530,9 +537,9 @@
 				width: 100%;
 				border-radius: 16rpx;
 
-				.flag {
+				.flag ,.vip {
 					position: absolute;
-					top: 8rpx;
+					bottom: 68rpx;
 					left: 8rpx;
 					border-radius: 68rpx;
 					background: linear-gradient(295deg, #FA4664 15.68%, #FB6755 84.32%);

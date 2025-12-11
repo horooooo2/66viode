@@ -51,7 +51,9 @@
 								<view>{{ item.task_desc }}</view>
 							</view>
 						</view>
-						<view class="button" @click="missionRewards(item)">签到</view>
+						<view class="button" style="background: #999;color: #FFF;" v-if="item.status == 'in_progress'">未完成</view>
+						<view class="button" style="background: #555;color: #FFF;" v-else-if="item.status == 'completed'">已领取</view>
+						<view class="button" v-else @click="missionRewards(item)">领取</view>
 					</view>
 					<view class="item-progress">
 						<view class="progress-box">
@@ -148,7 +150,6 @@
 				})
 			},
 			async getData() {
-				this.taskList = []
 				try {
 					// 确保串行执行顺序
 					await this.getTaskGroup();
@@ -206,6 +207,7 @@
 						duration: 2000
 					});
 					this.getTaskActive();
+					this.getData()
 				});
 			},
 			// 获取任务列表 - 依赖groupId和tagId

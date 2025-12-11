@@ -2,8 +2,33 @@
 	<view class="search">
 		<view class="status_bar"></view>
 		<uni-search-bar placeholder="搜索" v-model="searchTxt" cancelButton="always" bgColor="#202020" textColor="#fff" @input="search" @cancel="cancel" />
-		
-		<view class="wrap">
+		<view class="wrap" v-if="navData.listActive == 'all'">
+		    <navVue :navData="navData" :current="navData.list.findIndex(val => val.id === navData.listActive)" @change="navChange"/>
+		    <emptyVue v-if="none" class="empty" />
+		    <view v-else>
+		        <div v-for="(keys) in Object.keys(navData.listData || {}) || []" :key="keys">
+		            <list2Vue 
+		                v-if="['video','article'].includes(keys) && navData.listData[keys] && navData.listData[keys].list && navData.listData[keys].list.length" 
+		                :title="navData.list.filter(val => val.id === keys)[0].name"  
+		                :listData="navData.listData[keys].list" 
+		                :listActive="navData.listActive" 
+		                :count="navData.listData[keys].total" 
+		                :keyword="searchTxt" 
+		                @change="navChange"
+		            />
+		            <list1Vue 
+		                v-if="['image','novel'].includes(keys) && navData.listData[keys] && navData.listData[keys].list && navData.listData[keys].list.length" 
+		                :title="navData.list.filter(val => val.id === keys)[0].name" 
+		                :listData="navData.listData[keys].list" 
+		                :listActive="navData.listActive" 
+		                :count="navData.listData[keys].total" 
+		                :keyword="searchTxt" 
+		                @change="navChange"
+		            />
+		        </div>
+		    </view>
+		</view>
+		<view class="wrap" v-else>
 			<navVue :navData="navData" :current="navData.list.findIndex(val => val.id === navData.listActive)" @change="navChange"/>
 			<emptyVue v-if="none" class="empty" />
 			<view v-else>

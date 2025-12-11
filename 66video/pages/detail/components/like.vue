@@ -66,7 +66,7 @@ const toogleLike = async () => {
 	if(!userStore.isLogin) {
 		goLogin();
 		uni.showToast({
-			title: '请先登录',
+			title: '',
 			icon: 'none'
 		});
 		return;

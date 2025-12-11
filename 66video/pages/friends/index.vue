@@ -69,17 +69,24 @@
 						<view class="qrcode-container">
 							<canvas v-if="transShow" canvas-id="qrcodeCanvas" class="qrcode-canvas"></canvas>
 						</view>
-						<image class="popup-cover" src="/static/images/friends/img.png" mode="widthFix"></image>
+						<image class="popup-cover" src="/static/images/friends/img.jpg" mode="widthFix"></image>
 					</view>
 					<view class="text">
 						<text>链接已生成 或复制链接给好友</text>
-						<text @click="copyInviteLink()">复制</text>
+						<text @click="copyInviteLink()" style="color: #F35FB8;">复制</text>
 					</view>
 				</view>
-				<image class="popup-button" src="/static/images/friends/button-ljfx.png"
-					mode="widthFix"></image>
+				<image class="popup-button" @click="generateCompleteViewImage()"
+					src="/static/images/friends/button-ljfx.png" mode="widthFix"></image>
 			</view>
 		</tui-popup>
+		<canvas canvas-id="shareCanvas" id="shareCanvas"
+			style="position: absolute; top: -9999px; left: -9999px; width: 640px; height: 800px;"></canvas>
+		<canvas canvas-id="haibaoCanvas"
+			style="position: fixed; top: -9999px; left: -9999px; width: 300px; height: 400px;"></canvas>
+		<view class="haibao">
+			<img class="tempFileCode" :src="tempFilePathCode" alt="" />
+		</view>
 	</view>
 </template>
 
@@ -99,12 +106,177 @@
 				ruleDesc: '',
 				invite_url: '',
 				transShow: false,
+				generatedImagePath: '',
+				tempFilePathCode: '',
 			}
 		},
 		onLoad() {
 			this.getInviteRules()
 		},
 		methods: {
+			// 保存整个div内容为图片
+			saveViewAsImage() {
+				return new Promise((resolve, reject) => {
+					// 获取div的尺寸和样式信息
+					const query = uni.createSelectorQuery().in(this);
+					query.select('.haibao').boundingClientRect(data => {
+						if (!data) {
+							reject(new Error('未找到元素'));
+							return;
+						}
+
+						const ctx = uni.createCanvasContext('haibaoCanvas', this);
+						const canvasWidth = data.width;
+						const canvasHeight = data.height;
+
+						console.log('div尺寸:', canvasWidth, canvasHeight);
+
+						// 1. 绘制白色背景
+						ctx.setFillStyle('#FFFFFF');
+						ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+						// 2. 绘制div的背景图（如果有）
+						// 这里需要你提供背景图的路径，比如从div的样式中获取
+						const backgroundImage = '/static/images/friends/img.png'; // 替换为你的背景图路径
+						ctx.drawImage(backgroundImage, 0, 0, canvasWidth, canvasHeight);
+
+						// 3. 绘制二维码图片
+						if (this.tempFilePathCode) {
+							// 计算二维码位置（比如居中或特定位置）
+							const qrSize = 100;
+							const qrX = (canvasWidth - qrSize) / 8;
+							const qrY = canvasHeight - qrSize - 20;
+							ctx.drawImage(this.tempFilePathCode, qrX, qrY, qrSize, qrSize);
+						}
+
+						// 4. 绘制其他文字内容（根据你的需求添加）
+						ctx.setFillStyle('#000000');
+						ctx.setFontSize(16);
+						ctx.setTextAlign('center');
+						ctx.fillText('邀请好友', canvasWidth / 2, 50);
+
+						// 绘制完成
+						ctx.draw(true, () => {
+							setTimeout(() => {
+								uni.canvasToTempFilePath({
+									canvasId: 'haibaoCanvas',
+									destWidth: canvasWidth,
+									destHeight: canvasHeight,
+									fileType: 'png',
+									quality: 1,
+									success: (res) => {
+										if (res.tempFilePath) {
+											console.log('完整海报生成成功:', res
+												.tempFilePath);
+											resolve(res.tempFilePath);
+
+											// #ifdef H5
+											this.downloadBase64ImageH5(
+												res.tempFilePath);
+											// #endif
+
+											// #ifdef APP-PLUS || APP-VUE
+											this.saveBase64Image(
+												res.tempFilePath);
+											// #endif
+										} else {
+											reject(new Error('图片路径为空'));
+										}
+									},
+									fail: (err) => {
+										reject(err);
+									}
+								}, this);
+							}, 1000);
+						});
+					}).exec();
+				});
+			},
+			// H5 环境下载方法
+			downloadBase64ImageH5(base64Data) {
+				try {
+					// 创建下载链接
+					const link = document.createElement('a');
+					link.href = base64Data;
+					link.download = '66吃瓜分享海报' + '.png';
+
+					// 触发下载
+					document.body.appendChild(link);
+					link.click();
+					document.body.removeChild(link);
+
+					uni.showToast({
+						title: '下载成功',
+						icon: 'success'
+					});
+				} catch (error) {
+					console.error('H5下载失败:', error);
+					uni.showToast({
+						title: '下载失败',
+						icon: 'none'
+					});
+				}
+			},
+			saveBase64Image(base64Data) {
+				// 直接上传或保存到相册
+				uni.saveImageToPhotosAlbum({
+				    filePath: base64Data,
+				    success: () => {
+				        uni.showToast({
+				            title: '保存成功',
+				            icon: 'success'
+				        });
+				    }
+				});
+			},
+			generateCompleteViewImage() {
+				return new Promise((resolve, reject) => {
+					// 1. 先获取背景图片信息
+					uni.canvasToTempFilePath({
+						canvasId: 'qrcodeCanvas',
+						success: (qrRes) => {
+							this.tempFilePathCode = qrRes.tempFilePath
+							if (this.tempFilePathCode) {
+								this.saveViewAsImage()
+							}
+							if (!qrRes.tempFilePath) {
+								uni.hideLoading();
+								uni.showToast({
+									title: '二维码生成失败',
+									icon: 'none'
+								});
+								reject(new Error('二维码图片生成失败'));
+								return;
+							}
+						},
+						fail: (err) => {
+							uni.hideLoading();
+							console.error('获取二维码失败:', err);
+							uni.showToast({
+								title: '二维码生成失败',
+								icon: 'none'
+							});
+							reject(err);
+						}
+					}, this);
+				});
+			},
+
+			// 新增方法：动态设置canvas尺寸
+			setCanvasSize(width, height) {
+				// 通过选择器设置canvas的样式尺寸
+				const query = uni.createSelectorQuery().in(this);
+				query.select('#shareCanvas').fields({
+					node: true,
+					size: true
+				}, (res) => {
+					if (res && res.node) {
+						const canvas = res.node;
+						canvas.width = width;
+						canvas.height = height;
+					}
+				}).exec();
+			},
 			transShowCode() {
 				this.transShow = true
 				setTimeout(() => {
@@ -475,5 +647,24 @@
 	.qrcode-canvas {
 		width: 130px;
 		height: 130px;
+	}
+
+	.haibao {
+		width: 320px;
+		height: 400px;
+		background: url('/static/images/friends/img.jpg');
+		background-size: 100% 100%;
+		position: absolute;
+		z-index: -1;
+		opacity: 0;
+		bottom: 0;
+	}
+
+	.tempFileCode {
+		width: 120px;
+		position: absolute;
+		left: 5px;
+		bottom: 5px;
+		z-index: 999;
 	}
 </style>

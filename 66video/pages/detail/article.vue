@@ -12,6 +12,11 @@
 						@click="toPath('/pages/search/index?content=' + val)">#{{ val }}</view>
 				</view>
 			</view>
+			<view class="ad-content">
+				<view v-for="(item, index) in topAdList" :key="index" @click="navigateToAd(item.url)">
+					<image :src="item.mobile_image || item.pc_image" style="width:100%;height: 320rpx;"></image>
+				</view>
+			</view>
 			<view class="d_cont" v-for="(item, index) in detailData.data?.content" :key="index">
 				<rich-text v-if="item.type === 'richtext'" :nodes="item?.content"></rich-text>
 				<view
@@ -28,6 +33,11 @@
 						<videoDom
 							:detailData="{ data: { content: item?.content?.url, mobile_image: detailData.data.mobile_image, show_type: item?.content?.show_type } }" />
 					</view>
+				</view>
+			</view>
+			<view class="ad-content">
+				<view v-for="(item, index) in bottomAdList" :key="index" @click="navigateToAd(item.url)">
+					<image :src="item.mobile_image || item.pc_image" style="width:100%;height: 320rpx;"></image>
 				</view>
 			</view>
 			<Share :detailData="detailData" />
@@ -76,6 +86,7 @@
 	} from '@dcloudio/uni-app'
 	import {
 		apiGetGuess,
+		apiAdList
 	} from "@/common/api/user.js";
 	import NavBar from '@/components/NavBar/index.vue'
 	import videoDom from '../video/index.vue'
@@ -102,6 +113,32 @@
 			url: `/pages/detail/article?id=${e}`
 		})
 	}
+	const topAdList = ref([])
+	const bottomAdList = ref([])
+	const getAdList = () => {
+		apiAdList({position: "read"})
+			.then((res) => {
+				console.log(res)
+				if(res.code == 0) {
+					topAdList.value = res.data.top
+					bottomAdList.value = res.data.bottom
+				}
+			})
+			.catch((e) => {
+				console.log(e);
+			});
+	}
+	const navigateToAd = (url) => {
+		// #ifdef H5
+		window.open(url, '_blank')
+		// #endif
+		
+		// #ifndef H5
+		uni.navigateTo({
+		  url: `/pages/webview/webview?url=${encodeURIComponent(url)}`
+		})
+		// #endif
+	}
 	const getGuess = () => {
 		apiGetGuess()
 			.then((res) => {
@@ -117,6 +154,7 @@
 			url: '/pages/login/index'
 		})
 	}
+	
 	const detailData = reactive({
 		id: '',
 		type: '', // video, image, novel
@@ -178,6 +216,7 @@
 			detailData.type = options.type || 'article';
 			getData();
 			getGuess()
+			getAdList()
 		}
 	})
 </script>
@@ -297,7 +336,9 @@
 			}
 		}
 	}
-
+	.ad-content{
+		margin-top: 20rpx;
+	}
 	.mask {
 		position: fixed;
 		top: 0;

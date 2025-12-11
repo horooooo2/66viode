@@ -29,7 +29,7 @@
 			<view class="upload-box">
 				<view class="upload-label">上传视频</view>
 				<view class="video-wrapper" v-if="video_url">
-					<video :src="video_url" controls autoplay="false" initial-time="0" loop="false" muted="false"
+					<video :src="video_url" controls initial-time="0" loop="false" muted="false"
 						class="preview-video"></video>
 					<view class="delete-btn" @click="removeVideo">×</view>
 				</view>
@@ -93,14 +93,14 @@
 			isDisabled() {
 				// 如果正在提交中，禁用按钮
 				if (this.isSubmitting) return true;
-				
+
 				// 检查分类ID不为空
 				const hasCategoryId = this.category_id && this.category_id.toString().trim() !== '';
 				// 检查标题不为空且有实际内容
 				const hasTitle = this.title && this.title.trim() !== '';
 				// 检查内容不为空且有实际内容
 				const hasContent = this.content && this.content.trim() !== '';
-				
+
 				// 注意：根据业务需求，视频、封面图、图片可能不是必填项
 				// 如果这些都是必填的，可以取消下面的注释
 				/*
@@ -111,7 +111,7 @@
 				// 检查图片数组有内容
 				const hasImages = Array.isArray(this.image_url) && this.image_url.length > 0;
 				*/
-				
+
 				// 目前只要求分类、标题、内容为必填，其他可选
 				// 如果所有都是必填，请使用上面的注释代码
 				return !(hasCategoryId && hasTitle && hasContent);
@@ -125,7 +125,7 @@
 			async submit() {
 				// 防止重复提交
 				if (this.isSubmitting) return;
-				
+
 				// 再次验证必填项
 				if (!this.category_id || !this.title.trim() || !this.content.trim()) {
 					uni.showToast({
@@ -134,21 +134,25 @@
 					});
 					return;
 				}
-				
+
 				this.isSubmitting = true;
 				uni.showLoading({
 					title: '发布中...',
 					mask: true
 				});
-				
+
 				try {
 					let coverImageUrl = '';
 					let videoUrl = '';
 					let imageUrls = [];
-					
+
 					// 上传封面图片
 					if (this.cover_image) {
-						const {code, data, msg} = await uploadImage(this.cover_image);
+						const {
+							code,
+							data,
+							msg
+						} = await uploadImage(this.cover_image);
 						if (code === 0) {
 							coverImageUrl = data.url;
 						} else {
@@ -159,12 +163,16 @@
 							return;
 						}
 					}
-					
+
 					// 上传视频
 					if (this.video_url) {
-						const {code, data, msg} = await uploadVideo(this.video_url);
+						const {
+							code,
+							data,
+							msg
+						} = await uploadVideo(this.video_url);
 						if (code === 0) {
-							videoUrl = data.url ;
+							videoUrl = data.url;
 						} else {
 							uni.showToast({
 								title: `视频上传失败: ${msg}`,
@@ -173,11 +181,15 @@
 							return;
 						}
 					}
-					
+
 					// 循环上传图片数组
 					if (this.image_url.length > 0) {
 						for (let i = 0; i < this.image_url.length; i++) {
-							const {code, data, msg} = await uploadImage(this.image_url[i]);
+							const {
+								code,
+								data,
+								msg
+							} = await uploadImage(this.image_url[i]);
 							if (code === 0) {
 								imageUrls.push(data.url);
 							} else {
@@ -189,7 +201,7 @@
 							}
 						}
 					}
-					
+
 					// 准备提交数据
 					const postData = {
 						title: this.title.trim(),
@@ -199,19 +211,25 @@
 						image_url: imageUrls,
 						video_url: videoUrl
 					};
-					
+
 					// 调用保存接口
-					const {code, data, msg} = await saveArticleApi(postData);
-					
+					const {
+						code,
+						data,
+						msg
+					} = await saveArticleApi(postData);
+
 					if (code === 0) {
 						uni.showToast({
 							title: '发布成功',
 							icon: 'success'
 						});
-						
+
 						// 延迟返回上一页
 						setTimeout(() => {
-							uni.navigateBack();
+							uni.navigateTo({
+								url: 'pages/user/index'
+							})
 						}, 1500);
 					} else {
 						uni.showToast({
@@ -230,7 +248,7 @@
 					uni.hideLoading();
 				}
 			},
-			
+
 			// 设置封面
 			async onUploadSingleImg() {
 				try {
@@ -271,7 +289,7 @@
 					})
 				}
 			},
-			
+
 			// 删除图片
 			removeImage(index) {
 				this.image_url.splice(index, 1);
@@ -310,7 +328,9 @@
 			},
 
 			onClickBack() {
-				uni.navigateBack()
+				uni.navigateTo({
+					url: '/pages/user/index'
+				})
 			},
 		}
 	}
@@ -450,19 +470,19 @@
 						}
 					}
 				}
-				
+
 				.video-wrapper {
 					position: relative;
 					width: 160rpx;
 					height: 160rpx;
 					border-radius: 20rpx;
 					overflow: hidden;
-					
+
 					.preview-video {
 						width: 160rpx;
 						height: 160rpx;
 					}
-					
+
 					.delete-btn {
 						position: absolute;
 						top: 0;
@@ -516,5 +536,8 @@
 				}
 			}
 		}
+	}
+	:deep(.image-wrapper) {
+	    line-height: 8 !important;
 	}
 </style>

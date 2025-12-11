@@ -34,7 +34,7 @@
 				</template>
 			</view>
 		</view>
-		<view class="button" @click="toLink('/pages/address/add')">新增</view>
+		<!-- <view class="button" @click="toLink('/pages/address/add')">新增</view> -->
 	</view>
 </template>
 

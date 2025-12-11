@@ -1,6 +1,5 @@
 <template>
 	<view class="points">
-		<view class="status_bar"></view>
 		<appDownload></appDownload>
 		 <scroll-view
 			scroll-y
