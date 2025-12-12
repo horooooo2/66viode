@@ -26,13 +26,21 @@
 			isTitle: {
 				type: Boolean,
 				default: true
-			}
+			},
+			isCustomBack: {
+				type: Boolean,
+				default: false
+			},
 		},
 		methods: {
 			onBack() {
-				uni.navigateTo({
-					url: this.fallbackUrl
-				});
+				if (this.isCustomBack) {
+					uni.navigateBack()
+				} else {
+					uni.navigateTo({
+						url: this.fallbackUrl
+					});
+				}
 			}
 		}
 	}

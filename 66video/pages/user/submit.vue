@@ -12,10 +12,11 @@
 			<view class="input-box">
 				<textarea v-model="content" placeholder="说说你想法吧~" class="input-textarea" />
 			</view>
+
+			<!-- 图片区域（不变） -->
 			<view class="upload-box">
 				<view class="upload-label">上传图片</view>
 				<view class="upload-content">
-					<!-- 已上传图片预览 -->
 					<view class="upload-imgs" v-if="image_url.length">
 						<view v-for="(img, index) in image_url" :key="index" class="image-wrapper">
 							<image :src="img" mode="widthFix" class="preview-image" @click="previewImage(index)" />
@@ -26,17 +27,31 @@
 						@click="onUploadMultipleImg" mode="widthFix"></image>
 				</view>
 			</view>
+
+			<!-- 视频区域（增加上传中 + 取消按钮） -->
 			<view class="upload-box">
 				<view class="upload-label">上传视频</view>
-				<view class="video-wrapper" v-if="video_url">
+
+				<!-- 上传中显示（提交过程中） -->
+				<view class="uploading-box" v-if="isUploadingVideo">
+					<text class="uploading-text">视频上传中...</text>
+					<view class="cancel-btn" @click="cancelVideoUpload">取消上传<br />并终止提交</view>
+				</view>
+
+				<!-- 已选视频（本地预览） -->
+				<view class="video-wrapper" v-else-if="video_url">
 					<video :src="video_url" controls initial-time="0" loop="false" muted="false"
 						class="preview-video"></video>
 					<view class="delete-btn" @click="removeVideo">×</view>
 				</view>
+
+				<!-- 未选视频，点击选择 -->
 				<view class="upload-content" v-else @click="onUploadVideo">
 					<image src="/static/images/mine/upload-video.png" mode="widthFix" class="upload-cover"></image>
 				</view>
 			</view>
+
+			<!-- 封面、分类（不变） -->
 			<view class="upload-box">
 				<view class="upload-label">设置封面</view>
 				<view class="upload-content" @click="onUploadSingleImg">
@@ -69,6 +84,9 @@
 		saveArticleApi
 	} from '@/common/api/user.js'
 
+	// 请确认这个 BASE_URL 和你 http 文件里的一致
+	const BASE_URL = 'https://66cg.6980.cc/api.php'
+
 	export default {
 		data() {
 			return {
@@ -81,7 +99,12 @@
 				cover_image: '',
 				image_url: [],
 				video_url: '',
-				isSubmitting: false // 防止重复提交
+
+				// 控制提交与上传
+				isSubmitting: false,       // 整体提交状态（防重复）
+				isUploadingVideo: false,   // 视频在提交阶段正在上传
+				videoUploadTask: null,     // uni.uploadFile 返回的任务（用于 abort）
+				isCancelSubmit: false      // 标识用户是否主动取消本次提交
 			}
 		},
 		computed: {
@@ -91,29 +114,10 @@
 				}
 			},
 			isDisabled() {
-				// 如果正在提交中，禁用按钮
 				if (this.isSubmitting) return true;
-
-				// 检查分类ID不为空
 				const hasCategoryId = this.category_id && this.category_id.toString().trim() !== '';
-				// 检查标题不为空且有实际内容
 				const hasTitle = this.title && this.title.trim() !== '';
-				// 检查内容不为空且有实际内容
 				const hasContent = this.content && this.content.trim() !== '';
-
-				// 注意：根据业务需求，视频、封面图、图片可能不是必填项
-				// 如果这些都是必填的，可以取消下面的注释
-				/*
-				// 检查视频URL不为空
-				const hasVideo = this.video_url && this.video_url.trim() !== '';
-				// 检查封面图不为空
-				const hasCoverImage = this.cover_image && this.cover_image.trim() !== '';
-				// 检查图片数组有内容
-				const hasImages = Array.isArray(this.image_url) && this.image_url.length > 0;
-				*/
-
-				// 目前只要求分类、标题、内容为必填，其他可选
-				// 如果所有都是必填，请使用上面的注释代码
 				return !(hasCategoryId && hasTitle && hasContent);
 			}
 		},
@@ -122,6 +126,7 @@
 			this.fetchCategories();
 		},
 		methods: {
+			// ---------- 提交（主要改动点：视频使用 uni.uploadFile 上传以支持 abort） ----------
 			async submit() {
 				// 防止重复提交
 				if (this.isSubmitting) return;
@@ -136,71 +141,115 @@
 				}
 
 				this.isSubmitting = true;
-				uni.showLoading({
-					title: '发布中...',
-					mask: true
-				});
+				this.isCancelSubmit = false;
+				// uni.showLoading({
+				// 	title: '发布中...',
+				// 	mask: true
+				// });
 
 				try {
 					let coverImageUrl = '';
 					let videoUrl = '';
 					let imageUrls = [];
 
-					// 上传封面图片
+					// 上传封面图片（使用现有封装）
 					if (this.cover_image) {
-						const {
-							code,
-							data,
-							msg
-						} = await uploadImage(this.cover_image);
+						const { code, data, msg } = await uploadImage(this.cover_image);
 						if (code === 0) {
 							coverImageUrl = data.url;
 						} else {
-							uni.showToast({
-								title: `封面上传失败: ${msg}`,
-								icon: 'none'
-							});
+							uni.showToast({ title: `封面上传失败: ${msg}`, icon: 'none' });
 							return;
 						}
 					}
 
-					// 上传视频
+					// ---------- 视频上传（页面层使用 uni.uploadFile，使其可取消） ----------
 					if (this.video_url) {
-						const {
-							code,
-							data,
-							msg
-						} = await uploadVideo(this.video_url);
-						if (code === 0) {
-							videoUrl = data.url;
-						} else {
-							uni.showToast({
-								title: `视频上传失败: ${msg}`,
-								icon: 'none'
+						this.isUploadingVideo = true;
+
+						// promise wrapper，便于 await 上传结果
+						const videoPromise = new Promise((resolve, reject) => {
+							// 发起上传（使用完整 URL：BASE_URL + '/post/uploadVideo'）
+							const task = uni.uploadFile({
+								url: BASE_URL + '/post/uploadVideo',
+								filePath: this.video_url,
+								name: 'file',
+								header: {
+									'Token': uni.getStorageSync('storage_user_data')?.token || ''
+								},
+								success: (uploadRes) => {
+									let parsed = null;
+									try {
+										parsed = JSON.parse(uploadRes.data);
+									} catch (e) {
+										reject('上传结果解析失败');
+										return;
+									}
+									resolve(parsed);
+								},
+								fail: (err) => {
+									// err.errMsg 里若包含 abort 则是主动取消
+									reject(err);
+								}
 							});
-							return;
+
+							// 暴露 task 以支持 cancel
+							this.videoUploadTask = task;
+						});
+
+						// 等待上传结果
+						try {
+							const res = await videoPromise;
+
+							// 上传完成后，判断用户是否已取消（安全检查）
+							if (this.isCancelSubmit) {
+								// 用户在等待过程中取消了提交，直接退出
+								return;
+							}
+
+							// 解析结果
+							if (res && res.code === 0) {
+								videoUrl = res.data.url;
+							} else {
+								uni.showToast({ title: `视频上传失败: ${res?.msg || '未知错误'}`, icon: 'none' });
+								return;
+							}
+						} catch (err) {
+							// 处理被 abort 或其他错误
+							const errMsg = typeof err === 'string' ? err : (err && (err.errMsg || err.message)) || '';
+							const isAbort = (errMsg && errMsg.toLowerCase().includes('abort')) || this.isCancelSubmit;
+
+							if (isAbort) {
+								// 用户主动取消上传 —— 终止本次提交（按你的需求）
+								uni.showToast({ title: '已取消上传并终止提交', icon: 'none' });
+								return;
+							} else {
+								console.error('视频上传异常:', err);
+								uni.showToast({ title: '视频上传失败', icon: 'none' });
+								return;
+							}
+						} finally {
+							this.isUploadingVideo = false;
+							this.videoUploadTask = null;
 						}
 					}
 
-					// 循环上传图片数组
+					// ---------- 图片数组上传（保持原样） ----------
 					if (this.image_url.length > 0) {
 						for (let i = 0; i < this.image_url.length; i++) {
-							const {
-								code,
-								data,
-								msg
-							} = await uploadImage(this.image_url[i]);
+							if (this.isCancelSubmit) return;
+							const { code, data, msg } = await uploadImage(this.image_url[i]);
 							if (code === 0) {
 								imageUrls.push(data.url);
 							} else {
-								uni.showToast({
-									title: `图片上传失败: ${msg}`,
-									icon: 'none'
-								});
+								uni.showToast({ title: `图片上传失败: ${msg}`, icon: 'none' });
 								return;
 							}
 						}
 					}
+
+					// 若用户已取消则中断
+					if (this.isCancelSubmit) return;
 
 					// 准备提交数据
 					const postData = {
@@ -213,112 +262,111 @@
 					};
 
 					// 调用保存接口
-					const {
-						code,
-						data,
-						msg
-					} = await saveArticleApi(postData);
+					const { code, data, msg } = await saveArticleApi(postData);
 
 					if (code === 0) {
-						uni.showToast({
-							title: '发布成功',
-							icon: 'success'
-						});
-
-						// 延迟返回上一页
+						uni.showToast({ title: '发布成功', icon: 'success' });
 						setTimeout(() => {
-							uni.navigateTo({
-								url: 'pages/user/index'
-							})
+							uni.navigateTo({ url: 'pages/user/index' });
 						}, 1500);
 					} else {
-						uni.showToast({
-							title: `发布失败: ${msg}`,
-							icon: 'none'
-						});
+						uni.showToast({ title: `发布失败: ${msg}`, icon: 'none' });
 					}
 				} catch (error) {
 					console.error('发布失败:', error);
-					uni.showToast({
-						title: '发布失败，请重试',
-						icon: 'none'
-					});
+					if (!this.isCancelSubmit) {
+						uni.showToast({ title: '发布失败，请重试', icon: 'none' });
+					}
 				} finally {
 					this.isSubmitting = false;
-					uni.hideLoading();
+					this.isUploadingVideo = false;
+					this.videoUploadTask = null;
+					// uni.hideLoading();
 				}
 			},
 
-			// 设置封面
+			// 取消上传（用户点击）
+			cancelVideoUpload() {
+				this.isCancelSubmit = true;
+
+				// 如果存在上传任务则中断
+				if (this.videoUploadTask && typeof this.videoUploadTask.abort === 'function') {
+					try {
+						this.videoUploadTask.abort();
+					} catch (e) { /* ignore */ }
+				}
+
+				// 清理状态并退出提交
+				this.isUploadingVideo = false;
+				this.videoUploadTask = null;
+				this.isSubmitting = false;
+				uni.hideLoading();
+
+				uni.showToast({ title: '已取消上传并终止提交', icon: 'none' });
+			},
+
+			// 设置封面（不变）
 			async onUploadSingleImg() {
 				try {
-					const imagePath = await chooseImage()
-					this.cover_image = imagePath
+					const imagePath = await chooseImage();
+					this.cover_image = imagePath;
 				} catch (error) {
-					console.log(error)
-					uni.showToast({
-						title: '选择图片失败',
-						icon: 'error'
-					})
+					uni.showToast({ title: '选择图片失败', icon: 'error' });
 				}
 			},
 
-			// 上传视频
+			// 选择本地视频（不立即上传，上传在 submit 阶段进行）
 			async onUploadVideo() {
 				try {
-					const videoPath = await chooseVideo()
-					this.video_url = videoPath
+					const videoPath = await chooseVideo();
+					this.video_url = videoPath;
 				} catch (error) {
-					console.log(error)
-					uni.showToast({
-						title: '选择视频失败',
-						icon: 'error'
-					})
+					uni.showToast({ title: '选择视频失败', icon: 'error' });
 				}
 			},
 
-			// 上传图片
+			// 上传图片（不变）
 			async onUploadMultipleImg() {
 				try {
-					const imagePath = await chooseImage()
-					this.image_url.push(imagePath)
+					const imagePath = await chooseImage();
+					this.image_url.push(imagePath);
 				} catch (error) {
-					uni.showToast({
-						title: '选择图片失败',
-						icon: 'error'
-					})
+					uni.showToast({ title: '选择图片失败', icon: 'error' });
 				}
 			},
 
-			// 删除图片
+			// 删除图片（不变）
 			removeImage(index) {
 				this.image_url.splice(index, 1);
 			},
 
-			// 预览图片
+			// 预览图片（不变）
 			previewImage(index) {
-				uni.previewImage({
-					current: index,
-					urls: this.image_url
-				});
+				uni.previewImage({ current: index, urls: this.image_url });
 			},
 
+			// 删除本地选中视频（在未提交或上传前可用）
 			removeVideo() {
+				// 如果正在上传，先取消上传
+				if (this.isUploadingVideo && this.videoUploadTask && typeof this.videoUploadTask.abort === 'function') {
+					try { this.videoUploadTask.abort(); } catch (e) {}
+				}
+				this.isUploadingVideo = false;
+				this.videoUploadTask = null;
 				this.video_url = '';
 			},
 
-			// 切换分类
+			// 切换分类（不变）
 			onClickCategories(id, index) {
 				this.category_id = id;
 				this.activeIndex = index;
 			},
 
-			// 分类数据
+			// 获取分类（不变）
 			fetchCategories() {
 				apiGetArticleCategories().then((res) => {
 					if (res.code === 0) {
 						this.categories = res.data;
-						// 默认选择第一个分类
 						if (this.categories.length > 0 && !this.category_id) {
 							this.category_id = this.categories[0].id;
 							this.activeIndex = 0;
@@ -327,10 +375,13 @@
 				});
 			},
 
+			// 返回（如果正在上传则先取消）
 			onClickBack() {
-				uni.navigateTo({
-					url: '/pages/user/index'
-				})
+				if (this.isUploadingVideo) {
+					this.cancelVideoUpload();
+					return;
+				}
+				uni.navigateTo({ url: '/pages/user/index' });
 			},
 		}
 	}
@@ -420,6 +471,32 @@
 					font-weight: 400;
 					color: #666;
 					margin-bottom: 10rpx;
+				}
+				
+				.uploading-box {
+					width: 160rpx;
+					height: 160rpx;
+					border-radius: 20rpx;
+					overflow: hidden;
+					border: 1rpx solid #FF1A8C;
+					display: flex;
+					flex-direction: column;
+					align-items: center;
+					justify-content: space-around;
+					
+					.uploading-text {
+						font-size: 20rpx;
+						color: #ccc;
+					}
+					
+					.cancel-btn {
+						background: #FF1A8C;
+						font-size: 20rpx;
+						color: #fff;
+						border-radius: 4rpx;
+						padding: 4rpx 8rpx;
+						text-align: center;
+					}
 				}
 
 				.upload-content {

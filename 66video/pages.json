@@ -155,6 +155,12 @@
 			}
 		},
 		{
+			"path": "pages/points/order",
+			"style": {
+				"navigationBarTitleText": "确认订单"
+			}
+		},
+		{
 			"path": "pages/address/index",
 			"style": {
 				"navigationBarTitleText": "收货地址"
