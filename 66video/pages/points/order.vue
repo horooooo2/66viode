@@ -23,8 +23,7 @@
 				<view class="right-panel">
 					<view class="goods-title">{{ dataItem.name }}</view>
 					<view class="goods-num">
-						<tui-numberbox :value="count" :min="1" :max="dataItem.stock"
-							@change="onChange"></tui-numberbox>
+						<tui-numberbox :value="count" :min="1" :max="dataItem.stock" @change="onChange"></tui-numberbox>
 					</view>
 				</view>
 			</view>
@@ -75,7 +74,7 @@
 			onChange(e) {
 				this.count = e.value
 			},
-			
+
 			getAddressList() {
 				apiAddressList().then((res) => {
 					if (res.code === 0) {
@@ -95,7 +94,7 @@
 					}
 				})
 			},
-			
+
 			onClickSubmit() {
 				if (this.dataItem.type === 1 && !this.addressItem.id) {
 					uni.showToast({
@@ -125,9 +124,12 @@
 						icon: 'none',
 						duration: 2000
 					});
+					if(!res.code){
+						this.toLink('/pages/points/index')
+					}
 				})
 			},
-			
+
 			toLink(url) {
 				uni.navigateTo({
 					url
@@ -144,7 +146,7 @@
 		min-height: 100vh;
 		display: flex;
 		flex-direction: column;
-		
+
 		.order-container {
 			min-height: 0;
 			flex: 1;
@@ -154,7 +156,7 @@
 			width: 100%;
 			padding: 42rpx 32rpx 20rpx;
 			box-sizing: border-box;
-			
+
 			.address-add {
 				border-radius: 16rpx;
 				border: 2rpx dashed #FF1A8C;
@@ -170,7 +172,7 @@
 				line-height: 48rpx;
 				margin-bottom: 24rpx;
 			}
-			
+
 			.address-card {
 				width: 100%;
 				padding: 20rpx 32rpx;
@@ -181,18 +183,18 @@
 				align-items: center;
 				justify-content: space-between;
 				margin-bottom: 22rpx;
-					
+
 				.icon-address {
 					width: 76rpx;
 					height: 76rpx;
 					flex-shrink: 0;
 					margin-right: 24rpx;
 				}
-					
+
 				.address-content {
 					min-width: 0;
 					flex: 1;
-					
+
 					.userinfo {
 						display: flex;
 						align-items: center;
@@ -200,18 +202,18 @@
 						color: #ccc;
 						line-height: 28rpx;
 						margin-bottom: 16rpx;
-					
+
 						.username {
 							font-size: 34rpx;
 							font-weight: 500;
 						}
-					
+
 						.phone {
 							font-size: 26rpx;
 							font-weight: 400;
 						}
 					}
-					
+
 					.dizhi {
 						color: #aaa;
 						font-size: 26rpx;
@@ -219,14 +221,14 @@
 						line-height: 40rpx;
 					}
 				}
-					
+
 				.address-check {
 					width: 48rpx;
 					height: 48rpx;
 					margin-left: 52rpx;
 				}
 			}
-			
+
 			.goods-card {
 				width: 100%;
 				border-radius: 20rpx;
@@ -236,26 +238,26 @@
 				padding: 22rpx 28rpx;
 				box-sizing: border-box;
 				margin-bottom: 20rpx;
-					
+
 				.goods-cover {
 					width: 136rpx;
 					height: 136rpx;
 					border-radius: 10rpx;
 					background: rgba(255, 255, 255, 0.10);
 					margin-right: 20rpx;
-					
+
 					image {
 						width: 100%;
 						height: 100%;
 					}
 				}
-					
+
 				.right-panel {
 					height: 136rpx;
 					display: flex;
 					flex-direction: column;
 					justify-content: space-between;
-					
+
 					.goods-title {
 						color: #ccc;
 						font-size: 28rpx;
@@ -264,10 +266,11 @@
 					}
 				}
 			}
-			
+
 			.goods-phone {
 				width: 100%;
 				margin-bottom: 36rpx;
+
 				.input {
 					width: 100%;
 					height: 96rpx;
@@ -275,12 +278,12 @@
 					box-sizing: border-box;
 					border-radius: 20rpx;
 					background: #101010;
-				
+
 					.uni-input-placeholder {
 						color: #555;
 						font-size: 32rpx;
 					}
-				
+
 					:deep() {
 						.uni-input-input {
 							color: #ccc;
@@ -289,7 +292,7 @@
 					}
 				}
 			}
-			
+
 			.goods-money {
 				display: flex;
 				align-items: center;
@@ -300,12 +303,12 @@
 				font-weight: 400;
 				line-height: 40rpx;
 				margin-bottom: 30rpx;
-					
+
 				.icon-jifen {
 					width: 40rpx;
 					height: 40rpx;
 				}
-					
+
 				text {
 					color: #FEA71F;
 					font-size: 40rpx;
@@ -313,7 +316,7 @@
 					line-height: 40rpx;
 				}
 			}
-			
+
 			.d-button {
 				width: 100%;
 				height: 88rpx;

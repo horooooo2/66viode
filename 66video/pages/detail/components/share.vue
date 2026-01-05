@@ -88,23 +88,31 @@ const props = defineProps({
 });
 
 // 分享数据配置
+const detailTitle = ref('')
+
 const shareData = computed(() => {
-	return {
-		desc: props.detailData?.description || '我正在66吃瓜网观看《'+props.detailData?.title+'》，快来一起看！',
-		url: inviteUrl.value,
-	}
+    return {
+        desc: props.detailData?.description || `我正在66吃瓜网观看《${detailTitle.value}》，快来一起看！`,
+        url: inviteUrl.value,
+		title: detailTitle.value
+    }
 })
+
 watch(
     () => props.detailData,
     (newVal) => {
-        console.log('data属性:', props.detailData.data)
+        console.log('data属性:', props.detailData?.data)
+        if (props.detailData?.data?.title) {
+            detailTitle.value = props.detailData.data.title
+        }
     },
     { immediate: true, deep: true }
 )
 // 邀请链接
 const inviteUrl = computed(() => {
 	const baseUrl = location.origin
-	const sharePath = `/pages/detail/detail?id=${props.detailData?.id}`
+	// const sharePath = `/#/pages/detail/article?id=${props.detailData?.id}`
+	const sharePath = '/' + location.hash
 	return baseUrl + sharePath
 })
 
@@ -270,7 +278,7 @@ const shareToFlashChat = () => {
 // 复制分享链接
 const copyInviteLink = () => {
 	uni.setClipboardData({
-		data: '我正在66吃瓜网观看《'+props.detailData?.title+'》，快来一起看！点击：' + inviteUrl.value,
+		data: '我正在66吃瓜网观看《'+detailTitle.value+'》，快来一起看！点击：' + inviteUrl.value,
 		success: () => {
 			uni.showToast({
 				title: '复制成功',

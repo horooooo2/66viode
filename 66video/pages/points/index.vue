@@ -8,8 +8,13 @@
 			@refresherrefresh="onRefresh"
 		>
 			<view class="status_bar"></view>
+			<Sidebar ref="sidebarRef"></Sidebar>
 			<view class="header">
-				<image class="logo" :src="logo" mode="widthFix"></image>
+				<view @click="onClick" style="display: flex;align-items: center;justify-content: center;">
+					<image src="/static/images/left-menu-icon.png"
+						style="width: 20px; height: 20px;margin-right: 10rpx;" />
+					<image class="logo" :src="logo" mode="widthFix"></image>
+				</view>
 				<view class="right">
 					<Surplus></Surplus>
 					<view class="avatar" @click="toPath('/pages/user/index')">
@@ -51,6 +56,7 @@
 </template>
 
 <script>
+	import Sidebar from "@/components/Sidebar/index.vue";
 	import NavBar from '@/components/NavBar/index.vue'
 	import Surplus from "@/components/Surplus/index.vue"
 	import Empty from "@/pages/search/components/empty.vue";
@@ -66,6 +72,7 @@
 	export default {
 		components: {
 			Surplus,
+			Sidebar,
 			list,
 			CustomTabbar,
 			appDownload,
@@ -93,6 +100,9 @@
 			this.logo = uni.getStorageSync('logo');
 		},
 		methods: {
+			onClick() {
+				this.$refs.sidebarRef && this.$refs.sidebarRef.open();
+			},
 			async getUserInfo() {
 				const {
 					data

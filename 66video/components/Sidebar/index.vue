@@ -42,10 +42,10 @@
 					<image class="icon" src="/static/images/sidebar/jlb.png" mode=""></image>
 					<text>VIP俱乐部</text>
 				</view>
-				<view class="card" @click="onClick('router', '/pages/active/index')">
+				<!-- <view class="card" @click="onClick('router', '/pages/active/index')">
 					<image class="icon" src="/static/images/sidebar/hd.png" mode=""></image>
 					<text>活动</text>
-				</view>
+				</view> -->
 			</view>
 			<view class="card" @click="onClick('sponsor')">
 				<image class="icon" src="/static/images/sidebar/zz.png" mode=""></image>

@@ -42,6 +42,9 @@
 	import { computed,reactive,ref,onMounted,watch,onUnmounted } from 'vue';
 	import {apiSendCode,apiRegister} from '@/common/api/user.js'
 	import { onLoad } from '@dcloudio/uni-app'
+	import { useUserStore } from '@/store/user'
+	
+	const userStore = useUserStore()
 	// import DialogVue from './dialog.vue';
 	const checkVal = ref(false);
 	const isShow = ref(false);
@@ -121,6 +124,7 @@
 		uni.showToast({ title: msg, icon:'none', duration: 2000 });
 		console.log('data===',data);
 		if(code == 0){
+			userStore.setUser(data)
 			uni.setStorageSync('storage_user_data', data);	
 			uni.navigateTo({
 				url: '/pages/eat/index'

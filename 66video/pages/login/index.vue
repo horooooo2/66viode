@@ -18,8 +18,8 @@
 			<uni-icons class="right_arrow" type="right" size="14" color="#DB7FDB"></uni-icons>
 		</view>
 		
-		<view class="_kf">
-			<uni-icons @click="back" type="headphones" size="16" color="#777"></uni-icons>
+		<view class="_kf" @click="toService">
+			<uni-icons type="headphones" size="16" color="#777"></uni-icons>
 			联系我们
 		</view>
 	</view>
@@ -62,6 +62,9 @@
 			this.isType = options.type == 2 ? this.registerType : 'Login';
 		},
 		methods:{
+			toService(){
+				window.open(uni.getStorageSync('serviceUrl') || '')
+			},
 			back(){
 				// uni.navigateBack();
 				// uni.navigateTo({

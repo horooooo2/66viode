@@ -356,10 +356,9 @@
 					msg,
 					data
 				} = await apiGetInviteRules()
-				console.log(code, msg, data)
 				if (code == 0) {
 					this.rewardRules = data.reward_rules
-					this.invite_url = data.invite_url
+					this.invite_url = location.origin + '/#/pages/login/index?type=2&invite_code=' + data.invite_code
 					this.ruleDesc = data.rule_description
 				} else {
 					uni.showToast({

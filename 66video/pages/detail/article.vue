@@ -64,6 +64,17 @@
 					</view>
 				</view>
 			</uni-popup>
+			<uni-popup ref="popupRefVip" type="center" style="z-index: 99999;">
+				<view class="login-dialog">
+					<view class="dialog-content">
+						<text class="dialog-text">请开通VIP后再进行观看</text>
+					</view>
+					<view class="dialog-actions">
+						<button class="btn cancel" @click="closeLoginDialog">取消</button>
+						<button class="btn confirm" @click="goToVip">去开通</button>
+					</view>
+				</view>
+			</uni-popup>
 			<Like :detailData="detailData" @getDetail="getData" />
 			<Sponsor />
 			<Critique :detailData="detailData" />
@@ -98,13 +109,17 @@
 		apiGetArticleDetail,
 	} from '@/common/api/content.js'
 	const popupRef = ref(null)
+	const popupRefVip = ref(null)
 
 	const openLoginDialog = () => {
 		popupRef.value.open()
 	}
-
+	const openVipDialog = () => {
+		popupRefVip.value.open()
+	}
 	const closeLoginDialog = () => {
 		popupRef.value.close()
+		popupRefVip.value.close()
 	}
 	const current = ref(0)
 	const currentInfo = ref([])
@@ -116,10 +131,12 @@
 	const topAdList = ref([])
 	const bottomAdList = ref([])
 	const getAdList = () => {
-		apiAdList({position: "read"})
+		apiAdList({
+				position: "read"
+			})
 			.then((res) => {
 				console.log(res)
-				if(res.code == 0) {
+				if (res.code == 0) {
 					topAdList.value = res.data.top
 					bottomAdList.value = res.data.bottom
 				}
@@ -132,10 +149,10 @@
 		// #ifdef H5
 		window.open(url, '_blank')
 		// #endif
-		
+
 		// #ifndef H5
 		uni.navigateTo({
-		  url: `/pages/webview/webview?url=${encodeURIComponent(url)}`
+			url: `/pages/webview/webview?url=${encodeURIComponent(url)}`
 		})
 		// #endif
 	}
@@ -154,7 +171,13 @@
 			url: '/pages/login/index'
 		})
 	}
-	
+	const goToVip = () => {
+		closeLoginDialog()
+		uni.navigateTo({
+			url: '/pages/points/index'
+		})
+	}
+
 	const detailData = reactive({
 		id: '',
 		type: '', // video, image, novel
@@ -197,11 +220,7 @@
 		if (!userInfo) {
 			openLoginDialog()
 		} else {
-			return uni.showToast({
-				title: '请开通vip后再进行观看',
-				icon: 'none',
-				duration: 2000
-			});
+			openVipDialog()
 		}
 	}
 	const toPath = (path) => {
@@ -237,6 +256,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
+
 			&-info {
 				position: relative;
 				top: 1rpx;
@@ -336,9 +356,11 @@
 			}
 		}
 	}
-	.ad-content{
+
+	.ad-content {
 		margin-top: 20rpx;
 	}
+
 	.mask {
 		position: fixed;
 		top: 0;
