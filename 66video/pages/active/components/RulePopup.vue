@@ -3,8 +3,7 @@
 		<view class="rule-container">
 			<view class="content">
 				<view class="title">详细规则</view>
-				<view class="textarea">您的在线时长已经达到 30 分钟，恭喜您获得 3000 积分奖励！您的在线时长已经达到 30 分钟，恭喜您获得 3000 积分奖励！您的在线时长已经达到 30 分钟，恭喜您获得
-					3000 积分奖励！</view>
+				<view class="textarea">{{activeObj.rules}}</view>
 			</view>
 			<view class="button" @click="closeDrawer">关闭</view>
 		</view>
@@ -13,6 +12,12 @@
 
 <script>
 	export default {
+		props: {
+			activeObj: {
+				type: Object,
+				default: () => {}
+			}
+		},
 		data() {
 			return {
 				visible: false

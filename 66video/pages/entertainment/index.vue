@@ -38,7 +38,7 @@
 			</swiper>
 		</view>
 
-		<view class="filter">
+		<!-- <view class="filter">
 			<view class="filter-box" @click="popupShow = true">
 				<view class="label">排序方式：</view>
 				<view class="value">{{ radioItems.find(item => item.value === sortSelectValue)?.name }}</view>
@@ -49,7 +49,7 @@
 				<view class="value">{{ typeSelectValue.name }}</view>
 				<image class="icon" src="/static/images/index/icon_close.png" mode=""></image>
 			</view>
-		</view>
+		</view> -->
 
 		<view class="list">
 			<view class="list-item" v-for="val in listData" :key="val.id" @click="goDetail(val)">

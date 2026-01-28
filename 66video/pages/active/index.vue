@@ -76,7 +76,7 @@
 			</view>
 		</view>
 
-		<RulePopup ref="ruleRef"></RulePopup>
+		<RulePopup ref="ruleRef" :activeObj="activeObj"></RulePopup>
 
 		<PrizePopup ref="prizeRef" :activeObj="activeObj" @change="onChangePrize"></PrizePopup>
 

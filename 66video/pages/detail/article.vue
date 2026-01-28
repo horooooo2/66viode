@@ -247,10 +247,6 @@
 		display: flex;
 		flex-direction: column;
 
-		* img {
-			width: 100%;
-		}
-
 		.video-label {
 			margin-top: 20rpx;
 			display: flex;

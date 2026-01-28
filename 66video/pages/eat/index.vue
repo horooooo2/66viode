@@ -43,7 +43,7 @@
 				</swiper>
 			</view> -->
 
-			<view class="filter">
+			<!-- <view class="filter">
 				<view class="filter-box" @click="orderPopup = true">
 					<view class="label">排序方式：</view>
 					<view class="value">{{ orderName }}</view>
@@ -54,7 +54,7 @@
 					<view class="value">{{ truncateText(dateName) }}</view>
 					<image class="icon" src="/static/images/index/icon_close.png" />
 				</view>
-			</view>
+			</view> -->
 
 			<!-- 数据列表 -->
 			<list :list="listData"></list>

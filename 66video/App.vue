@@ -90,4 +90,16 @@
 	  -ms-overflow-style: none;
 	  scrollbar-width: none;
 	}
+	/* 方案1：使用通用选择器 */
+	rich-text img {
+	  max-width: 100% !important;
+	  height: auto !important;
+	  display: block;
+	}
+	
+	/* 方案2：使用深度选择器（如果rich-text有scope） */
+	::v-deep rich-text img {
+	  max-width: 100% !important;
+	  height: auto !important;
+	}
 </style>
